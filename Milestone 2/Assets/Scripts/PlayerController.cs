@@ -10,7 +10,6 @@ public class PlayerController : MonoBehaviour {
 
     private Animator animator;
     private CharacterController ccontroller;
-    private Rigidbody rigidBody;
     private bool bRagdoll = false;
 
 	// Use this for initialization
@@ -18,7 +17,6 @@ public class PlayerController : MonoBehaviour {
         //animator = GetComponentInChildren<Animator>();
         animator = GetComponent<Animator>();
         ccontroller = GetComponent<CharacterController>();
-        rigidBody = GetComponent<Rigidbody>();
         disableRagdoll();
        
         speed = new Vector3();
@@ -31,12 +29,7 @@ public class PlayerController : MonoBehaviour {
             forwardSpeed += SpeedIncrement * Time.deltaTime;
         }
        
-        speed.x = Input.GetAxis("Horizontal") * HorizontalSpeed;
-        //print("Speedx: " + speed.x);
-
-
-        // Update Location
-        //rigidBody.MovePosition(transform.position + speed * Time.deltaTime);
+        
 
         // Update Animation
         animator.SetFloat("WalkRun", forwardSpeed/5f);
@@ -67,6 +60,24 @@ public class PlayerController : MonoBehaviour {
         {
             animator.SetTrigger("Vault"); ;
         }
+    }
+
+    void FixedUpdate()
+    {
+        print("Speedx: " + speed.x);
+        if(ccontroller.isGrounded)
+        {
+            print("Grounded");
+            animator.SetFloat("Strafe", Input.GetAxis("Horizontal") * HorizontalSpeed);
+
+        } else
+        {
+            // Update Location
+            speed.x = Input.GetAxis("Horizontal") * HorizontalSpeed;
+            ccontroller.SimpleMove(speed);
+        }
+
+
     }
 
     void OnCollisionEnter (Collision collision)

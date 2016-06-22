@@ -38,6 +38,12 @@ AnimatorController:
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 0}
+  - m_Name: Strafe
+    m_Type: 1
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 0}
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Base Layer
@@ -82,13 +88,29 @@ BlendTree:
     m_CycleOffset: 0
     m_DirectBlendParameter: Blend
     m_Mirror: 0
-  m_BlendParameter: WalkRun
+  - serializedVersion: 2
+    m_Motion: {fileID: 7400000, guid: faae4d08d900e524ba8f9fbc1ca75223, type: 3}
+    m_Threshold: 3.9
+    m_Position: {x: -1, y: 0}
+    m_TimeScale: 1
+    m_CycleOffset: 0
+    m_DirectBlendParameter: WalkRun
+    m_Mirror: 0
+  - serializedVersion: 2
+    m_Motion: {fileID: 7400000, guid: 758dd68cfbaa46547a3504bcce981b21, type: 3}
+    m_Threshold: 5.8
+    m_Position: {x: 1, y: 0}
+    m_TimeScale: 1
+    m_CycleOffset: 0
+    m_DirectBlendParameter: WalkRun
+    m_Mirror: 0
+  m_BlendParameter: Strafe
   m_BlendParameterY: WalkRun
   m_MinThreshold: 0
   m_MaxThreshold: 5.8
   m_UseAutomaticThresholds: 0
   m_NormalizedBlendValues: 0
-  m_BlendType: 0
+  m_BlendType: 2
 --- !u!1101 &110108330
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
