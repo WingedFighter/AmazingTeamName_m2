@@ -4,12 +4,14 @@ using System.Collections;
 public class PlayerController : MonoBehaviour {
     public float SpeedIncrement = 1f;
     public float HorizontalSpeed = 1f;
+    public float KnockoutCollisionMagnitude = 1f;
 
     private float forwardSpeed = 0f;
     private Vector3 speed;
 
     private Animator animator;
     private CharacterController ccontroller;
+    private float ccBaseHeight;
     private bool bRagdoll = false;
 
 	// Use this for initialization
@@ -17,8 +19,19 @@ public class PlayerController : MonoBehaviour {
         //animator = GetComponentInChildren<Animator>();
         animator = GetComponent<Animator>();
         ccontroller = GetComponent<CharacterController>();
+        ccBaseHeight = ccontroller.center.y;
         disableRagdoll();
-       
+
+        // Add Ragdoll part script to all subcomponents
+        foreach (Rigidbody rb in GetComponentsInChildren<Rigidbody>())
+        {
+            RagdollPart rps = rb.gameObject.AddComponent<RagdollPart>();
+
+            //Set the scripts mainScript reference so that it can access
+            //the score and scoreTextTemplate member variables above
+            rps.playerController = this;
+        }
+
         speed = new Vector3();
 	}
 	
@@ -29,10 +42,8 @@ public class PlayerController : MonoBehaviour {
             forwardSpeed += SpeedIncrement * Time.deltaTime;
         }
        
-        
-
         // Update Animation
-        animator.SetFloat("WalkRun", forwardSpeed/5f);
+        animator.SetFloat("WalkRun", forwardSpeed/3f);
 
         //Ragdoll toggle
         if (Input.GetKeyDown(KeyCode.Tab))
@@ -52,9 +63,9 @@ public class PlayerController : MonoBehaviour {
         {
             animator.SetTrigger("Slide"); ;
         }
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && ccontroller.isGrounded)
         {
-            animator.SetTrigger("Jump"); ;
+            animator.SetTrigger("Jump");
         }
         if (Input.GetKeyDown(KeyCode.V))
         {
@@ -64,10 +75,8 @@ public class PlayerController : MonoBehaviour {
 
     void FixedUpdate()
     {
-        print("Speedx: " + speed.x);
         if(ccontroller.isGrounded)
         {
-            print("Grounded");
             animator.SetFloat("Strafe", Input.GetAxis("Horizontal") * HorizontalSpeed);
 
         } else
@@ -77,13 +86,20 @@ public class PlayerController : MonoBehaviour {
             ccontroller.SimpleMove(speed);
         }
 
-
+        // When Jumping move the ccontroller to stay at player's feet
+        float jumpHeight = animator.GetFloat("JumpHeight");
+        if (jumpHeight > 0)
+        {
+            print("JumpHeight = " + ccontroller.center.y);
+            ccontroller.center = new Vector3(ccontroller.center.x, ccBaseHeight + jumpHeight, ccontroller.center.z);
+            ccontroller.Move(new Vector3(ccontroller.center.x, ccBaseHeight + jumpHeight/2f, ccontroller.center.z));
+        }
     }
 
     void OnCollisionEnter (Collision collision)
     {
         print("Collided");
-        if (collision.gameObject.tag == "ObstacleMovable")
+        /*if (collision.gameObject.tag == "ObstacleMovable")
         {
             print("Hit Movable");
             // Reduce Speed based on the type of object
@@ -97,18 +113,27 @@ public class PlayerController : MonoBehaviour {
         }
         if (collision.gameObject.tag == "ObstacleImmovable")
         {
-            print("Collided with speed: " + forwardSpeed);
-            if (forwardSpeed > 1)
+            collision.gameObject.GetComponent<Rigidbody>().isKinematic = true;
+
+            print("Immvable: " + collision.relativeVelocity.magnitude);
+            //Check that we are colliding with sufficient velocity
+            if (collision.relativeVelocity.magnitude > KnockoutCollisionMagnitude)
             {
                 enableRagdoll();
+                forwardSpeed = 0;
+                Invoke("disableRagdoll", 2f);
             }
-            forwardSpeed = 0;
         }
+        */
     }
 
     private void enableRagdoll()
     {
         animator.enabled = false;
+        // disable the character controller and reset it to its original position
+        //ccontroller.center = new Vector3(0, ccBaseHeight, 0);
+
+        ccontroller.enabled = false;
         foreach (Rigidbody rb in GetComponentsInChildren<Rigidbody>())
         {
             rb.isKinematic = false;
@@ -123,7 +148,32 @@ public class PlayerController : MonoBehaviour {
         }
         animator.Rebind();
         animator.enabled = true;
+        ccontroller.enabled = true;
+
         animator.SetTrigger("GetUp");
+    }
+
+    public void RagdollCollisionHandler(Collision collision)
+    {
+        if (collision.gameObject.tag == "ObstacleImmovable")
+        {
+            print("Immvable: " + collision.relativeVelocity.magnitude);
+            //Check that we are colliding with sufficient velocity
+            if (collision.relativeVelocity.magnitude > KnockoutCollisionMagnitude)
+            {
+                enableRagdoll();
+                forwardSpeed = 0;
+                Invoke("disableRagdoll", 2f);
+            }
+        }
+        if (collision.gameObject.tag == "ObstacleMovable")
+        {
+            forwardSpeed -= collision.gameObject.GetComponent<Rigidbody>().mass;
+            if (forwardSpeed < 0)
+            {
+                forwardSpeed = 0;
+            }
+        }
     }
 
 }
