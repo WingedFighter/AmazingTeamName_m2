@@ -20,6 +20,7 @@ public class PlayerController : MonoBehaviour {
         animator = GetComponent<Animator>();
         ccontroller = GetComponent<CharacterController>();
         ccBaseHeight = ccontroller.center.y;
+        ccontroller.detectCollisions = false;
         disableRagdoll();
 
         // Add Ragdoll part script to all subcomponents
@@ -130,10 +131,14 @@ public class PlayerController : MonoBehaviour {
     private void enableRagdoll()
     {
         animator.enabled = false;
-        // disable the character controller and reset it to its original position
-        //ccontroller.center = new Vector3(0, ccBaseHeight, 0);
+        animator.Rebind();
 
-        ccontroller.enabled = false;
+        // disable the character controller and reset it to its original position
+        //ccontroller.Move(new Vector3(0, ccBaseHeight, 0));
+        ccontroller.center = new Vector3(0, ccBaseHeight, 0);
+
+
+        //ccontroller.enabled = false;
         foreach (Rigidbody rb in GetComponentsInChildren<Rigidbody>())
         {
             rb.isKinematic = false;
