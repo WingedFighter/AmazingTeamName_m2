@@ -1111,6 +1111,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 1225533882}
   smoothing: 5
+  pc: {fileID: 0}
 --- !u!81 &98965555
 AudioListener:
   m_ObjectHideFlags: 0
@@ -11605,6 +11606,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 396319884}
+  - 114: {fileID: 1707693178}
   m_Layer: 0
   m_Name: Jessica Level
   m_TagString: Untagged
@@ -11612,6 +11614,17 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &1707693178
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1707693177}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c77f1760ce577a344939906f98faa389, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1719739886
 GameObject:
   m_ObjectHideFlags: 0
