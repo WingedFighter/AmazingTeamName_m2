@@ -4,6 +4,7 @@ using System.Collections;
 public class FollowCameraController : MonoBehaviour {
     public Transform target;
     public float smoothing = 5f;
+    public PlayerController pc;
 
     private Vector3 offset;
 
@@ -16,5 +17,9 @@ public class FollowCameraController : MonoBehaviour {
 	void LateUpdate () {
         Vector3 targetCamPos = target.position + offset;
         transform.position = Vector3.Lerp(transform.position, targetCamPos, smoothing * Time.deltaTime);
+        if (pc.bDead)
+        {
+            transform.LookAt(target);
+        }
 	}
 }

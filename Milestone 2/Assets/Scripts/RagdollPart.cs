@@ -19,4 +19,9 @@ public class RagdollPart : MonoBehaviour {
     {
         playerController.RagdollCollisionHandler(collision);
     }
+
+    void OnTriggerEnter(Collider other)
+    {
+        playerController.RagdollTriggerHandler(GetComponent<Collider>());
+    }
 }

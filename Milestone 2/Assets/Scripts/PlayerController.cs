@@ -1,12 +1,16 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections;
 
 public class PlayerController : MonoBehaviour {
     public float SpeedIncrement = 1f;
-    public float HorizontalSpeed = 1f;
+    public float HorizontalSpeed = 2f;
     public float KnockoutCollisionMagnitude = 1f;
+    public float MaxSpeed = 2f;
 
-    private float forwardSpeed = 0f;
+    public float forwardSpeed = 0f;
+    public bool bDead = false;
+
     private Vector3 speed;
 
     private Animator animator;
@@ -38,6 +42,16 @@ public class PlayerController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        if (bDead)
+        {
+            if (Input.anyKeyDown)
+            {
+                SceneManager.LoadScene("IdanScene");
+                // gameover
+            }
+            return;
+        }
+
         if (Input.GetAxis("Vertical") > 0)
         {
             forwardSpeed += SpeedIncrement * Time.deltaTime;
@@ -47,7 +61,7 @@ public class PlayerController : MonoBehaviour {
         animator.SetFloat("WalkRun", forwardSpeed/3f);
 
         //Ragdoll toggle
-        if (Input.GetKeyDown(KeyCode.Tab))
+        if (Input.GetKeyDown(KeyCode.Tab) && !bDead)
         {
             if (bRagdoll)
             {
@@ -64,7 +78,7 @@ public class PlayerController : MonoBehaviour {
         {
             animator.SetTrigger("Slide"); ;
         }
-        if (Input.GetKeyDown(KeyCode.Space) && ccontroller.isGrounded)
+        if (Input.GetKeyDown(KeyCode.Space) && animator.GetFloat("JumpHeight") == 0f)
         {
             animator.SetTrigger("Jump");
         }
@@ -80,12 +94,12 @@ public class PlayerController : MonoBehaviour {
         {
             animator.SetFloat("Strafe", Input.GetAxis("Horizontal") * HorizontalSpeed);
 
-        } else
-        {
-            // Update Location
-            speed.x = Input.GetAxis("Horizontal") * HorizontalSpeed;
+        }// else
+         // {
+         // Update Location
+        speed.x = Input.GetAxis("Horizontal") * HorizontalSpeed;//* forwardSpeed;
             ccontroller.SimpleMove(speed);
-        }
+        //}
 
         // When Jumping move the ccontroller to stay at player's feet
         float jumpHeight = animator.GetFloat("JumpHeight");
@@ -179,6 +193,15 @@ public class PlayerController : MonoBehaviour {
                 forwardSpeed = 0;
             }
         }
+    }
+
+    public void RagdollTriggerHandler(Collider other)
+    {
+        //if (other.gameObject.CompareTag("DeathPlane"))
+        //{
+            enableRagdoll();
+        bDead = true;
+       // }
     }
 
 }

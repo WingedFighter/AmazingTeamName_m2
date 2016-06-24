@@ -6,6 +6,7 @@ TagManager:
   tags:
   - ObstacleMovable
   - ObstacleImmovable
+  - DeathPlane
   layers:
   - Default
   - TransparentFX
