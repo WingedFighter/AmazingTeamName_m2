@@ -6,8 +6,10 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/MattScene.unity
+  - enabled: 1
     path: Assets/Scenes/KevinsLevel.unity
   - enabled: 1
-    path: Assets/Scenes/IdanScene.unity
+    path: Assets/Scenes/JacksonScene.unity
   - enabled: 1
-    path: Assets/Scenes/MattScene.unity
+    path: Assets/Scenes/IdanScene.unity

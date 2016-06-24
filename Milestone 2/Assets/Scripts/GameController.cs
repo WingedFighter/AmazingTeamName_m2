@@ -34,7 +34,7 @@ public class GameController : MonoBehaviour {
         }
         if (Input.GetKeyDown(KeyCode.Alpha4))
         {
-            //SceneManager.LoadScene("JacksonsLevel");
+            SceneManager.LoadScene("JacksonScene");
         }
         if (Input.GetKeyDown(KeyCode.Alpha5))
         {
@@ -43,7 +43,7 @@ public class GameController : MonoBehaviour {
         // Load the test scene when hitting 0
         if (Input.GetKeyDown(KeyCode.Alpha0))
         {
-            SceneManager.LoadScene("Main");
+            //SceneManager.LoadScene("Main");
         }
     }
 }
