@@ -2,6 +2,14 @@
 using UnityEngine.SceneManagement;
 using System.Collections;
 
+/* Amazing Team Name
+ * Kevin Curtin
+ * Idan Mintz
+ * Jackson Millsaps
+ * Jessica Chin
+ * Matthew Johnston
+ */
+
 public class GameController : MonoBehaviour {
 
 	// Use this for initialization
@@ -18,7 +26,7 @@ public class GameController : MonoBehaviour {
         }
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            //SceneManager.LoadScene("KevinsLevel");
+            SceneManager.LoadScene("KevinsLevel");
         }
         if (Input.GetKeyDown(KeyCode.Alpha3))
         {
