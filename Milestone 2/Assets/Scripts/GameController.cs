@@ -22,7 +22,7 @@ public class GameController : MonoBehaviour {
         // Load the new scenes based on the keypress
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            //SceneManager.LoadScene("MattsLevel");
+            SceneManager.LoadScene("MattScene");
         }
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
