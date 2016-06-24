@@ -1,6 +1,13 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
+/* Amazing Team Name
+ * Kevin Curtin
+ * Idan Mintz
+ * Jackson Millsaps
+ * Jessica Chin
+ * Matthew Johnston
+ */
 
 public class PlayerController : MonoBehaviour {
     public float SpeedIncrement = 1f;
