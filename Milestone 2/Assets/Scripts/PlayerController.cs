@@ -63,6 +63,11 @@ public class PlayerController : MonoBehaviour {
         {
             forwardSpeed += SpeedIncrement * Time.deltaTime;
         }
+		// slow to a stop by pressing down
+		if (Input.GetAxis("Vertical") < 0) {
+			forwardSpeed = Mathf.Max(forwardSpeed - SpeedIncrement* 2 * Time.deltaTime, 0);
+		}
+
        
         // Update Animation
         animator.SetFloat("WalkRun", forwardSpeed/3f);

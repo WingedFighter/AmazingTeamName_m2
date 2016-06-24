@@ -34,7 +34,7 @@ public class GameController : MonoBehaviour {
         }
         if (Input.GetKeyDown(KeyCode.Alpha4))
         {
-            //SceneManager.LoadScene("JacksonsLevel");
+            SceSceneManager.LoadScene("JacksonScene");
         }
         if (Input.GetKeyDown(KeyCode.Alpha5))
         {
