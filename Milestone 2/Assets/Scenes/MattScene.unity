@@ -710,7 +710,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 298854886}
   smoothing: 5
-  pc: {fileID: 0}
+  pc: {fileID: 985841616}
 --- !u!81 &948259629
 AudioListener:
   m_ObjectHideFlags: 0
@@ -995,6 +995,12 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f98ea50e5dc4c4e448aaec3d1eb1c034, type: 2}
   m_IsPrefabParent: 0
+--- !u!114 &985841616 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 11462824, guid: f98ea50e5dc4c4e448aaec3d1eb1c034,
+    type: 2}
+  m_PrefabInternal: {fileID: 985841615}
+  m_Script: {fileID: 11500000, guid: a62e9ca4d4c8e754a9ee7b46efa04799, type: 3}
 --- !u!1001 &1031476590
 Prefab:
   m_ObjectHideFlags: 0
