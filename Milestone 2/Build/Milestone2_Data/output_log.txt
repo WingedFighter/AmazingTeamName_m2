@@ -6,21 +6,813 @@ Direct3D:
     Vendor:   NVIDIA
     VRAM:     1989 MB
 Begin MonoManager ReloadAssembly
-Platform assembly: D:\Idan\Documents\College\Semester 7\CS 4455\Projects\Milestone 2\Redo\AmazingTeamName_m2\Milestone 2\Build\Milestone2_Data\Managed\UnityEngine.dll (this message is harmless)
-Loading D:\Idan\Documents\College\Semester 7\CS 4455\Projects\Milestone 2\Redo\AmazingTeamName_m2\Milestone 2\Build\Milestone2_Data\Managed\UnityEngine.dll into Unity Child Domain
-Platform assembly: D:\Idan\Documents\College\Semester 7\CS 4455\Projects\Milestone 2\Redo\AmazingTeamName_m2\Milestone 2\Build\Milestone2_Data\Managed\Assembly-CSharp.dll (this message is harmless)
-Loading D:\Idan\Documents\College\Semester 7\CS 4455\Projects\Milestone 2\Redo\AmazingTeamName_m2\Milestone 2\Build\Milestone2_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
-Platform assembly: D:\Idan\Documents\College\Semester 7\CS 4455\Projects\Milestone 2\Redo\AmazingTeamName_m2\Milestone 2\Build\Milestone2_Data\Managed\UnityEngine.UI.dll (this message is harmless)
-Loading D:\Idan\Documents\College\Semester 7\CS 4455\Projects\Milestone 2\Redo\AmazingTeamName_m2\Milestone 2\Build\Milestone2_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
-Platform assembly: D:\Idan\Documents\College\Semester 7\CS 4455\Projects\Milestone 2\Redo\AmazingTeamName_m2\Milestone 2\Build\Milestone2_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
-Loading D:\Idan\Documents\College\Semester 7\CS 4455\Projects\Milestone 2\Redo\AmazingTeamName_m2\Milestone 2\Build\Milestone2_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
-Platform assembly: D:\Idan\Documents\College\Semester 7\CS 4455\Projects\Milestone 2\Redo\AmazingTeamName_m2\Milestone 2\Build\Milestone2_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
-Loading D:\Idan\Documents\College\Semester 7\CS 4455\Projects\Milestone 2\Redo\AmazingTeamName_m2\Milestone 2\Build\Milestone2_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
-Platform assembly: D:\Idan\Documents\College\Semester 7\CS 4455\Projects\Milestone 2\Redo\AmazingTeamName_m2\Milestone 2\Build\Milestone2_Data\Managed\UnityEngine.UI.dll (this message is harmless)
-Loading D:\Idan\Documents\College\Semester 7\CS 4455\Projects\Milestone 2\Redo\AmazingTeamName_m2\Milestone 2\Build\Milestone2_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
-- Completed reload, in  0.185 seconds
-Platform assembly: D:\Idan\Documents\College\Semester 7\CS 4455\Projects\Milestone 2\Redo\AmazingTeamName_m2\Milestone 2\Build\Milestone2_Data\Managed\System.Core.dll (this message is harmless)
-Platform assembly: D:\Idan\Documents\College\Semester 7\CS 4455\Projects\Milestone 2\Redo\AmazingTeamName_m2\Milestone 2\Build\Milestone2_Data\Managed\System.dll (this message is harmless)
+Platform assembly: D:\Idan\Documents\College\Semester 7\CS 4455\Projects\Milestone 2\Redo2\AmazingTeamName_m2\Milestone 2\Build\Milestone2_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading D:\Idan\Documents\College\Semester 7\CS 4455\Projects\Milestone 2\Redo2\AmazingTeamName_m2\Milestone 2\Build\Milestone2_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: D:\Idan\Documents\College\Semester 7\CS 4455\Projects\Milestone 2\Redo2\AmazingTeamName_m2\Milestone 2\Build\Milestone2_Data\Managed\Assembly-CSharp.dll (this message is harmless)
+Loading D:\Idan\Documents\College\Semester 7\CS 4455\Projects\Milestone 2\Redo2\AmazingTeamName_m2\Milestone 2\Build\Milestone2_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+Platform assembly: D:\Idan\Documents\College\Semester 7\CS 4455\Projects\Milestone 2\Redo2\AmazingTeamName_m2\Milestone 2\Build\Milestone2_Data\Managed\UnityEngine.UI.dll (this message is harmless)
+Loading D:\Idan\Documents\College\Semester 7\CS 4455\Projects\Milestone 2\Redo2\AmazingTeamName_m2\Milestone 2\Build\Milestone2_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+Platform assembly: D:\Idan\Documents\College\Semester 7\CS 4455\Projects\Milestone 2\Redo2\AmazingTeamName_m2\Milestone 2\Build\Milestone2_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
+Loading D:\Idan\Documents\College\Semester 7\CS 4455\Projects\Milestone 2\Redo2\AmazingTeamName_m2\Milestone 2\Build\Milestone2_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
+Platform assembly: D:\Idan\Documents\College\Semester 7\CS 4455\Projects\Milestone 2\Redo2\AmazingTeamName_m2\Milestone 2\Build\Milestone2_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
+Loading D:\Idan\Documents\College\Semester 7\CS 4455\Projects\Milestone 2\Redo2\AmazingTeamName_m2\Milestone 2\Build\Milestone2_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
+Platform assembly: D:\Idan\Documents\College\Semester 7\CS 4455\Projects\Milestone 2\Redo2\AmazingTeamName_m2\Milestone 2\Build\Milestone2_Data\Managed\UnityEngine.UI.dll (this message is harmless)
+Loading D:\Idan\Documents\College\Semester 7\CS 4455\Projects\Milestone 2\Redo2\AmazingTeamName_m2\Milestone 2\Build\Milestone2_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+- Completed reload, in  0.097 seconds
+Platform assembly: D:\Idan\Documents\College\Semester 7\CS 4455\Projects\Milestone 2\Redo2\AmazingTeamName_m2\Milestone 2\Build\Milestone2_Data\Managed\System.Core.dll (this message is harmless)
+Platform assembly: D:\Idan\Documents\College\Semester 7\CS 4455\Projects\Milestone 2\Redo2\AmazingTeamName_m2\Milestone 2\Build\Milestone2_Data\Managed\System.dll (this message is harmless)
 desktop: 1920x1080 60Hz; virtual: 1920x1080 at 0,0
 <RI> Initializing input.
 <RI> Input initialized.
+<RI> Initialized touch support.
+UnloadTime: 0.548512 ms
+Setting up 2 worker threads for Enlighten.
+  Thread -> id: 3c64 -> priority: 1 
+  Thread -> id: 7600 -> priority: 1 
+Unloading 5 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 0.771642 ms
+
+Unloading 57 unused Assets to reduce memory usage. Loaded Objects now: 608.
+Total: 1.229685 ms (FindLiveObjects: 0.046374 ms CreateObjectMapping: 0.022807 ms MarkObjects: 0.144065 ms  DeleteObjects: 1.006936 ms)
+
+Unloading 4 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 4.756432 ms
+
+Unloading 37 unused Assets to reduce memory usage. Loaded Objects now: 1084.
+Total: 0.494155 ms (FindLiveObjects: 0.050935 ms CreateObjectMapping: 0.019386 ms MarkObjects: 0.190439 ms  DeleteObjects: 0.233013 ms)
+
+Unloading 4 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 1.510594 ms
+
+Unloading 10 unused Assets to reduce memory usage. Loaded Objects now: 1084.
+Total: 0.388101 ms (FindLiveObjects: 0.045614 ms CreateObjectMapping: 0.020146 ms MarkObjects: 0.187778 ms  DeleteObjects: 0.134182 ms)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Speedx: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Grounded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at FollowCameraController.LateUpdate () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Unloading 5 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 1.490447 ms
+
+Unloading 37 unused Assets to reduce memory usage. Loaded Objects now: 1264.
+Total: 1.030123 ms (FindLiveObjects: 0.057778 ms CreateObjectMapping: 0.022427 ms MarkObjects: 0.245176 ms  DeleteObjects: 0.704361 ms)
+
+Unloading 5 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 2.500044 ms
+
+Unloading 16 unused Assets to reduce memory usage. Loaded Objects now: 1084.
+Total: 0.455002 ms (FindLiveObjects: 0.053976 ms CreateObjectMapping: 0.019386 ms MarkObjects: 0.228071 ms  DeleteObjects: 0.153188 ms)
+
+Playing
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+

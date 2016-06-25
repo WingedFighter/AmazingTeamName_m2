@@ -3750,7 +3750,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: -80, y: -30}
-  m_SizeDelta: {x: 160, y: 30}
+  m_SizeDelta: {x: 300, y: 30}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &481535917
 MonoBehaviour:
@@ -3784,7 +3784,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Jessica Chinn
+  m_Text: Jessica Chinn - Amazing Team Name
 --- !u!222 &481535918
 CanvasRenderer:
   m_ObjectHideFlags: 0

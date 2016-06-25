@@ -4,25 +4,41 @@ using System.Collections;
 public class PlayerAudioController : MonoBehaviour {
     public PlayerController pc;
 
-    private AudioSource audioSrc;
-    private bool bPlaying = false;
+    private AudioSource ghz;
+    private AudioSource grass;
 
-	// Use this for initialization
-	void Start () {
-        audioSrc = GetComponent<AudioSource>();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	    if (pc.forwardSpeed > 3 && !bPlaying)
+    private bool bPlaying1 = false;
+    private bool bPlaying2 = false;
+
+
+    // Use this for initialization
+    void Start () {
+        ghz = GetComponents<AudioSource>()[0];
+        grass = GetComponents<AudioSource>()[1];
+    }
+
+    // Update is called once per frame
+    void Update () {
+	    if (pc.forwardSpeed > 3 && !bPlaying1)
         {
             print("Playing");
-            audioSrc.Play();
-            bPlaying = true;
+            ghz.Play();
+            bPlaying1 = true;
         } 
         if (pc.forwardSpeed == 0){
-            audioSrc.Stop();
-            bPlaying = false;
+            ghz.Stop();
+            bPlaying1 = false;
         }
-	}
+        if (pc.forwardSpeed > 6 && !bPlaying2)
+        {
+            print("Playing");
+            grass.Play();
+            bPlaying2 = true;
+        }
+        if (pc.forwardSpeed == 0)
+        {
+            grass.Play();
+            bPlaying2 = false;
+        }
+    }
 }

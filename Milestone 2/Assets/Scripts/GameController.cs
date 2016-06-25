@@ -30,7 +30,7 @@ public class GameController : MonoBehaviour {
         }
         if (Input.GetKeyDown(KeyCode.Alpha3))
         {
-            //SceneManager.LoadScene("JessicasLevel");
+            SceneManager.LoadScene("JessicaLevel");
         }
         if (Input.GetKeyDown(KeyCode.Alpha4))
         {
