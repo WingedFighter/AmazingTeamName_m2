@@ -8,24 +8,30 @@ using System.Collections;
  * Matthew Johnston
  */
 public class FollowCameraController : MonoBehaviour {
-    public Transform target;
-    public float smoothing = 5f;
+	// where to point the camera when player is live
+	Transform liveTarget;
+	// where to point the camera when player is dead
+    Transform deadTarget;
+    public float positionSmoothing = 10f;
+    public float directionSmoothing = 5f;
     public PlayerController pc;
 
     private Vector3 offset;
 
 	// Use this for initialization
 	void Start () {
-        offset = transform.position - target.position;
+		liveTarget = GameObject.Find("playerCameraTarget").transform;
+		deadTarget = GameObject.Find("headCameraTarget").transform;
 	}
 	
 	// Update is called once per frame
-	void LateUpdate () {
-        Vector3 targetCamPos = target.position + offset;
-        transform.position = Vector3.Lerp(transform.position, targetCamPos, smoothing * Time.deltaTime);
-        if (pc.bDead)
-        {
-            transform.LookAt(target);
-        }
+	void FixedUpdate () {
+        if (pc.bRagdoll) {
+			transform.position = Vector3.Slerp(transform.position, deadTarget.position, positionSmoothing * Time.deltaTime);
+			transform.forward = Vector3.Slerp(transform.forward, deadTarget.forward, directionSmoothing * Time.deltaTime);
+        } else {
+			transform.position = Vector3.Slerp(transform.position, liveTarget.position, positionSmoothing * Time.deltaTime);
+			transform.forward = Vector3.Slerp(transform.forward, liveTarget.forward, directionSmoothing * Time.deltaTime);
+		}
 	}
 }

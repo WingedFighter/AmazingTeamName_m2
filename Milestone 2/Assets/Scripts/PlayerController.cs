@@ -24,7 +24,12 @@ public class PlayerController : MonoBehaviour {
     private Animator animator;
     private CharacterController ccontroller;
     private float ccBaseHeight;
-    private bool bRagdoll = false;
+    public bool bRagdoll = false;
+
+
+	// referencing animator params
+	static string FORWARD = "forward";
+	static string LATERAL = "lateral";
 
 	// Use this for initialization
 	void Start () {
@@ -61,12 +66,12 @@ public class PlayerController : MonoBehaviour {
         }
 
 		// only change run speed if in running-ish state -- ie, not getting up, jumping, etc
-		if (animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion")) {
+//		if (animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion")) {
 
 	        if (Input.GetAxis("Vertical") > 0)
 	        {
 				// Exponentially decay acceleration with respect to speed
-				float speedInc = Mathf.Pow(1-forwardSpeed, 2f);
+				float speedInc = Mathf.Pow(1-forwardSpeed, 3f);
 				forwardSpeed += speedInc * Time.deltaTime;
 	        }
 			if (Input.GetAxis("Vertical") < 0) {
@@ -77,11 +82,11 @@ public class PlayerController : MonoBehaviour {
 					0
 				);
 			}
-		}
+//		}
 
        
         // Update Animation
-        animator.SetFloat("WalkRun", forwardSpeed);
+		animator.SetFloat(FORWARD, forwardSpeed);
 
         //Ragdoll toggle
         if (Input.GetKeyDown(KeyCode.Tab) && !bDead)
@@ -115,13 +120,14 @@ public class PlayerController : MonoBehaviour {
     {
         if(ccontroller.isGrounded)
         {
-            animator.SetFloat("Strafe", Input.GetAxis("Horizontal") * HorizontalSpeed);
+//            animator.SetFloat(LATERAL, Input.GetAxis("Horizontal") * HorizontalSpeed);
+			animator.SetFloat(LATERAL, Input.GetAxis("Horizontal"));
 
         }// else
          // {
          // Update Location
-        speed.x = Input.GetAxis("Horizontal") * HorizontalSpeed;//* forwardSpeed;
-            ccontroller.SimpleMove(speed);
+//        speed.x = Input.GetAxis("Horizontal") * HorizontalSpeed;//* forwardSpeed;
+//            ccontroller.SimpleMove(speed);
         //}
 
         // When Jumping move the ccontroller to stay at player's feet
@@ -180,6 +186,7 @@ public class PlayerController : MonoBehaviour {
         {
             rb.isKinematic = false;
         }
+		bRagdoll = true;
     }
 
     private void disableRagdoll()
@@ -193,6 +200,7 @@ public class PlayerController : MonoBehaviour {
         ccontroller.enabled = true;
 
         animator.SetTrigger("GetUp");
+		bRagdoll = false;
     }
 
     public void RagdollCollisionHandler(Collision collision)
