@@ -13,6 +13,7 @@ using System.Collections;
 public class PlayerController : MonoBehaviour {
     public float HorizontalSpeed = 2f;
     public float KnockoutCollisionMagnitude = 1f;
+    public float GroundedThreshold = 0.25f;
 
 	public float decelerationRate = 5f;
 
@@ -25,6 +26,9 @@ public class PlayerController : MonoBehaviour {
     private CharacterController ccontroller;
     private float ccBaseHeight;
     public bool bRagdoll = false;
+
+    private float currentTimeNotGrounded = 0f;
+    private bool bPastGroundedThreshold = false;
 
 
 	// referencing animator params
@@ -65,9 +69,23 @@ public class PlayerController : MonoBehaviour {
             return;
         }
 
+        if (ccontroller.isGrounded)
+        {
+            bPastGroundedThreshold = false;
+            currentTimeNotGrounded = 0f;
+        }
+        else
+        {
+            currentTimeNotGrounded += Time.deltaTime;
+            if (currentTimeNotGrounded > GroundedThreshold)
+            {
+                bPastGroundedThreshold = true;
+            }
+        }
+
 		// only change run speed if in running-ish state -- ie, not getting up, jumping, etc
 //		if (animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion")) {
-
+        if (!bRagdoll && !bPastGroundedThreshold) { 
 	        if (Input.GetAxis("Vertical") > 0)
 	        {
 				// Exponentially decay acceleration with respect to speed
@@ -82,7 +100,7 @@ public class PlayerController : MonoBehaviour {
 					0
 				);
 			}
-//		}
+		}
 
        
         // Update Animation
@@ -118,17 +136,19 @@ public class PlayerController : MonoBehaviour {
 
     void FixedUpdate()
     {
-        if(ccontroller.isGrounded)
+        if(!bPastGroundedThreshold)
         {
 //            animator.SetFloat(LATERAL, Input.GetAxis("Horizontal") * HorizontalSpeed);
 			animator.SetFloat(LATERAL, Input.GetAxis("Horizontal"));
 
-        }// else
-         // {
-         // Update Location
-//        speed.x = Input.GetAxis("Horizontal") * HorizontalSpeed;//* forwardSpeed;
-//            ccontroller.SimpleMove(speed);
-        //}
+        }
+        else
+        {
+            // Steer in the air with no turning
+            animator.SetFloat(LATERAL, 0);
+            speed.x = Input.GetAxis("Horizontal") * HorizontalSpeed;//* forwardSpeed;
+            ccontroller.SimpleMove(speed);
+        }
 
         // When Jumping move the ccontroller to stay at player's feet
         float jumpHeight = animator.GetFloat("JumpHeight");
