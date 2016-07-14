@@ -19,6 +19,15 @@ public class DropShipController : MonoBehaviour {
     // List of droppable objects
     public GameObject[] DropItems;
 
+    public enum MovementAxis
+    {
+        x,
+        y,
+        z
+    }
+
+    public MovementAxis Axis = MovementAxis.z;
+
     // State Machine States
     public enum state {
         FLYBY,
@@ -67,9 +76,28 @@ public class DropShipController : MonoBehaviour {
         Vector3 targetPosition = playerController.transform.position + deltaPosition;
         // We want the target height to remain the same as our current height
         targetPosition.y = transform.position.y;
-        if (targetPosition.z - playerController.transform.position.z < minLeadDistance)
+
+        // Ensure that the DropShip stays a minimum distance in front of the player
+        switch(Axis)
         {
-            targetPosition.z = transform.position.z;
+            case MovementAxis.x:
+                if (targetPosition.x - playerController.transform.position.x < minLeadDistance)
+                {
+                    targetPosition.x = transform.position.x;
+                }
+                break;
+            case MovementAxis.y:
+                if (targetPosition.y - playerController.transform.position.y < minLeadDistance)
+                {
+                    targetPosition.y = transform.position.y;
+                }
+                break;
+            case MovementAxis.z:
+                if (targetPosition.z - playerController.transform.position.z < minLeadDistance)
+                {
+                    targetPosition.z = transform.position.z;
+                }
+                break;
         }
 
         print(targetPosition);
