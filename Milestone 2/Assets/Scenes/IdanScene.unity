@@ -2996,13 +2996,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerController: {fileID: 544205197}
-  LeadDistance: 20
+  LeadTime: 2
+  minLeadDistance: 5
   MaxObjectSize: 10
   MinObjectSize: 10
-  LateralSpeed: 5
+  LateralSpeed: 2
   DropFrequency: 1
   Waypoints: []
-  CurrentState: 0
+  DropItems:
+  - {fileID: 154234, guid: 3e72699b84c21da479d0c25223795324, type: 2}
+  CurrentState: 1
 --- !u!23 &1692611367
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -3036,7 +3039,7 @@ BoxCollider:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1692611365}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}

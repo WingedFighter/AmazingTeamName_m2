@@ -6,14 +6,18 @@ public class DropShipController : MonoBehaviour {
     public PlayerController playerController;
 
     // Modifiable AI Parameters
-    public float LeadDistance = 20f;
+    public float LeadTime = 2f;
+    public float minLeadDistance = 5f;
     public float MaxObjectSize = 10f;
     public float MinObjectSize = 10f;
-    public float LateralSpeed = 5f;
+    public float LateralSpeed = 2f;
     public float DropFrequency = 1f;
 
     // Flyby Waypoints
     public Transform[] Waypoints;
+
+    // List of droppable objects
+    public GameObject[] DropItems;
 
     // State Machine States
     public enum state {
@@ -24,6 +28,9 @@ public class DropShipController : MonoBehaviour {
 
     // State Machine Controls
     public state CurrentState = state.FLYBY;
+
+    // Private Members
+    private float dropTimer = 0f;
 
 	// Use this for initialization
 	void Start () {
@@ -53,11 +60,36 @@ public class DropShipController : MonoBehaviour {
 
     private void Move()
     {
+        CharacterController cc = playerController.GetComponent<CharacterController>();
+        print(cc.velocity);
 
+        Vector3 deltaPosition = cc.velocity * LeadTime;
+        Vector3 targetPosition = playerController.transform.position + deltaPosition;
+        // We want the target height to remain the same as our current height
+        targetPosition.y = transform.position.y;
+        if (targetPosition.z - playerController.transform.position.z < minLeadDistance)
+        {
+            targetPosition.z = transform.position.z;
+        }
+
+        print(targetPosition);
+        transform.position = Vector3.Lerp(transform.position, targetPosition, LateralSpeed * Time.deltaTime);
+
+        // Update the state transition parameters
+        dropTimer += Time.deltaTime;
+        if (dropTimer > DropFrequency)
+        {
+            CurrentState = state.DROP;
+            dropTimer = 0f;
+        }
     }
 
     private void Drop()
     {
+        int index = Random.Range(0, 1);
+        Instantiate(DropItems[index], transform.position, transform.rotation);
 
+        // Transition back to move
+        CurrentState = state.MOVE;
     }
 }
