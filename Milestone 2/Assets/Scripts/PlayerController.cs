@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEditor.Animations;
 using System.Collections;
 /* Amazing Team Name
  * Kevin Curtin
