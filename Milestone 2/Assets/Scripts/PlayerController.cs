@@ -10,10 +10,11 @@ using System.Collections;
  */
 
 public class PlayerController : MonoBehaviour {
-    public float SpeedIncrement = 1f;
     public float HorizontalSpeed = 2f;
     public float KnockoutCollisionMagnitude = 1f;
-    public float MaxSpeed = 2f;
+    public float GroundedThreshold = 0.25f;
+
+	public float decelerationRate = 5f;
 
     public float forwardSpeed = 0f;
     public bool bDead = false;
@@ -23,16 +24,24 @@ public class PlayerController : MonoBehaviour {
     private Animator animator;
     private CharacterController ccontroller;
     private float ccBaseHeight;
-    private bool bRagdoll = false;
+    public bool bRagdoll = false;
+
+    private float currentTimeNotGrounded = 0f;
+    private bool bPastGroundedThreshold = false;
+
+
+	// referencing animator params
+	static string FORWARD = "forward";
+	static string LATERAL = "lateral";
 
 	// Use this for initialization
 	void Start () {
-        //animator = GetComponentInChildren<Animator>();
         animator = GetComponent<Animator>();
         ccontroller = GetComponent<CharacterController>();
         ccBaseHeight = ccontroller.center.y;
         ccontroller.detectCollisions = false;
         disableRagdoll();
+
 
         // Add Ragdoll part script to all subcomponents
         foreach (Rigidbody rb in GetComponentsInChildren<Rigidbody>())
@@ -59,18 +68,42 @@ public class PlayerController : MonoBehaviour {
             return;
         }
 
-        if (Input.GetAxis("Vertical") > 0)
+        if (ccontroller.isGrounded)
         {
-            forwardSpeed += SpeedIncrement * Time.deltaTime;
+            bPastGroundedThreshold = false;
+            currentTimeNotGrounded = 0f;
         }
-		// slow to a stop by pressing down
-		if (Input.GetAxis("Vertical") < 0) {
-			forwardSpeed = Mathf.Max(forwardSpeed - SpeedIncrement* 2 * Time.deltaTime, 0);
+        else
+        {
+            currentTimeNotGrounded += Time.deltaTime;
+            if (currentTimeNotGrounded > GroundedThreshold)
+            {
+                bPastGroundedThreshold = true;
+            }
+        }
+
+		// only change run speed if in running-ish state -- ie, not getting up, jumping, etc
+//		if (animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion")) {
+        if (!bRagdoll && !bPastGroundedThreshold) { 
+	        if (Input.GetAxis("Vertical") > 0)
+	        {
+				// Exponentially decay acceleration with respect to speed
+				float speedInc = Mathf.Pow(1-forwardSpeed, 3f);
+				forwardSpeed += speedInc * Time.deltaTime;
+	        }
+			if (Input.GetAxis("Vertical") < 0) {
+				// deceleration rate is also exponential with respect to speed
+				float speedDec = 1-forwardSpeed;
+				forwardSpeed = Mathf.Max(
+					forwardSpeed - (speedDec * Time.deltaTime),
+					0
+				);
+			}
 		}
 
        
         // Update Animation
-        animator.SetFloat("WalkRun", forwardSpeed/3f);
+		animator.SetFloat(FORWARD, forwardSpeed);
 
         //Ragdoll toggle
         if (Input.GetKeyDown(KeyCode.Tab) && !bDead)
@@ -102,16 +135,19 @@ public class PlayerController : MonoBehaviour {
 
     void FixedUpdate()
     {
-        if(ccontroller.isGrounded)
+        if(!bPastGroundedThreshold)
         {
-            animator.SetFloat("Strafe", Input.GetAxis("Horizontal") * HorizontalSpeed);
+//            animator.SetFloat(LATERAL, Input.GetAxis("Horizontal") * HorizontalSpeed);
+			animator.SetFloat(LATERAL, Input.GetAxis("Horizontal"));
 
-        }// else
-         // {
-         // Update Location
-        speed.x = Input.GetAxis("Horizontal") * HorizontalSpeed;//* forwardSpeed;
+        }
+        else
+        {
+            // Steer in the air with no turning
+            animator.SetFloat(LATERAL, 0);
+            speed.x = Input.GetAxis("Horizontal") * HorizontalSpeed;//* forwardSpeed;
             ccontroller.SimpleMove(speed);
-        //}
+        }
 
         // When Jumping move the ccontroller to stay at player's feet
         float jumpHeight = animator.GetFloat("JumpHeight");
@@ -169,6 +205,7 @@ public class PlayerController : MonoBehaviour {
         {
             rb.isKinematic = false;
         }
+		bRagdoll = true;
     }
 
     private void disableRagdoll()
@@ -182,6 +219,7 @@ public class PlayerController : MonoBehaviour {
         ccontroller.enabled = true;
 
         animator.SetTrigger("GetUp");
+		bRagdoll = false;
     }
 
     public void RagdollCollisionHandler(Collision collision)
