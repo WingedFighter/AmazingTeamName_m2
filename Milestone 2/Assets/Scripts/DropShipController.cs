@@ -123,8 +123,10 @@ public class DropShipController : MonoBehaviour {
 
     private void Drop()
     {
-        int index = Random.Range(0, 1);
-        Instantiate(DropItems[index], transform.position, transform.rotation);
+        int index = Random.Range(0, DropItems.Length);
+        Vector3 dropPosition = transform.position;
+        dropPosition.y -= 0.75f;
+        Instantiate(DropItems[index], dropPosition, transform.rotation);
 
         // Transition back to move
         CurrentState = state.MOVE;
