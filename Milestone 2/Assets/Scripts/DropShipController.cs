@@ -12,9 +12,11 @@ public class DropShipController : MonoBehaviour {
     public float MinObjectSize = 10f;
     public float LateralSpeed = 2f;
     public float DropFrequency = 1f;
+	public float flybySpeed = 2f;
 
-    // Flyby Waypoints
-    public Transform[] Waypoints;
+	// Flyby Waypoints
+	private GameObject[] waypoints;
+	private int currentWaypoint = 0;
 
     // List of droppable objects
     public GameObject[] DropItems;
@@ -43,7 +45,7 @@ public class DropShipController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-	
+		waypoints = GameObject.FindGameObjectsWithTag ("Waypoint");
 	}
 	
 	// Update is called once per frame
@@ -64,13 +66,21 @@ public class DropShipController : MonoBehaviour {
     
     private void FlyBy()
     {
-
+		if (currentWaypoint <= waypoints.Length - 1) {
+			//print (currentWaypoint + ", " + transform.position);
+			Vector3 target = waypoints [currentWaypoint].transform.position;
+			transform.position = Vector3.Lerp (transform.position, target, flybySpeed * Time.deltaTime);
+			if (Vector3.Distance (transform.position, target) < 1.5f) {
+				currentWaypoint++;
+			}
+		} else {
+			CurrentState = state.MOVE;
+		}
     }
 
     private void Move()
     {
         CharacterController cc = playerController.GetComponent<CharacterController>();
-        print(cc.velocity);
 
         Vector3 deltaPosition = cc.velocity * LeadTime;
         Vector3 targetPosition = playerController.transform.position + deltaPosition;
@@ -100,7 +110,6 @@ public class DropShipController : MonoBehaviour {
                 break;
         }
 
-        print(targetPosition);
         transform.position = Vector3.Lerp(transform.position, targetPosition, LateralSpeed * Time.deltaTime);
 
         // Update the state transition parameters
