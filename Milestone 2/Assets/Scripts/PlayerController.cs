@@ -24,6 +24,7 @@ public class PlayerController : MonoBehaviour {
     private Animator animator;
     private CharacterController ccontroller;
     private float ccBaseHeight;
+    private float ccBaseY;
     public bool bRagdoll = false;
 
     private float currentTimeNotGrounded = 0f;
@@ -34,12 +35,25 @@ public class PlayerController : MonoBehaviour {
 	static string FORWARD = "forward";
 	static string LATERAL = "lateral";
 
+    // Player Controller StateMachine
+    public enum PlayerState
+    {
+        disabled,
+        running,
+        projectile,
+        dead
+    }
+
+    public PlayerState State = PlayerState.running;
+
 	// Use this for initialization
 	void Start () {
         animator = GetComponent<Animator>();
         ccontroller = GetComponent<CharacterController>();
-        ccBaseHeight = ccontroller.center.y;
-        ccontroller.detectCollisions = false;
+        //ccBaseHeight = ccontroller.center.y;
+        //ccontroller.detectCollisions = false;
+        ccBaseHeight = ccontroller.height;
+        ccBaseY = ccontroller.center.y;
         disableRagdoll();
 
 
@@ -58,6 +72,41 @@ public class PlayerController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        switch(State)
+        {
+            case PlayerState.disabled:
+                break;
+            case PlayerState.running:
+                Running();
+                break;
+            case PlayerState.projectile:
+                Projectile();
+                break;
+            case PlayerState.dead:
+                break;
+        }
+    }
+
+
+    void FixedUpdate()
+    {
+        switch (State)
+        {
+            case PlayerState.disabled:
+                break;
+            case PlayerState.running:
+                FixedRunning();
+                break;
+            case PlayerState.projectile:
+                FixedProjectile();
+                break;
+            case PlayerState.dead:
+                break;
+        }
+    }
+
+    void Running ()
+    {
         if (bDead)
         {
             if (Input.anyKeyDown)
@@ -82,28 +131,30 @@ public class PlayerController : MonoBehaviour {
             }
         }
 
-		// only change run speed if in running-ish state -- ie, not getting up, jumping, etc
-//		if (animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion")) {
-        if (!bRagdoll && !bPastGroundedThreshold) { 
-	        if (Input.GetAxis("Vertical") > 0)
-	        {
-				// Exponentially decay acceleration with respect to speed
-				float speedInc = Mathf.Pow(1-forwardSpeed, 3f);
-				forwardSpeed += speedInc * Time.deltaTime;
-	        }
-			if (Input.GetAxis("Vertical") < 0) {
-				// deceleration rate is also exponential with respect to speed
-				float speedDec = 1-forwardSpeed;
-				forwardSpeed = Mathf.Max(
-					forwardSpeed - (speedDec * Time.deltaTime),
-					0
-				);
-			}
-		}
+        // only change run speed if in running-ish state -- ie, not getting up, jumping, etc
+        //		if (animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion")) {
+        if (!bRagdoll && !bPastGroundedThreshold)
+        {
+            if (Input.GetAxis("Vertical") > 0)
+            {
+                // Exponentially decay acceleration with respect to speed
+                float speedInc = Mathf.Pow(1 - forwardSpeed, 3f);
+                forwardSpeed += speedInc * Time.deltaTime;
+            }
+            if (Input.GetAxis("Vertical") < 0)
+            {
+                // deceleration rate is also exponential with respect to speed
+                float speedDec = 1 - forwardSpeed;
+                forwardSpeed = Mathf.Max(
+                    forwardSpeed - (speedDec * Time.deltaTime),
+                    0
+                );
+            }
+        }
 
-       
+
         // Update Animation
-		animator.SetFloat(FORWARD, forwardSpeed);
+        animator.SetFloat(FORWARD, forwardSpeed);
 
         //Ragdoll toggle
         if (Input.GetKeyDown(KeyCode.Tab) && !bDead)
@@ -113,7 +164,8 @@ public class PlayerController : MonoBehaviour {
                 disableRagdoll();
                 forwardSpeed = 0;
                 bRagdoll = false;
-            } else
+            }
+            else
             {
                 enableRagdoll();
                 bRagdoll = true;
@@ -125,7 +177,8 @@ public class PlayerController : MonoBehaviour {
         }
         if (Input.GetKeyDown(KeyCode.Space) && animator.GetFloat("JumpHeight") == 0f)
         {
-            animator.SetTrigger("Jump");
+            // No more Jumping
+            //animator.SetTrigger("Jump");
         }
         if (Input.GetKeyDown(KeyCode.V))
         {
@@ -133,12 +186,20 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
-    void FixedUpdate()
+    void FixedRunning()
     {
-        if(!bPastGroundedThreshold)
+        speed.x = Input.GetAxis("Horizontal") * HorizontalSpeed;//* forwardSpeed;
+        speed.z = forwardSpeed*10f;
+        ccontroller.SimpleMove(speed);
+
+        // Adjust collider with slide height
+        ccontroller.center = new Vector3(ccontroller.center.x, ccBaseY * animator.GetFloat("SlideHeight"), ccontroller.center.z);
+        ccontroller.height = ccBaseHeight * animator.GetFloat("SlideHeight");
+
+        if (!bPastGroundedThreshold)
         {
-//            animator.SetFloat(LATERAL, Input.GetAxis("Horizontal") * HorizontalSpeed);
-			animator.SetFloat(LATERAL, Input.GetAxis("Horizontal"));
+            //            animator.SetFloat(LATERAL, Input.GetAxis("Horizontal") * HorizontalSpeed);
+            animator.SetFloat(LATERAL, Input.GetAxis("Horizontal"));
 
         }
         else
@@ -149,14 +210,30 @@ public class PlayerController : MonoBehaviour {
             ccontroller.SimpleMove(speed);
         }
 
+
+
         // When Jumping move the ccontroller to stay at player's feet
         float jumpHeight = animator.GetFloat("JumpHeight");
         if (jumpHeight > 0)
         {
             print("JumpHeight = " + ccontroller.center.y);
             ccontroller.center = new Vector3(ccontroller.center.x, ccBaseHeight + jumpHeight, ccontroller.center.z);
-            ccontroller.Move(new Vector3(ccontroller.center.x, ccBaseHeight + jumpHeight/2f, ccontroller.center.z));
+            ccontroller.Move(new Vector3(ccontroller.center.x, ccBaseHeight + jumpHeight / 2f, ccontroller.center.z));
         }
+    }
+
+    void Projectile()
+    {
+        // On Hitting ground, transition back to running
+        if (ccontroller.isGrounded)
+        {
+            State = PlayerState.running;
+        }
+    }
+
+    void FixedProjectile()
+    {
+
     }
 
     void OnCollisionEnter (Collision collision)
@@ -254,4 +331,14 @@ public class PlayerController : MonoBehaviour {
        // }
     }
 
+    void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        LaunchRamp ramp = hit.gameObject.GetComponent<LaunchRamp>();
+        if (ramp != null && ramp.Active)
+        {
+            forwardSpeed += ramp.SpeedBoostMagnitude;
+            ramp.Active = false;
+            State = PlayerState.projectile;
+        }
+    }
 }
