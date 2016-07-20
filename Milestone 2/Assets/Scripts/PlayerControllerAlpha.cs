@@ -18,6 +18,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	private Rigidbody myRigidBody;
 
     public bool bRagdoll = false;
+	public bool bDead = false;
 
 	// referencing animator params
 	static string FORWARD = "forward";
@@ -25,6 +26,8 @@ public class PlayerControllerAlpha : MonoBehaviour {
 
 	// public so we can see what's happening
 	public Vector3 addForce;
+
+	private static int OBSTACLES = 8;
 
 	// Use this for initialization
 	void Start () {
@@ -43,7 +46,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	}
 	
 	void FixedUpdate () {
-		if (Input.GetKeyDown(KeyCode.Tab)) {
+		if (Input.GetKeyDown(KeyCode.Tab) && !animator.IsInTransition(0)) {
 			if (bRagdoll) {
 			 	disableRagdoll();
 			} else {
@@ -51,47 +54,54 @@ public class PlayerControllerAlpha : MonoBehaviour {
 			}
 		}
 	
-        if (!bRagdoll)
+		if (!bRagdoll 
+			&&  (  animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion")
+				|| animator.GetCurrentAnimatorStateInfo(0).IsName("idle")))
         {
             if (Input.GetAxis("Vertical") > 0)
             {
                 // Exponentially decay acceleration with respect to speed
-//                float speedInc = Mathf.Pow(1 - forwardSpeed, 3f);
-//                forwardSpeed += speedInc * Time.deltaTime;
-//				addForce.z = 1f;
-//				myRigidBody.AddRelativeForce(addForce);
+                float speedInc = Mathf.Pow(1 - forwardSpeed, 3f);
+                forwardSpeed += speedInc * Time.deltaTime;
             }
             if (Input.GetAxis("Vertical") < 0)
             {
                 // deceleration rate is also exponential with respect to speed
                 float speedDec = 1 - forwardSpeed;
+				float tempForwardSpeed = forwardSpeed - (speedDec * Time.deltaTime);
+				// no walking backwards
                 forwardSpeed = Mathf.Max(
-                    forwardSpeed - (speedDec * Time.deltaTime),
-                    0
+					tempForwardSpeed,
+                   	0f
                 );
             }
         }
 
-        // Update Animation
-//        animator.SetFloat(FORWARD, forwardSpeed);
+//		forwardSpeed = 0.66f;
+		// update the parameter that controls transitions between idle and locomotion
+        animator.SetFloat(FORWARD, forwardSpeed);
+		// update the param that controls how fast the animation plays (makes the guy run faster)
+		// but only for the locomotion state
+		if (animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion")) {
+			animator.speed = Mathf.Max(1, forwardSpeed * 3);
+		} else {
+			animator.speed = 1f;
+		}
 
 		time += Time.deltaTime;
 		if (time > 1f && animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion")) {
 			ticks ++;
-			velocitySum += myRigidBody.velocity.magnitude;
-			animVelocitySum += animator.velocity.magnitude;
-			float avgVel = velocitySum/ticks;
-			float avgAnimVel = animVelocitySum/ticks;
-//			Debug.Log(
-//				"forwardSpeed: " + forwardSpeed + " // " +
-//				"animator.velocity: " + animator.velocity + " // " +
-//				"rigidbody.velocity" + myRigidBody.velocity
-//			);
-			Debug.Log(
-				"forwardSpeed: " + forwardSpeed + " // " +
-				"velocityAvg: " + avgVel + " // " +
-				"animVelAvg:" + avgAnimVel
-			);
+			if (ticks > 10) {
+				velocitySum += myRigidBody.velocity.magnitude;
+				animVelocitySum += animator.velocity.magnitude;
+				float avgVel = velocitySum/(ticks -10);
+				float avgAnimVel = animVelocitySum/(ticks - 10);
+//				Debug.Log(
+//					"forwardSpeed: " + forwardSpeed + " // " +
+//					"velocityAvg: " + avgVel + " // " +
+//					"animVelAvg:" + avgAnimVel
+//				);
+			}
 			time = 0f;
 		}
 	}
@@ -99,6 +109,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 
     private void enableRagdoll()
     {
+		forwardSpeed = 0f;
         animator.enabled = false;
         animator.Rebind();
 
@@ -131,4 +142,31 @@ public class PlayerControllerAlpha : MonoBehaviour {
         animator.SetTrigger("GetUp");
 		bRagdoll = false;
     }
+
+	void OnCollisionEnter(Collision myCollision) {
+		if (myCollision.collider.gameObject.layer == OBSTACLES) {
+			Debug.Log("col ENTER  vel = " + myRigidBody.velocity.magnitude);
+			slowDownOnCollision(myCollision);
+		}
+//		Debug.Log("COL" + myCollisoin.impulse);
+//		float myVel = myRigidBody.velocity.magnitude;
+//		Debug.Log(myVel);
+//		forwardSpeed = myVel/12.6f;
+	}
+
+	void OnCollisionExit(Collision myCollision) {
+		Debug.Log("col EXIT   vel = " + myRigidBody.velocity.magnitude);
+		slowDownOnCollision(myCollision);
+//		Debug.Log("COL" + myCollisoin.impulse);
+//		float myVel = myRigidBody.velocity.magnitude;
+//		Debug.Log(myVel);
+//		forwardSpeed = myVel/12.6f;
+	}
+
+	private void slowDownOnCollision(Collision myCollision) {
+//		Debug.Log("COL" + myCollision.impulse);
+		float myVel = myRigidBody.velocity.magnitude;
+//		Debug.Log(myVel);
+		forwardSpeed = myVel/12.6f;
+	}
 }
