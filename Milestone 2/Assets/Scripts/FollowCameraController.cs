@@ -21,17 +21,17 @@ public class FollowCameraController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		liveTarget = GameObject.Find("playerCameraTarget").transform;
-//		deadTarget = GameObject.Find("headCameraTarget").transform;
+		deadTarget = GameObject.Find("headCameraTarget").transform;
 	}
 	
 	// Update is called once per frame
 	void FixedUpdate () {
-//        if (pc.bRagdoll) {
-//			transform.position = Vector3.Slerp(transform.position, deadTarget.position, positionSmoothing * Time.deltaTime);
-//			transform.forward = Vector3.Slerp(transform.forward, deadTarget.forward, directionSmoothing * Time.deltaTime);
-//        } else {
-			transform.position = Vector3.Slerp(transform.position, liveTarget.position, positionSmoothing * Time.deltaTime);
-			transform.forward = Vector3.Slerp(transform.forward, liveTarget.forward, directionSmoothing * Time.deltaTime);
-//		}
+        if (pc.bRagdoll) {
+			transform.position = Vector3.Slerp(transform.position, deadTarget.position, positionSmoothing * Time.deltaTime);
+			transform.forward = Vector3.Slerp(transform.forward, deadTarget.forward, directionSmoothing * Time.deltaTime);
+        } else {
+			transform.position = Vector3.Lerp(transform.position, liveTarget.position, positionSmoothing * Time.deltaTime);
+			transform.forward = Vector3.Lerp(transform.forward, liveTarget.forward, directionSmoothing * Time.deltaTime);
+		}
 	}
 }

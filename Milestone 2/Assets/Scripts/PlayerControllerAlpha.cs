@@ -4,7 +4,7 @@ using System.Collections;
 public class PlayerControllerAlpha : MonoBehaviour {
 
 	// jumping experiment
-	public float jumpForceY = 10000f;
+	private float jumpForceY = 10000f;
 	private Vector3 jumpForce;
 
 	public float decelerationRate = 5f;
