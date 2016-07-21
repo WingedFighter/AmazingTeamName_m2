@@ -210,6 +210,10 @@ Prefab:
       propertyPath: HorizontalSpeed
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 11422536, guid: dbff1637ad20efd47b5ca372497fe726, type: 2}
+      propertyPath: KnockoutCollisionMagnitude
+      value: 0.5
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6488170, guid: dbff1637ad20efd47b5ca372497fe726, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: dbff1637ad20efd47b5ca372497fe726, type: 2}
@@ -423,7 +427,7 @@ GameObject:
   - 23: {fileID: 399464924}
   m_Layer: 0
   m_Name: Obstacle
-  m_TagString: Untagged
+  m_TagString: ObstacleImmovable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1264,7 +1268,7 @@ GameObject:
   - 54: {fileID: 1890855959}
   m_Layer: 0
   m_Name: TargetBuilding
-  m_TagString: Untagged
+  m_TagString: ObstacleImmovable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

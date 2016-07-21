@@ -1,0 +1,271 @@
+Initialize engine version: 5.3.5f1 (960ebf59018a)
+GfxDevice: creating device client; threaded=1
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.0]
+    Renderer: NVIDIA GeForce GTX 680M  (ID=0x11a0)
+    Vendor:   NVIDIA
+    VRAM:     1989 MB
+Begin MonoManager ReloadAssembly
+Platform assembly: D:\Idan\Documents\College\Semester 7\CS 4455\Projects\Milestone 2\Redo2\AmazingTeamName_m2\Milestone 2\Build\Alpha_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading D:\Idan\Documents\College\Semester 7\CS 4455\Projects\Milestone 2\Redo2\AmazingTeamName_m2\Milestone 2\Build\Alpha_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: D:\Idan\Documents\College\Semester 7\CS 4455\Projects\Milestone 2\Redo2\AmazingTeamName_m2\Milestone 2\Build\Alpha_Data\Managed\Assembly-CSharp.dll (this message is harmless)
+Loading D:\Idan\Documents\College\Semester 7\CS 4455\Projects\Milestone 2\Redo2\AmazingTeamName_m2\Milestone 2\Build\Alpha_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+Platform assembly: D:\Idan\Documents\College\Semester 7\CS 4455\Projects\Milestone 2\Redo2\AmazingTeamName_m2\Milestone 2\Build\Alpha_Data\Managed\Assembly-UnityScript-firstpass.dll (this message is harmless)
+Loading D:\Idan\Documents\College\Semester 7\CS 4455\Projects\Milestone 2\Redo2\AmazingTeamName_m2\Milestone 2\Build\Alpha_Data\Managed\Assembly-UnityScript-firstpass.dll into Unity Child Domain
+Platform assembly: D:\Idan\Documents\College\Semester 7\CS 4455\Projects\Milestone 2\Redo2\AmazingTeamName_m2\Milestone 2\Build\Alpha_Data\Managed\UnityEngine.UI.dll (this message is harmless)
+Loading D:\Idan\Documents\College\Semester 7\CS 4455\Projects\Milestone 2\Redo2\AmazingTeamName_m2\Milestone 2\Build\Alpha_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+Platform assembly: D:\Idan\Documents\College\Semester 7\CS 4455\Projects\Milestone 2\Redo2\AmazingTeamName_m2\Milestone 2\Build\Alpha_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
+Loading D:\Idan\Documents\College\Semester 7\CS 4455\Projects\Milestone 2\Redo2\AmazingTeamName_m2\Milestone 2\Build\Alpha_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
+Platform assembly: D:\Idan\Documents\College\Semester 7\CS 4455\Projects\Milestone 2\Redo2\AmazingTeamName_m2\Milestone 2\Build\Alpha_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
+Loading D:\Idan\Documents\College\Semester 7\CS 4455\Projects\Milestone 2\Redo2\AmazingTeamName_m2\Milestone 2\Build\Alpha_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
+Platform assembly: D:\Idan\Documents\College\Semester 7\CS 4455\Projects\Milestone 2\Redo2\AmazingTeamName_m2\Milestone 2\Build\Alpha_Data\Managed\UnityEngine.UI.dll (this message is harmless)
+Loading D:\Idan\Documents\College\Semester 7\CS 4455\Projects\Milestone 2\Redo2\AmazingTeamName_m2\Milestone 2\Build\Alpha_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+- Completed reload, in  0.142 seconds
+Platform assembly: D:\Idan\Documents\College\Semester 7\CS 4455\Projects\Milestone 2\Redo2\AmazingTeamName_m2\Milestone 2\Build\Alpha_Data\Managed\System.Core.dll (this message is harmless)
+Platform assembly: D:\Idan\Documents\College\Semester 7\CS 4455\Projects\Milestone 2\Redo2\AmazingTeamName_m2\Milestone 2\Build\Alpha_Data\Managed\System.dll (this message is harmless)
+desktop: 1920x1080 60Hz; virtual: 1920x1080 at 0,0
+<RI> Initializing input.
+<RI> Input initialized.
+<RI> Initialized touch support.
+UnloadTime: 0.591466 ms
+Setting up 2 worker threads for Enlighten.
+  Thread -> id: f560 -> priority: 1 
+  Thread -> id: ee70 -> priority: 1 
+Immvable: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Immvable: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Immvable: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Immvable: 0.190445
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Immvable: 0.3784932
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Immvable: 0.5591378
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Collided
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Collided
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Collided
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Collided
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Collided
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Collided
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Collided
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Collided
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Collided
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Immvable: 8.064301
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Immvable: 5.64515
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Immvable: 5.544176
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Collided
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Collided
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Collided
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Collided
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Collided
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Collided
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Collided
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Collided
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Collided
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Collided
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Collided
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Collided
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Immvable: 1.917906
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Collided
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Collided
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Collided
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Collided
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Collided
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Collided
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Collided
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Collided
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Collided
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Collided
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Collided
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Immvable: 5.914464
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Immvable: 7.944142
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Immvable: 4.224255
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Immvable: 3.528916
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Immvable: 1.940282
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Immvable: 3.047103
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Immvable: 6.530838
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Immvable: 5.079757
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+UnityException: Tag: LevelStatusOff is not defined.
+  at (wrapper managed-to-native) UnityEngine.GameObject:set_tag (string)
+  at HeightDetection.OnTriggerExit (UnityEngine.Collider other) [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Immvable: 4.978783
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Immvable: 4.978783
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Immvable: 4.978783
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Collided
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Collided
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Collided
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Collided
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Collided
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
