@@ -7,11 +7,9 @@ TagManager:
   - ObstacleMovable
   - ObstacleImmovable
   - DeathPlane
-  - Waypoint
-  - LevelStatusOn
-  - BuildingHeightBoundary
-  - Building
-  - LevelStatusOff
+  - uphill
+  - downhill
+  - flat
   layers:
   - Default
   - TransparentFX

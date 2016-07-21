@@ -3,16 +3,21 @@ using System.Collections;
 
 public class PlayerControllerAlpha : MonoBehaviour {
 
+	// jumping experiment
+	public float jumpForceY = 10000f;
+	private Vector3 jumpForce;
+
 	public float decelerationRate = 5f;
     public float HorizontalSpeed = 2f; 
 	public float forwardSpeed = 0f;
 
 	private Vector3 speed;
 	public float time;
+
+	// these three just for debugging
 	public float velocitySum;
 	public float animVelocitySum;
 	public int ticks;
-	public bool grounded;
 
 	private Animator animator;
 	private CapsuleCollider myCapsuleCollider;
@@ -25,19 +30,32 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	static string FORWARD = "forward";
 	static string LATERAL = "lateral";
 
-	// public so we can see what's happening
-	public Vector3 addForce;
-
 	// Layers
 	private static int OBSTACLES_LAYER = 8;
 	private static int GROUND_LAYER = 10;
 	private static int PLAYER_LAYER = 9;
 
+	// are we on the ground
+	public bool grounded;
+
 	// the spherecast will ignore the player layer (don't want to hit colliders on feet)
 	private int sphereColliderLayerMask = ~(1 << PLAYER_LAYER);
 
+	// Ground slope tags
+	private static string UPHILL_TAG = "uphill";
+	private static string DOWNHILL_TAG = "downhill";
+	private static string FLAT_TAG = "flat";
+
+	// Speed increase expoonents corresponding to Ground slope Tags
+	// Note that becuase we're applying these to fraction, smaller numbers result in greater acceleration
+	private static float SLOPE_FLAT_EXPONENT = 3f;
+	private static float SLOPE_DOWNHILL_EXPONENT = 1f;
+	private static float SLOPE_UPHILL_EXPONENT = 10f;
+	public float accelerationExponent = SLOPE_FLAT_EXPONENT;
+
 	// Use this for initialization
 	void Start () {
+
 
 		Debug.Log(sphereColliderLayerMask);
         animator = GetComponent<Animator>();
@@ -46,8 +64,6 @@ public class PlayerControllerAlpha : MonoBehaviour {
 
         disableRagdoll();
 
-		addForce = new Vector3();
-
 		time = 0;
 		ticks = 0;
 		velocitySum = 0;
@@ -55,9 +71,10 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	}
 
 	void FixedUpdate () {
-
+		grounded = getGrounded();
+		// this if is just a debug block
 		if (Input.GetKeyDown(KeyCode.G)) {
-			if (getGrounded()) {
+			if (grounded) {
 				Debug.Log("grounded");
 			} else {
 				Debug.Log("notGrounded");
@@ -74,13 +91,14 @@ public class PlayerControllerAlpha : MonoBehaviour {
 		}
 	
 		if (!bRagdoll 
+			&& grounded
 			&&  (  animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion")
 				|| animator.GetCurrentAnimatorStateInfo(0).IsName("idle")))
         {
             if (Input.GetAxis("Vertical") > 0)
             {
                 // Exponentially decay acceleration with respect to speed
-                float speedInc = Mathf.Pow(1 - forwardSpeed, 3f);
+				float speedInc = Mathf.Pow(1 - forwardSpeed, accelerationExponent);
                 forwardSpeed += speedInc * Time.deltaTime;
             }
             if (Input.GetAxis("Vertical") < 0)
@@ -94,6 +112,13 @@ public class PlayerControllerAlpha : MonoBehaviour {
                    	0f
                 );
             }
+
+			if (Input.GetKeyDown(KeyCode.Space)) {
+				jumpForce = new Vector3(0, jumpForceY, 0);
+				animator.applyRootMotion = false;
+				myRigidBody.AddForce(jumpForce);
+				animator.applyRootMotion = true;
+			}
         }
 
 //		forwardSpeed = 0.66f;
@@ -167,10 +192,6 @@ public class PlayerControllerAlpha : MonoBehaviour {
 //			Debug.Log("col ENTER  vel = " + myRigidBody.velocity.magnitude);
 			slowDownOnCollision(myCollision);
 		}
-//		Debug.Log("COL" + myCollisoin.impulse);
-//		float myVel = myRigidBody.velocity.magnitude;
-//		Debug.Log(myVel);
-//		forwardSpeed = myVel/12.6f;
 	}
 
 	void OnCollisionExit(Collision myCollision) {
@@ -178,16 +199,10 @@ public class PlayerControllerAlpha : MonoBehaviour {
 //			Debug.Log("col EXIT   vel = " + myRigidBody.velocity.magnitude);
 			slowDownOnCollision(myCollision);
 		}
-//		Debug.Log("COL" + myCollisoin.impulse);
-//		float myVel = myRigidBody.velocity.magnitude;
-//		Debug.Log(myVel);
-//		forwardSpeed = myVel/12.6f;
 	}
 
 	private void slowDownOnCollision(Collision myCollision) {
-//		Debug.Log("COL" + myCollision.impulse);
 		float myVel = myRigidBody.velocity.magnitude;
-//		Debug.Log(myVel);
 		forwardSpeed = myVel/12.6f;
 	}
 
@@ -208,13 +223,26 @@ public class PlayerControllerAlpha : MonoBehaviour {
 		// and detect if it hits something not on the PLAYER_LAYER 
 		RaycastHit hit;
 		if (Physics.SphereCast(ray, sphereRadius, out hit, castDistance, sphereColliderLayerMask)) {
-			Debug.Log(hit.collider.gameObject.name);
+//			Debug.Log(hit.collider.gameObject.name);
+			Debug.Log(hit.collider.gameObject.tag);
+			setSurface(hit.collider.gameObject.tag);
 			// only consider the ground layer 
 			return (hit.collider.gameObject.layer == GROUND_LAYER);
 		} else {
 			return false;
 		}
+	}
 
-
+	/*
+	 * Sets the surface slope acceleration exponent depending according to the surfaceTag param
+	 */
+	private void setSurface(string surfaceTag) {
+		if (surfaceTag.Equals(UPHILL_TAG)) {
+			accelerationExponent = SLOPE_UPHILL_EXPONENT;
+		} else if (surfaceTag.Equals(DOWNHILL_TAG)) {
+			accelerationExponent = SLOPE_DOWNHILL_EXPONENT;
+		} else {
+			accelerationExponent = SLOPE_FLAT_EXPONENT;
+		}
 	}
 }
