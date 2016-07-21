@@ -238,7 +238,6 @@ public class PlayerController : MonoBehaviour {
 
     void OnCollisionEnter (Collision collision)
     {
-        print("Collided");
         /*if (collision.gameObject.tag == "ObstacleMovable")
         {
             print("Hit Movable");
@@ -303,7 +302,6 @@ public class PlayerController : MonoBehaviour {
     {
         if (collision.gameObject.tag == "ObstacleImmovable")
         {
-            print("Immvable: " + collision.relativeVelocity.magnitude);
             //Check that we are colliding with sufficient velocity
             if (collision.relativeVelocity.magnitude > KnockoutCollisionMagnitude)
             {
