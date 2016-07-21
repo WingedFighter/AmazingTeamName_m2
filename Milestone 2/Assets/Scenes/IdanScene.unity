@@ -996,6 +996,10 @@ Prefab:
       propertyPath: playerController
       value: 
       objectReference: {fileID: 544205197}
+    - target: {fileID: 11419514, guid: 6f9f85d44e8cf0a4aa18637e4babd57c, type: 2}
+      propertyPath: DropFrequency
+      value: 5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6f9f85d44e8cf0a4aa18637e4babd57c, type: 2}
   m_IsPrefabParent: 0

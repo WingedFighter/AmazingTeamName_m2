@@ -7,6 +7,7 @@ public class NewGameController : MonoBehaviour {
 	public GameObject levelStatus;
 	public GameObject UIText;
 	public Button button;
+	public PlayerController pc;
 	private Text myText;
 
 	// Use this for initialization
@@ -21,6 +22,7 @@ public class NewGameController : MonoBehaviour {
 		if (levelStatus.tag == "LevelStatusOff") {
 			//move to next level
 			levelStatus.tag = "LevelStatusOn";
+			pc.State = PlayerController.PlayerState.disabled;
 			Win ();
 		}
 	}
