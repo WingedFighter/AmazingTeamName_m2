@@ -7,13 +7,10 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	public bool useRootMotion;
 
 	// jumping experiment
-	public float jumpForceY = 10000f;
-	public float jumpBoostForceY = 1000f;
-	public float fallForceY = -1000f;
-	public float slideForce = 1000f;
-	private Vector3 jumpForce;
-	private Vector3 jumpBoostForce;
-	private Vector3 fallForce;
+	public float jumpForce = 10000f;
+	public float jumpBoostForce = 1000f;
+	public float fallForce = -1000f;
+	public float slideForce = 100f;
 
 	public float decelerationRate = 5f;
     public float HorizontalSpeed = 2f; 
@@ -102,11 +99,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 		ticks = 0;
 		velocitySum = 0;
 		animVelocitySum = 0;
-		jumpForce = new Vector3(0, jumpForceY, 0);
-		jumpBoostForce = new Vector3(0, jumpBoostForceY, 0);
-		fallForce = new Vector3(0, fallForceY, 0);
 	}
-
 
 	void FixedUpdate() {
 
@@ -136,6 +129,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 					setRootMotion(true);
 					proccessInput();
 				} else {
+					animator.SetTrigger("airborne");
 					setRootMotion(false);
 				}
 			} else if (currentAnimationStateInt == LOCOMOTION_STATE) {
@@ -144,38 +138,53 @@ public class PlayerControllerAlpha : MonoBehaviour {
 					proccessInput();
 					animator.speed = Mathf.Max(1, forwardSpeed * 3);
 				} else {
+					
 					setRootMotion(false);
+					animator.SetTrigger("airborne");
 				}
 			} else if (currentAnimationStateInt == JUMP_STATE) {
 				setRootMotion(false);
 
 				if (Input.GetKey(KeyCode.Space)) {
-					myRigidBody.AddForce(jumpForce);
+					myRigidBody.AddForce(0, jumpForce, 0);
 				}
 			} else if (currentAnimationStateInt == FALLING_STATE) {
 				setRootMotion(false);
 
-				myRigidBody.AddForce(fallForce);
+				myRigidBody.AddForce(0, fallForce, 0);
 				if (grounded) {
 					animator.SetTrigger("land");
 				}
 			} else if (currentAnimationStateInt == SLIDE_START_STATE) {
-				setRootMotion(true);
+				if (grounded) {
+					setRootMotion(true);
+				} else {
+					animator.SetTrigger("airborne");
+					setRootMotion(false);
+				}
 			} else if (currentAnimationStateInt == SLIDE_MIDDLE_STATE) {
 				myRigidBody.AddForce(0, 0, slideForce);
                 animator.speed = 1;
 				setRootMotion(false);
-				if (!Input.GetKey(KeyCode.X)) {
+				if (!grounded) {
+					animator.SetTrigger("airborne");
+				}
+				else if (!Input.GetKey(KeyCode.X)) {
 					animator.SetTrigger("endSlide");
 					matchAnimatorSpeedToVelocity();
 				}
 			} else if (currentAnimationStateInt == SLIDE_END_STATE) {
                 animator.speed = 1;
-//				setRootMotion(true);
+				if (!grounded) {
+					animator.SetTrigger("airborne");
+				}
 			} else if (currentAnimationStateInt == STRAFE_LEFT_STATE 
                     || currentAnimationStateInt == STRAFE_RIGHT_STATE) {
                 animator.speed = 1;
                 processAxisInput();
+				if (!grounded) {
+					animator.SetTrigger("airborne");
+				}
 			}
 		}
 	}
@@ -331,7 +340,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	private void doJump() {
 		setRootMotion(false);
 		animator.SetTrigger("Jump");
-		myRigidBody.AddForce(jumpForce);
+		myRigidBody.AddForce(0, jumpForce, 0);
 	}
 
 	private void doSlide() {
