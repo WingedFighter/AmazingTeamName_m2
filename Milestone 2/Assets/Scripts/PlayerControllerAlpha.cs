@@ -7,8 +7,13 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	public bool useRootMotion;
 
 	// jumping experiment
-	private float jumpForceY = 10000f;
+	public float jumpForceY = 10000f;
+	public float jumpBoostForceY = 1000f;
+	public float fallForceY = -1000f;
+	public float slideForce = 1000f;
 	private Vector3 jumpForce;
+	private Vector3 jumpBoostForce;
+	private Vector3 fallForce;
 
 	public float decelerationRate = 5f;
     public float HorizontalSpeed = 2f; 
@@ -33,12 +38,18 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	static string FORWARD = "forward";
 	static string LATERAL = "lateral";
 
+	public float previousYRotation = 0;
+
 	// animator state and transition name hashes
 	static int LOCOMOTION_STATE = Animator.StringToHash("base.locomotion");
 	static int JUMP_STATE = Animator.StringToHash("base.jump");
-	static int SLIDE_STATE = Animator.StringToHash("base.running_slide");
+	static int SLIDE_START_STATE = Animator.StringToHash("base.slideStart");
+	static int SLIDE_MIDDLE_STATE = Animator.StringToHash("base.slideMiddle");
+	static int SLIDE_END_STATE = Animator.StringToHash("base.slideEnd");
 	static int IDLE_STATE = Animator.StringToHash("base.idle");
 	static int FALLING_STATE = Animator.StringToHash("base.falling");
+	static int STRAFE_LEFT_STATE = Animator.StringToHash("base.strafeLeft");
+	static int STRAFE_RIGHT_STATE = Animator.StringToHash("base.strafeRight");
 
 	static int IDLE_TO_LOCOMOTION_TRANS = Animator.StringToHash("base.idleToLocomotion");
 	static int LOCOMOTION_TO_IDLE_TRANS = Animator.StringToHash("base.locomotionToIdle");
@@ -47,6 +58,10 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	static int SLIDE_TO_LOCOMOTION_TRANS = Animator.StringToHash("base.slideToLocomotion");
 	static int LOCOMOTION_TO_SLIDE_TRANS = Animator.StringToHash("base.locomotionToSlide");
 	static int FALL_TO_LOCOMOTION_TRANS = Animator.StringToHash("base.fallToLocomotion");
+	static int IDLE_TO_STRAFE_LEFT_TRANS = Animator.StringToHash("base.idleToStrafeLeft");
+	static int IDLE_TO_STRAFE_RIGHT_TRANS = Animator.StringToHash("base.idleToStrafeRight");
+	static int STRAFE_LEFT_TO_IDLE_TRANS = Animator.StringToHash("base.strafeLeftToIdleTrans");
+	static int STRAFE_RIGHT_TO_IDLE_TRANS = Animator.StringToHash("base.strafeRightToIdleTrans");
 
 	// Layers
 	private static int OBSTACLES_LAYER = 8;
@@ -73,7 +88,6 @@ public class PlayerControllerAlpha : MonoBehaviour {
 
 	public int currentAnimationStateInt;
 	public string currentAnimationStateString;
-	public bool liftingOff = false;
 
 	// Use this for initialization
 	void Start () {
@@ -88,6 +102,9 @@ public class PlayerControllerAlpha : MonoBehaviour {
 		ticks = 0;
 		velocitySum = 0;
 		animVelocitySum = 0;
+		jumpForce = new Vector3(0, jumpForceY, 0);
+		jumpBoostForce = new Vector3(0, jumpBoostForceY, 0);
+		fallForce = new Vector3(0, fallForceY, 0);
 	}
 
 
@@ -114,6 +131,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 
 			// now what to do for each state
 			if (currentAnimationStateInt == IDLE_STATE) {
+					myRigidBody.rotation = Quaternion.identity;
 				if (grounded) {
 					setRootMotion(true);
 					proccessInput();
@@ -129,11 +147,40 @@ public class PlayerControllerAlpha : MonoBehaviour {
 					setRootMotion(false);
 				}
 			} else if (currentAnimationStateInt == JUMP_STATE) {
+				setRootMotion(false);
+
+				if (Input.GetKey(KeyCode.Space)) {
+					myRigidBody.AddForce(jumpForce);
+				}
 			} else if (currentAnimationStateInt == FALLING_STATE) {
-			} else if (currentAnimationStateInt == SLIDE_STATE) {
+				setRootMotion(false);
+
+				myRigidBody.AddForce(fallForce);
+				if (grounded) {
+					animator.SetTrigger("land");
+				}
+			} else if (currentAnimationStateInt == SLIDE_START_STATE) {
+				setRootMotion(true);
+			} else if (currentAnimationStateInt == SLIDE_MIDDLE_STATE) {
+				myRigidBody.AddForce(0, 0, slideForce);
+                animator.speed = 1;
+				setRootMotion(false);
+				if (!Input.GetKey(KeyCode.X)) {
+					animator.SetTrigger("endSlide");
+					matchAnimatorSpeedToVelocity();
+				}
+			} else if (currentAnimationStateInt == SLIDE_END_STATE) {
+                animator.speed = 1;
+//				setRootMotion(true);
+			} else if (currentAnimationStateInt == STRAFE_LEFT_STATE 
+                    || currentAnimationStateInt == STRAFE_RIGHT_STATE) {
+                animator.speed = 1;
+                processAxisInput();
 			}
-//			} else if (currentAnimationState == ) {
 		}
+	}
+
+	void LateUpdate() {
 	}
 
 	private void proccessInput() {
@@ -153,8 +200,30 @@ public class PlayerControllerAlpha : MonoBehaviour {
 		}
 	}
 
+	public float currentRotation = 0;
+	public float lateral = 0;
+		
 	private void processAxisInput() {
 
+        // Horizontal first, because it's easy
+		lateral = Input.GetAxis("Horizontal");
+		if (currentAnimationStateInt == LOCOMOTION_STATE) {
+			// if we aren't pressing left/right, make him run straight ahead
+			if (Mathf.Abs(lateral) < 0.1) {
+				myRigidBody.rotation = Quaternion.identity;
+			// if he has turned too far, keep him at about 30 degrees
+			} else {
+				// this is in radians, dammit
+				currentRotation = myRigidBody.transform.rotation.y;
+				if (Mathf.Abs(currentRotation) > .1f) {
+					lateral = 0;// *Time.deltaTime;
+				}
+			}
+		}
+		animator.SetFloat(LATERAL, lateral);
+
+
+        // Now Vertical, ie, speed
         if (Input.GetAxis("Vertical") > 0)
         {
             // Exponentially decay acceleration with respect to speed
@@ -260,9 +329,15 @@ public class PlayerControllerAlpha : MonoBehaviour {
 
 
 	private void doJump() {
+		setRootMotion(false);
+		animator.SetTrigger("Jump");
+		myRigidBody.AddForce(jumpForce);
 	}
 
 	private void doSlide() {
+		setRootMotion(false);
+		animator.SetTrigger("Slide");
+
 	}
 
 	private void doTheLocomotion() {
@@ -272,9 +347,13 @@ public class PlayerControllerAlpha : MonoBehaviour {
 
 		if (stateInt == LOCOMOTION_STATE) return "LOCOMOTION";
 		if (stateInt == JUMP_STATE) return	"JUMP";
-		if (stateInt == SLIDE_STATE) return "SLIDE";
+		if (stateInt == SLIDE_START_STATE) return "SLIDE_START";
+		if (stateInt == SLIDE_MIDDLE_STATE) return "SLIDE_MIDDLE";
+		if (stateInt == SLIDE_END_STATE) return "SLIDE_END";
 		if (stateInt == IDLE_STATE) return "IDLE";
 		if (stateInt == FALLING_STATE) return "FALLING";
+		if (stateInt == STRAFE_LEFT_STATE) return "STRAFE_LEFT";
+		if (stateInt == STRAFE_RIGHT_STATE) return "STRAFE_RIGHT";
 
 		if (stateInt == IDLE_TO_LOCOMOTION_TRANS) return "IDLE_TO_LOC";
 		if (stateInt == LOCOMOTION_TO_IDLE_TRANS) return "LOC_TO_IDLE";
@@ -283,6 +362,10 @@ public class PlayerControllerAlpha : MonoBehaviour {
 		if (stateInt == SLIDE_TO_LOCOMOTION_TRANS) return "SLIDE_TO_LOC";
 		if (stateInt == LOCOMOTION_TO_SLIDE_TRANS) return "LOC_TO_SLIDE";
 		if (stateInt == FALL_TO_LOCOMOTION_TRANS) return "FALL_TO_LOC";
+		if (stateInt == IDLE_TO_STRAFE_LEFT_TRANS) return "IDLE_TO_STRAFE_LEFT";
+		if (stateInt == IDLE_TO_STRAFE_RIGHT_TRANS) return "IDLE_TO_STRAFE_RIGHT";
+        if (stateInt == STRAFE_LEFT_TO_IDLE_TRANS) return "STRAFE_LEFT_TO_IDLE";
+        if (stateInt == STRAFE_RIGHT_TO_IDLE_TRANS) return "STRAFE_RIGHT_TO_IDLE";
 
 		return "UNKNOWN";
 	}
@@ -345,20 +428,21 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	void OnCollisionEnter(Collision myCollision) {
 		if (myCollision.collider.gameObject.layer == OBSTACLES_LAYER) {
 //			Debug.Log("col ENTER  vel = " + myRigidBody.velocity.magnitude);
-			slowDownOnCollision(myCollision);
+			matchAnimatorSpeedToVelocity();
 		}
 	}
 
 	void OnCollisionExit(Collision myCollision) {
 		if (myCollision.collider.gameObject.layer == OBSTACLES_LAYER) {
 //			Debug.Log("col EXIT   vel = " + myRigidBody.velocity.magnitude);
-			slowDownOnCollision(myCollision);
+			matchAnimatorSpeedToVelocity();
 		}
 	}
 
-	private void slowDownOnCollision(Collision myCollision) {
+	private void matchAnimatorSpeedToVelocity() {
 		float myVel = myRigidBody.velocity.magnitude;
 		forwardSpeed = myVel/12.6f;
+		animator.SetFloat(FORWARD, forwardSpeed);
 	}
 
 	private bool getGrounded() {
@@ -381,8 +465,9 @@ public class PlayerControllerAlpha : MonoBehaviour {
 //			Debug.Log(hit.collider.gameObject.name);
 //			Debug.Log(hit.collider.gameObject.tag);
 			setSurface(hit.collider.gameObject.tag);
-			// only consider the ground layer 
-			return (hit.collider.gameObject.layer == GROUND_LAYER);
+			// only consider the ground layer and obstacle layer
+			return (hit.collider.gameObject.layer == GROUND_LAYER
+				|| hit.collider.gameObject.layer == OBSTACLES_LAYER);
 		} else {
 			return false;
 		}
