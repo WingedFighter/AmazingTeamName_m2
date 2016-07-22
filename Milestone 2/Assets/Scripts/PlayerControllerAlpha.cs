@@ -3,6 +3,9 @@ using System.Collections;
 
 public class PlayerControllerAlpha : MonoBehaviour {
 
+	// making this a public var so we can see it in gui
+	public bool useRootMotion;
+
 	// jumping experiment
 	private float jumpForceY = 10000f;
 	private Vector3 jumpForce;
@@ -30,6 +33,21 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	static string FORWARD = "forward";
 	static string LATERAL = "lateral";
 
+	// animator state and transition name hashes
+	static int LOCOMOTION_STATE = Animator.StringToHash("base.locomotion");
+	static int JUMP_STATE = Animator.StringToHash("base.jump");
+	static int SLIDE_STATE = Animator.StringToHash("base.running_slide");
+	static int IDLE_STATE = Animator.StringToHash("base.idle");
+	static int FALLING_STATE = Animator.StringToHash("base.falling");
+
+	static int IDLE_TO_LOCOMOTION_TRANS = Animator.StringToHash("base.idleToLocomotion");
+	static int LOCOMOTION_TO_IDLE_TRANS = Animator.StringToHash("base.locomotionToIdle");
+	static int LOCOMOTION_TO_JUMP_TRANS = Animator.StringToHash("base.locomotionToJump");
+	static int JUMP_TO_FALLING_TRANS = Animator.StringToHash("base.jumpToFall");
+	static int SLIDE_TO_LOCOMOTION_TRANS = Animator.StringToHash("base.slideToLocomotion");
+	static int LOCOMOTION_TO_SLIDE_TRANS = Animator.StringToHash("base.locomotionToSlide");
+	static int FALL_TO_LOCOMOTION_TRANS = Animator.StringToHash("base.fallToLocomotion");
+
 	// Layers
 	private static int OBSTACLES_LAYER = 8;
 	private static int GROUND_LAYER = 10;
@@ -47,17 +65,19 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	private static string FLAT_TAG = "flat";
 
 	// Speed increase expoonents corresponding to Ground slope Tags
-	// Note that becuase we're applying these to fraction, smaller numbers result in greater acceleration
+	// Note that becuase we're applying these to a value less than one, smaller numbers result in greater acceleration
 	private static float SLOPE_FLAT_EXPONENT = 3f;
 	private static float SLOPE_DOWNHILL_EXPONENT = 1f;
 	private static float SLOPE_UPHILL_EXPONENT = 10f;
 	public float accelerationExponent = SLOPE_FLAT_EXPONENT;
 
+	public int currentAnimationStateInt;
+	public string currentAnimationStateString;
+	public bool liftingOff = false;
+
 	// Use this for initialization
 	void Start () {
 
-
-		Debug.Log(sphereColliderLayerMask);
         animator = GetComponent<Animator>();
 		myRigidBody = GetComponent<Rigidbody>();
 		myCapsuleCollider = GetComponent<CapsuleCollider>();
@@ -70,8 +90,104 @@ public class PlayerControllerAlpha : MonoBehaviour {
 		animVelocitySum = 0;
 	}
 
+
+	void FixedUpdate() {
+
+		// much depends on if we are gounded
+		grounded = getGrounded();
+
+		// here just updating this in the gui for debugging
+		// if successful, this will stay in sync with grounded bool
+		useRootMotion = animator.applyRootMotion;
+
+		if (bRagdoll) {
+			// logic to transition out of ragdoll
+		} else { // we are in an animation state
+
+			// figure out which animator state the player is in
+			if (animator.IsInTransition(0)) {
+				currentAnimationStateInt = animator.GetAnimatorTransitionInfo(0).nameHash;
+			} else {
+				currentAnimationStateInt = animator.GetCurrentAnimatorStateInfo(0).nameHash;
+			}
+			currentAnimationStateString = getAnimationStateString(currentAnimationStateInt);
+
+			// now what to do for each state
+			if (currentAnimationStateInt == IDLE_STATE) {
+				if (grounded) {
+					setRootMotion(true);
+					proccessInput();
+				} else {
+					setRootMotion(false);
+				}
+			} else if (currentAnimationStateInt == LOCOMOTION_STATE) {
+				if (grounded) {
+					setRootMotion(true);
+					proccessInput();
+					animator.speed = Mathf.Max(1, forwardSpeed * 3);
+				} else {
+					setRootMotion(false);
+				}
+			} else if (currentAnimationStateInt == JUMP_STATE) {
+			} else if (currentAnimationStateInt == FALLING_STATE) {
+			} else if (currentAnimationStateInt == SLIDE_STATE) {
+			}
+//			} else if (currentAnimationState == ) {
+		}
+	}
+
+	private void proccessInput() {
+		// check if should go ragdoll
+		if (Input.GetKeyDown(KeyCode.Tab)) {
+			enableRagdoll();
+
+		// check if should jump or slide
+		} else if (Input.GetKeyDown(KeyCode.Space)) {
+			doJump();
+		} else if (Input.GetKeyDown(KeyCode.X)) {
+			doSlide ();
+
+		// else we are checking if we should locomote
+		} else {
+			processAxisInput();
+		}
+	}
+
+	private void processAxisInput() {
+
+        if (Input.GetAxis("Vertical") > 0)
+        {
+            // Exponentially decay acceleration with respect to speed
+			float speedInc = Mathf.Pow(1 - forwardSpeed, accelerationExponent);
+            forwardSpeed += speedInc * Time.deltaTime;
+        }
+        if (Input.GetAxis("Vertical") < 0)
+        {
+            // deceleration rate is also exponential with respect to speed
+            float speedDec = 1 - forwardSpeed;
+			float tempForwardSpeed = forwardSpeed - (speedDec * Time.deltaTime);
+			// no walking backwards
+            forwardSpeed = Mathf.Max(
+				tempForwardSpeed,
+               	0f
+            );
+        }
+		animator.SetFloat(FORWARD, forwardSpeed);
+	}
+
+		/*
 	void FixedUpdate () {
 		grounded = getGrounded();
+		animator.applyRootMotion = (grounded & animator.GetCurrentAnimatorStateInfo(0).IsName(LOCOMOTION_STATE));
+		if (animator.GetCurrentAnimatorStateInfo(0).IsName(JUMP_STATE)) {
+			Debug.Log("in jump state");
+			if (!liftingOff && grounded) {
+				animator.SetTrigger("land");
+
+			} else if (liftingOff && !grounded) {
+				liftingOff = false;
+			}
+		}
 		// this if is just a debug block
 		if (Input.GetKeyDown(KeyCode.G)) {
 			if (grounded) {
@@ -113,15 +229,22 @@ public class PlayerControllerAlpha : MonoBehaviour {
                 );
             }
 
+			// jump
 			if (Input.GetKeyDown(KeyCode.Space)) {
 				jumpForce = new Vector3(0, jumpForceY, 0);
 				animator.applyRootMotion = false;
+				animator.SetTrigger("Jump");
+				liftingOff = true;
 				myRigidBody.AddForce(jumpForce);
-				animator.applyRootMotion = true;
+//				animator.applyRootMotion = true;
+			}
+
+			if (Input.GetKeyDown(KeyCode.X)) {
+				animator.applyRootMotion = false;
+				animator.SetTrigger("Slide");
 			}
         }
 
-//		forwardSpeed = 0.66f;
 		// update the parameter that controls transitions between idle and locomotion
         animator.SetFloat(FORWARD, forwardSpeed);
 		// update the param that controls how fast the animation plays (makes the guy run faster)
@@ -132,6 +255,39 @@ public class PlayerControllerAlpha : MonoBehaviour {
 			animator.speed = 1f;
 		}
 
+	}
+	*/
+
+
+	private void doJump() {
+	}
+
+	private void doSlide() {
+	}
+
+	private void doTheLocomotion() {
+	}
+
+	private string getAnimationStateString(int stateInt) {
+
+		if (stateInt == LOCOMOTION_STATE) return "LOCOMOTION";
+		if (stateInt == JUMP_STATE) return	"JUMP";
+		if (stateInt == SLIDE_STATE) return "SLIDE";
+		if (stateInt == IDLE_STATE) return "IDLE";
+		if (stateInt == FALLING_STATE) return "FALLING";
+
+		if (stateInt == IDLE_TO_LOCOMOTION_TRANS) return "IDLE_TO_LOC";
+		if (stateInt == LOCOMOTION_TO_IDLE_TRANS) return "LOC_TO_IDLE";
+		if (stateInt == LOCOMOTION_TO_JUMP_TRANS) return "LOC_TO_JUMP";
+		if (stateInt == JUMP_TO_FALLING_TRANS) return "JUMP_TO_FALL";
+		if (stateInt == SLIDE_TO_LOCOMOTION_TRANS) return "SLIDE_TO_LOC";
+		if (stateInt == LOCOMOTION_TO_SLIDE_TRANS) return "LOC_TO_SLIDE";
+		if (stateInt == FALL_TO_LOCOMOTION_TRANS) return "FALL_TO_LOC";
+
+		return "UNKNOWN";
+	}
+
+	private void doVelocityDebugging() {
 		time += Time.deltaTime;
 		if (time > 1f && animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion")) {
 			ticks ++;
@@ -140,16 +296,15 @@ public class PlayerControllerAlpha : MonoBehaviour {
 				animVelocitySum += animator.velocity.magnitude;
 				float avgVel = velocitySum/(ticks -10);
 				float avgAnimVel = animVelocitySum/(ticks - 10);
-//				Debug.Log(
-//					"forwardSpeed: " + forwardSpeed + " // " +
-//					"velocityAvg: " + avgVel + " // " +
-//					"animVelAvg:" + avgAnimVel
-//				);
+				Debug.Log(
+					"forwardSpeed: " + forwardSpeed + " // " +
+					"velocityAvg: " + avgVel + " // " +
+					"animVelAvg:" + avgAnimVel
+				);
 			}
 			time = 0f;
 		}
 	}
-
 
     private void enableRagdoll()
     {
@@ -224,7 +379,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 		RaycastHit hit;
 		if (Physics.SphereCast(ray, sphereRadius, out hit, castDistance, sphereColliderLayerMask)) {
 //			Debug.Log(hit.collider.gameObject.name);
-			Debug.Log(hit.collider.gameObject.tag);
+//			Debug.Log(hit.collider.gameObject.tag);
 			setSurface(hit.collider.gameObject.tag);
 			// only consider the ground layer 
 			return (hit.collider.gameObject.layer == GROUND_LAYER);
@@ -233,9 +388,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 		}
 	}
 
-	/*
-	 * Sets the surface slope acceleration exponent depending according to the surfaceTag param
-	 */
+	// Sets the surface slope acceleration exponent depending according to the surfaceTag param
 	private void setSurface(string surfaceTag) {
 		if (surfaceTag.Equals(UPHILL_TAG)) {
 			accelerationExponent = SLOPE_UPHILL_EXPONENT;
@@ -245,4 +398,10 @@ public class PlayerControllerAlpha : MonoBehaviour {
 			accelerationExponent = SLOPE_FLAT_EXPONENT;
 		}
 	}
+
+	// Wrapper method for setting root motion 
+	private void setRootMotion(bool b) {
+		animator.applyRootMotion = b;
+	}
+
 }
