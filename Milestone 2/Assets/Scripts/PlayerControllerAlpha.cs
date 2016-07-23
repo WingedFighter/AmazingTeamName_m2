@@ -8,12 +8,11 @@ public class PlayerControllerAlpha : MonoBehaviour {
 
 	// jumping experiment
 	public float jumpForce = 10000f;
-	public float jumpBoostForce = 1000f;
+	public float jumpBoostForce = 5000f;
 	public float fallForce = -1000f;
 	public float slideForce = 100f;
 
 	public float decelerationRate = 5f;
-    public float HorizontalSpeed = 2f; 
 	public float forwardSpeed = 0f;
 
 	private Vector3 speed;
@@ -65,8 +64,9 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	private static int GROUND_LAYER = 10;
 	private static int PLAYER_LAYER = 9;
 
-	// are we on the ground
+	// are we on the ground or near it at least
 	public bool grounded;
+	public bool almostGrounded;
 
 	// the spherecast will ignore the player layer (don't want to hit colliders on feet)
 	private int sphereColliderLayerMask = ~(1 << PLAYER_LAYER);
@@ -103,8 +103,10 @@ public class PlayerControllerAlpha : MonoBehaviour {
 
 	void FixedUpdate() {
 
-		// much depends on if we are gounded
-		grounded = getGrounded();
+		// much depends on if we are gounded or near it
+		almostGrounded = getAlmostGrounded();
+		grounded = getGroundedAndSetSurface();
+
 
 		// here just updating this in the gui for debugging
 		// if successful, this will stay in sync with grounded bool
@@ -118,7 +120,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 			if (animator.IsInTransition(0)) {
 				currentAnimationStateInt = animator.GetAnimatorTransitionInfo(0).nameHash;
 			} else {
-				currentAnimationStateInt = animator.GetCurrentAnimatorStateInfo(0).nameHash;
+				currentAnimationStateInt = animator.GetCurrentAnimatorStateInfo(0).fullPathHash;
 			}
 			currentAnimationStateString = getAnimationStateString(currentAnimationStateInt);
 
@@ -137,46 +139,58 @@ public class PlayerControllerAlpha : MonoBehaviour {
 					setRootMotion(true);
 					proccessInput();
 					animator.speed = Mathf.Max(1, forwardSpeed * 3);
+				} else if (almostGrounded) {
+					setRootMotion(false);
 				} else {
-					
 					setRootMotion(false);
 					animator.SetTrigger("airborne");
+					myRigidBody.AddForce(0, fallForce, 0);
 				}
 			} else if (currentAnimationStateInt == JUMP_STATE) {
 				setRootMotion(false);
 
 				if (Input.GetKey(KeyCode.Space)) {
-					myRigidBody.AddForce(0, jumpForce, 0);
+					myRigidBody.AddForce(0, jumpBoostForce, 0);
 				}
 			} else if (currentAnimationStateInt == FALLING_STATE) {
 				setRootMotion(false);
 
 				myRigidBody.AddForce(0, fallForce, 0);
-				if (grounded) {
+				if (almostGrounded) {
 					animator.SetTrigger("land");
 				}
 			} else if (currentAnimationStateInt == SLIDE_START_STATE) {
 				if (grounded) {
 					setRootMotion(true);
-				} else {
-					animator.SetTrigger("airborne");
+				} else if (almostGrounded) {
 					setRootMotion(false);
+					myRigidBody.AddForce(0, fallForce, 0);
+				} else { // were not close to ground
+					myRigidBody.AddForce(0, fallForce, 0);
+					animator.SetTrigger("airborne");
 				}
 			} else if (currentAnimationStateInt == SLIDE_MIDDLE_STATE) {
-				myRigidBody.AddForce(0, 0, slideForce);
+				if (forwardSpeed < 1) {
+//					myRigidBody.AddForce(0, 0, slideForce);
+				}
                 animator.speed = 1;
 				setRootMotion(false);
 				if (!grounded) {
+					myRigidBody.AddForce(0, fallForce, 0);
+				}
+				if (!almostGrounded) {
+					myRigidBody.AddForce(0, fallForce, 0);
 					animator.SetTrigger("airborne");
 				}
 				else if (!Input.GetKey(KeyCode.X)) {
 					animator.SetTrigger("endSlide");
-					matchAnimatorSpeedToVelocity();
 				}
 			} else if (currentAnimationStateInt == SLIDE_END_STATE) {
-                animator.speed = 1;
-				if (!grounded) {
+				matchAnimatorSpeedToVelocity();
+				setRootMotion(false);
+				if (!almostGrounded) {
 					animator.SetTrigger("airborne");
+					myRigidBody.AddForce(0, fallForce, 0);
 				}
 			} else if (currentAnimationStateInt == STRAFE_LEFT_STATE 
                     || currentAnimationStateInt == STRAFE_RIGHT_STATE) {
@@ -253,90 +267,6 @@ public class PlayerControllerAlpha : MonoBehaviour {
 		animator.SetFloat(FORWARD, forwardSpeed);
 	}
 
-		/*
-	void FixedUpdate () {
-		grounded = getGrounded();
-		animator.applyRootMotion = (grounded & animator.GetCurrentAnimatorStateInfo(0).IsName(LOCOMOTION_STATE));
-		if (animator.GetCurrentAnimatorStateInfo(0).IsName(JUMP_STATE)) {
-			Debug.Log("in jump state");
-			if (!liftingOff && grounded) {
-				animator.SetTrigger("land");
-
-			} else if (liftingOff && !grounded) {
-				liftingOff = false;
-			}
-		}
-		// this if is just a debug block
-		if (Input.GetKeyDown(KeyCode.G)) {
-			if (grounded) {
-				Debug.Log("grounded");
-			} else {
-				Debug.Log("notGrounded");
-			}
-		}
-
-
-		if (Input.GetKeyDown(KeyCode.Tab) && !animator.IsInTransition(0)) {
-			if (bRagdoll) {
-			 	disableRagdoll();
-			} else {
-				enableRagdoll();
-			}
-		}
-	
-		if (!bRagdoll 
-			&& grounded
-			&&  (  animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion")
-				|| animator.GetCurrentAnimatorStateInfo(0).IsName("idle")))
-        {
-            if (Input.GetAxis("Vertical") > 0)
-            {
-                // Exponentially decay acceleration with respect to speed
-				float speedInc = Mathf.Pow(1 - forwardSpeed, accelerationExponent);
-                forwardSpeed += speedInc * Time.deltaTime;
-            }
-            if (Input.GetAxis("Vertical") < 0)
-            {
-                // deceleration rate is also exponential with respect to speed
-                float speedDec = 1 - forwardSpeed;
-				float tempForwardSpeed = forwardSpeed - (speedDec * Time.deltaTime);
-				// no walking backwards
-                forwardSpeed = Mathf.Max(
-					tempForwardSpeed,
-                   	0f
-                );
-            }
-
-			// jump
-			if (Input.GetKeyDown(KeyCode.Space)) {
-				jumpForce = new Vector3(0, jumpForceY, 0);
-				animator.applyRootMotion = false;
-				animator.SetTrigger("Jump");
-				liftingOff = true;
-				myRigidBody.AddForce(jumpForce);
-//				animator.applyRootMotion = true;
-			}
-
-			if (Input.GetKeyDown(KeyCode.X)) {
-				animator.applyRootMotion = false;
-				animator.SetTrigger("Slide");
-			}
-        }
-
-		// update the parameter that controls transitions between idle and locomotion
-        animator.SetFloat(FORWARD, forwardSpeed);
-		// update the param that controls how fast the animation plays (makes the guy run faster)
-		// but only for the locomotion state
-		if (animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion")) {
-			animator.speed = Mathf.Max(1, forwardSpeed * 3);
-		} else {
-			animator.speed = 1f;
-		}
-
-	}
-	*/
-
-
 	private void doJump() {
 		setRootMotion(false);
 		animator.SetTrigger("Jump");
@@ -344,14 +274,17 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	}
 
 	private void doSlide() {
-		setRootMotion(false);
+		// slide is faster than run, so slow it down
+		animator.speed *= .8f;
 		animator.SetTrigger("Slide");
-
 	}
 
 	private void doTheLocomotion() {
+		// like the song.  Sadly, I didn't get to use this.
 	}
 
+	// This just for debugging
+	// It's so we can check in the scrip param in the gui that the STATEs are being detected correctly
 	private string getAnimationStateString(int stateInt) {
 
 		if (stateInt == LOCOMOTION_STATE) return "LOCOMOTION";
@@ -436,25 +369,36 @@ public class PlayerControllerAlpha : MonoBehaviour {
 
 	void OnCollisionEnter(Collision myCollision) {
 		if (myCollision.collider.gameObject.layer == OBSTACLES_LAYER) {
-//			Debug.Log("col ENTER  vel = " + myRigidBody.velocity.magnitude);
 			matchAnimatorSpeedToVelocity();
 		}
 	}
 
 	void OnCollisionExit(Collision myCollision) {
 		if (myCollision.collider.gameObject.layer == OBSTACLES_LAYER) {
-//			Debug.Log("col EXIT   vel = " + myRigidBody.velocity.magnitude);
 			matchAnimatorSpeedToVelocity();
 		}
 	}
 
 	private void matchAnimatorSpeedToVelocity() {
-		float myVel = myRigidBody.velocity.magnitude;
+		float myVel = myRigidBody.velocity.z;
 		forwardSpeed = myVel/12.6f;
 		animator.SetFloat(FORWARD, forwardSpeed);
 	}
 
-	private bool getGrounded() {
+
+	// sees if the player is grounded, if so sets his acceleration potential according to the surface
+	private bool getGroundedAndSetSurface() {
+		return detectGroundAndSetSurface(0f, true);
+	}
+
+	// like above, but detects more distant ground 
+	private bool getAlmostGrounded() {
+		return detectGroundAndSetSurface(1f, false);
+	}
+
+	// returns true if there is ground within 0.3 + extraCastDistance of the player's feet
+	// sets the player's acceleration potential according to the surface slope tag if setSurface is true
+	private bool detectGroundAndSetSurface(float extraCastDistance, bool doSetSurface) {
 		// Define a Ray from the center of the capsule collider straight down.
 		Vector3 origin = myCapsuleCollider.transform.position 
 			+ new Vector3(0, 0.5f * myCapsuleCollider.height, 0);
@@ -463,7 +407,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 
 
 		float sphereRadius = myCapsuleCollider.radius;
-		float castDistance = 0.5f * myCapsuleCollider.height;
+		float castDistance = 0.5f * myCapsuleCollider.height + extraCastDistance;
 
 		// Cast a sphere the radius of the capsule collider
 		// from the center of the capusule collider straight down,
@@ -471,9 +415,10 @@ public class PlayerControllerAlpha : MonoBehaviour {
 		// and detect if it hits something not on the PLAYER_LAYER 
 		RaycastHit hit;
 		if (Physics.SphereCast(ray, sphereRadius, out hit, castDistance, sphereColliderLayerMask)) {
-//			Debug.Log(hit.collider.gameObject.name);
-//			Debug.Log(hit.collider.gameObject.tag);
-			setSurface(hit.collider.gameObject.tag);
+			if (doSetSurface) {
+				// setting the surface controlls the player's accelleration potential
+				setSurface(hit.collider.gameObject.tag);
+			}
 			// only consider the ground layer and obstacle layer
 			return (hit.collider.gameObject.layer == GROUND_LAYER
 				|| hit.collider.gameObject.layer == OBSTACLES_LAYER);
@@ -488,7 +433,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 			accelerationExponent = SLOPE_UPHILL_EXPONENT;
 		} else if (surfaceTag.Equals(DOWNHILL_TAG)) {
 			accelerationExponent = SLOPE_DOWNHILL_EXPONENT;
-		} else {
+		} else { // it's tagged flat or not at all
 			accelerationExponent = SLOPE_FLAT_EXPONENT;
 		}
 	}

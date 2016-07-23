@@ -388,7 +388,7 @@ ModelImporter:
       name: slideMiddle
       takeName: mixamo.com
       firstFrame: 30
-      lastFrame: 40
+      lastFrame: 32
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -551,7 +551,7 @@ ModelImporter:
     - serializedVersion: 16
       name: slideEnd
       takeName: mixamo.com
-      firstFrame: 40
+      firstFrame: 32
       lastFrame: 92
       wrapMode: 0
       orientationOffsetY: 0
