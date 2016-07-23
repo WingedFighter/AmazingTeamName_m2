@@ -26,8 +26,11 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	private Animator animator;
 	private CapsuleCollider myCapsuleCollider;
 	private Rigidbody myRigidBody;
+	public Rigidbody myHipsRigidBody;// = GetComponentInChildren<Rigidbody>();
 
     public bool bRagdoll = false;
+	// keep track of how long we've been a ragdoll.
+	public float ragdollDuration = 0f;
 	public bool bDead = false;
 
 	// referencing animator params
@@ -47,6 +50,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	static int STRAFE_LEFT_STATE = Animator.StringToHash("base.strafeLeft");
 	static int STRAFE_RIGHT_STATE = Animator.StringToHash("base.strafeRight");
 
+	// ended up not needing these, but they might be needed later
 	static int IDLE_TO_LOCOMOTION_TRANS = Animator.StringToHash("base.idleToLocomotion");
 	static int LOCOMOTION_TO_IDLE_TRANS = Animator.StringToHash("base.locomotionToIdle");
 	static int LOCOMOTION_TO_JUMP_TRANS = Animator.StringToHash("base.locomotionToJump");
@@ -86,19 +90,23 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	public int currentAnimationStateInt;
 	public string currentAnimationStateString;
 
+
 	// Use this for initialization
 	void Start () {
 
         animator = GetComponent<Animator>();
 		myRigidBody = GetComponent<Rigidbody>();
 		myCapsuleCollider = GetComponent<CapsuleCollider>();
+		myHipsRigidBody = GetComponentInChildren<Rigidbody>();
+		myHipsRigidBody = GameObject.FindGameObjectWithTag("hips").GetComponent<Rigidbody>();
 
-        disableRagdoll();
 
 		time = 0;
 		ticks = 0;
 		velocitySum = 0;
 		animVelocitySum = 0;
+
+		disableRagdoll(false);
 	}
 
 	void FixedUpdate() {
@@ -114,10 +122,18 @@ public class PlayerControllerAlpha : MonoBehaviour {
 
 		if (bRagdoll) {
 			// logic to transition out of ragdoll
+			if (ragdollDurationElapsed()) {
+				disableRagdoll(true);
+			}
 		} else { // we are in an animation state
 
+			// enable ragdoll if tab is pressed
+			if (Input.GetKeyDown(KeyCode.Tab)) {
+				enableRagdoll();
+			}
+
 			// figure out which animator state the player is in
-			if (animator.IsInTransition(0)) {
+			else if (animator.IsInTransition(0)) {
 				currentAnimationStateInt = animator.GetAnimatorTransitionInfo(0).nameHash;
 			} else {
 				currentAnimationStateInt = animator.GetCurrentAnimatorStateInfo(0).fullPathHash;
@@ -171,7 +187,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 				}
 			} else if (currentAnimationStateInt == SLIDE_MIDDLE_STATE) {
 				if (forwardSpeed < 1) {
-//					myRigidBody.AddForce(0, 0, slideForce);
+					myRigidBody.AddForce(0, 0, slideForce);
 				}
                 animator.speed = 1;
 				setRootMotion(false);
@@ -184,9 +200,9 @@ public class PlayerControllerAlpha : MonoBehaviour {
 				}
 				else if (!Input.GetKey(KeyCode.X)) {
 					animator.SetTrigger("endSlide");
+					matchAnimatorSpeedToVelocity();
 				}
 			} else if (currentAnimationStateInt == SLIDE_END_STATE) {
-				matchAnimatorSpeedToVelocity();
 				setRootMotion(false);
 				if (!almostGrounded) {
 					animator.SetTrigger("airborne");
@@ -207,12 +223,9 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	}
 
 	private void proccessInput() {
-		// check if should go ragdoll
-		if (Input.GetKeyDown(KeyCode.Tab)) {
-			enableRagdoll();
 
 		// check if should jump or slide
-		} else if (Input.GetKeyDown(KeyCode.Space)) {
+		if (Input.GetKeyDown(KeyCode.Space)) {
 			doJump();
 		} else if (Input.GetKeyDown(KeyCode.X)) {
 			doSlide ();
@@ -333,6 +346,9 @@ public class PlayerControllerAlpha : MonoBehaviour {
 
     private void enableRagdoll()
     {
+		// get the velocity of the dude
+		Vector3 velocity = myRigidBody.velocity;
+		bRagdoll = true;
 		forwardSpeed = 0f;
         animator.enabled = false;
         animator.Rebind();
@@ -341,15 +357,16 @@ public class PlayerControllerAlpha : MonoBehaviour {
         {
 			rb.isKinematic = false;
 			rb.detectCollisions = true;
+			rb.velocity = velocity;
         }
 
 		myRigidBody.isKinematic = true;
 		myRigidBody.detectCollisions = false;
 
-		bRagdoll = true;
     }
 
-    private void disableRagdoll()
+	// passTrue useHipPosition if not calling in start
+	private void disableRagdoll(bool useHipPosition)
     {
         foreach (Rigidbody rb in GetComponentsInChildren<Rigidbody>())
         {
@@ -365,6 +382,10 @@ public class PlayerControllerAlpha : MonoBehaviour {
 
         animator.SetTrigger("GetUp");
 		bRagdoll = false;
+
+		if (useHipPosition) {
+			gameObject.transform.position = myHipsRigidBody.position;
+		}
     }
 
 	void OnCollisionEnter(Collision myCollision) {
@@ -381,7 +402,9 @@ public class PlayerControllerAlpha : MonoBehaviour {
 
 	private void matchAnimatorSpeedToVelocity() {
 		float myVel = myRigidBody.velocity.z;
-		forwardSpeed = myVel/12.6f;
+		// if you don't do the min here, you can get going really fast by sliding
+		// TODO:  do we want that?
+		forwardSpeed = Mathf.Min(1, myVel/12.6f);
 		animator.SetFloat(FORWARD, forwardSpeed);
 	}
 
@@ -441,6 +464,27 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	// Wrapper method for setting root motion 
 	private void setRootMotion(bool b) {
 		animator.applyRootMotion = b;
+	}
+
+	// Returns true if the ragdoll has stopped moving.
+	private bool ragdollStoppedMoving() {
+		bool stillMoving = false;
+        foreach (Rigidbody rb in GetComponentsInChildren<Rigidbody>())
+        {
+			if (!rb.IsSleeping()) {
+				stillMoving = true;
+			}
+        }
+		return !stillMoving;
+	}
+
+	private bool ragdollDurationElapsed() {
+		ragdollDuration += Time.deltaTime;
+		if (ragdollDuration > 3f) {
+			ragdollDuration = 0f;
+			return true;
+		}
+		return false;
 	}
 
 }
