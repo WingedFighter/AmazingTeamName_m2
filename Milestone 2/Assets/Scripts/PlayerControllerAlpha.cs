@@ -211,7 +211,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 				}
 			} else if (currentAnimationStateInt == STRAFE_LEFT_STATE 
                     || currentAnimationStateInt == STRAFE_RIGHT_STATE) {
-                animator.speed = 1;
+				animator.speed = .8f;
                 processAxisInput();
 				if (!grounded) {
 					animator.SetTrigger("airborne");
