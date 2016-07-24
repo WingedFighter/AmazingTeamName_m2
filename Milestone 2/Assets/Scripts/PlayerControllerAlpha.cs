@@ -30,6 +30,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	public Rigidbody myHipsRigidBody;
 
     public bool bRagdoll = false;
+	public bool bGettinUp = false;
 	// keep track of how long we've been a ragdoll.
 	public float ragdollDuration = 0f;
 	public bool bDead = false;
@@ -50,6 +51,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	static int FALLING_STATE = Animator.StringToHash("base.falling");
 	static int STRAFE_LEFT_STATE = Animator.StringToHash("base.strafeLeft");
 	static int STRAFE_RIGHT_STATE = Animator.StringToHash("base.strafeRight");
+	static int GETTING_UP_STATE = Animator.StringToHash("base.getting_up");
 
 	// ended up not needing these, but they might be needed later
 	static int IDLE_TO_LOCOMOTION_TRANS = Animator.StringToHash("base.idleToLocomotion");
@@ -122,8 +124,10 @@ public class PlayerControllerAlpha : MonoBehaviour {
 		useRootMotion = animator.applyRootMotion;
 
 		if (bRagdoll) {
+			// move the rigidbody to the hips position so we can tell if grounded
+			myRigidBody.position = myHipsRigidBody.position;
 			// logic to transition out of ragdoll
-			if (ragdollDurationElapsed()) {
+			if (getGroundedAndSetSurface() && ragdollDurationElapsed()) {
 				disableRagdoll(true); // true means position the player at the ragdoll hips
 			}
 		} else { // we are in an animation state
@@ -140,6 +144,9 @@ public class PlayerControllerAlpha : MonoBehaviour {
 				currentAnimationStateInt = animator.GetCurrentAnimatorStateInfo(0).fullPathHash;
 			}
 			currentAnimationStateString = getAnimationStateString(currentAnimationStateInt);
+
+			// set this to let the camera know how fast to rotate
+			bGettinUp = (currentAnimationStateInt == GETTING_UP_STATE);
 
 			// now what to do for each state
 			if (currentAnimationStateInt == IDLE_STATE) {
@@ -336,13 +343,14 @@ public class PlayerControllerAlpha : MonoBehaviour {
 
 		if (stateInt == LOCOMOTION_STATE) return "LOCOMOTION";
 		if (stateInt == JUMP_STATE) return	"JUMP";
-		if (stateInt == SLIDE_START_STATE) return "SLIDE_START";
-		if (stateInt == SLIDE_MIDDLE_STATE) return "SLIDE_MIDDLE";
-		if (stateInt == SLIDE_END_STATE) return "SLIDE_END";
+		if (stateInt == SLIDE_START_STATE) return "SLIDE START";
+		if (stateInt == SLIDE_MIDDLE_STATE) return "SLIDE MIDDLE";
+		if (stateInt == SLIDE_END_STATE) return "SLIDE END";
 		if (stateInt == IDLE_STATE) return "IDLE";
 		if (stateInt == FALLING_STATE) return "FALLING";
-		if (stateInt == STRAFE_LEFT_STATE) return "STRAFE_LEFT";
-		if (stateInt == STRAFE_RIGHT_STATE) return "STRAFE_RIGHT";
+		if (stateInt == STRAFE_LEFT_STATE) return "STRAFE LEFT";
+		if (stateInt == STRAFE_RIGHT_STATE) return "STRAFE RIGHT";
+		if (stateInt == GETTING_UP_STATE) return "GETTING UP";
 
 		if (stateInt == IDLE_TO_LOCOMOTION_TRANS) return "IDLE_TO_LOC";
 		if (stateInt == LOCOMOTION_TO_IDLE_TRANS) return "LOC_TO_IDLE";
