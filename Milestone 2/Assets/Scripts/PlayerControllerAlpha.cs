@@ -5,6 +5,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 
 	// making this a public var so we can see it in gui
 	public bool useRootMotion;
+	public float knockoutForce = 2000;
 
 	// jumping experiment
 	public float jumpForce = 10000f;
@@ -433,6 +434,19 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	void OnCollisionEnter(Collision myCollision) {
 		if (myCollision.collider.gameObject.layer == OBSTACLES_LAYER) {
 			matchAnimatorSpeedToVelocity();
+			// calculate the total force of the impact
+			float totalForce = 0f;
+			Vector3 contactVeloity = myCollision.relativeVelocity;
+			Debug.Log("relativeVel  " + contactVeloity.magnitude);
+			foreach (ContactPoint contact in myCollision.contacts) {
+				totalForce += Vector3.Dot(contact.normal, contactVeloity);
+				Debug.Log("contactpoint");
+			}
+			totalForce *= myCollision.rigidbody.mass;
+			Debug.Log("totalForce  " + totalForce);
+			if (totalForce > knockoutForce) {
+				enableRagdoll();
+			}
 		}
 	}
 
