@@ -79,6 +79,8 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	public bool almostGrounded;
 	public bool didJump = false;
 	public bool goingUp = false;
+	private bool slideBoostLateUpdate = false;
+	private bool jumpBoostLateUpdate = false;
 
 	// the spherecast will ignore the player layer (don't want to hit colliders on feet)
 	private int sphereColliderLayerMask = ~(1 << PLAYER_LAYER);
@@ -198,13 +200,15 @@ public class PlayerControllerAlpha : MonoBehaviour {
 				setRootMotion(false);
 
 				if (Input.GetKey(KeyCode.Space)) {
-					myRigidBody.AddForce(0, jumpBoostForce  * Time.deltaTime, 0);
+//					myRigidBody.AddForce(0, jumpBoostForce  * Time.deltaTime, 0);
+					jumpBoostLateUpdate = true;
 				}
 			} else if (currentAnimationStateInt == JUMP_STATE) {
 				setRootMotion(false);
 
 				if (Input.GetKey(KeyCode.Space)) {
-					myRigidBody.AddForce(0, jumpBoostForce  * Time.deltaTime, 0);
+//					myRigidBody.AddForce(0, jumpBoostForce  * Time.deltaTime, 0);
+					jumpBoostLateUpdate = true;
 				}
 			} else if (currentAnimationStateInt == JUMP_TO_FALLING_TRANS) {
 				setRootMotion(false);
@@ -217,7 +221,8 @@ public class PlayerControllerAlpha : MonoBehaviour {
 					&& didJump 
 					&& goingUp
 				) {
-					myRigidBody.AddForce(0, jumpBoostForce * Time.deltaTime,  0);
+//					myRigidBody.AddForce(0, jumpBoostForce * Time.deltaTime,  0);
+					jumpBoostLateUpdate = true;
 				}
 			} else if (currentAnimationStateInt == FALLING_STATE) {
 				setRootMotion(false);
@@ -230,7 +235,8 @@ public class PlayerControllerAlpha : MonoBehaviour {
 					&& didJump 
 					&& goingUp
 				) {
-					myRigidBody.AddForce(0, jumpBoostForce * Time.deltaTime , 0);
+//					myRigidBody.AddForce(0, jumpBoostForce * Time.deltaTime , 0);
+					jumpBoostLateUpdate = true;
 				}
 			} else if (currentAnimationStateInt == SLIDE_START_STATE) {
 				if (grounded) {
@@ -242,7 +248,8 @@ public class PlayerControllerAlpha : MonoBehaviour {
 				}
 			} else if (currentAnimationStateInt == SLIDE_MIDDLE_STATE) {
 				if (forwardSpeed < 1) {
-					myRigidBody.AddForce(0, 0, slideForce * Time.deltaTime);
+//					myRigidBody.AddForce(0, 0, slideForce * Time.deltaTime);
+					slideBoostLateUpdate = true;
 				}
                 animator.speed = 1;
 				setRootMotion(false);
@@ -276,6 +283,12 @@ public class PlayerControllerAlpha : MonoBehaviour {
 		if (jumpLateUpdate) {
 			myRigidBody.AddForce(0, jumpForce, 0);
 			jumpLateUpdate = false;
+		} else if (jumpBoostLateUpdate) {
+			myRigidBody.AddForce(0, jumpBoostForce  * Time.deltaTime, 0);
+			jumpBoostLateUpdate = false;
+		} else if (slideBoostLateUpdate) {
+			myRigidBody.AddForce(0, 0, slideForce * Time.deltaTime);
+			slideBoostLateUpdate = false;
 		}
 	}
 
@@ -373,14 +386,13 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	private void doJump() {
 		setRootMotion(false);
 		animator.SetTrigger("Jump");
-//		myRigidBody.AddForce(0, jumpForce, 0);
 		jumpLateUpdate = true;
 		didJump = true;
 	}
 
 	private void doSlide() {
 		// slide is faster than run, so slow it down
-		animator.speed *= .8f;
+		animator.speed *= 1f;
 		animator.SetTrigger("Slide");
 	}
 
