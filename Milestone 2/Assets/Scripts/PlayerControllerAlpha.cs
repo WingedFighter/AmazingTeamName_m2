@@ -26,7 +26,8 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	private Animator animator;
 	private CapsuleCollider myCapsuleCollider;
 	private Rigidbody myRigidBody;
-	public Rigidbody myHipsRigidBody;// = GetComponentInChildren<Rigidbody>();
+	// we need this to know where to get up from after ragdolling
+	public Rigidbody myHipsRigidBody;
 
     public bool bRagdoll = false;
 	// keep track of how long we've been a ragdoll.
@@ -106,7 +107,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 		velocitySum = 0;
 		animVelocitySum = 0;
 
-		disableRagdoll(false);
+		disableRagdoll(false); // false means don't position the player at the ragdoll hips
 	}
 
 	void FixedUpdate() {
@@ -123,7 +124,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 		if (bRagdoll) {
 			// logic to transition out of ragdoll
 			if (ragdollDurationElapsed()) {
-				disableRagdoll(true);
+				disableRagdoll(true); // true means position the player at the ragdoll hips
 			}
 		} else { // we are in an animation state
 
@@ -238,23 +239,56 @@ public class PlayerControllerAlpha : MonoBehaviour {
 
 	public float currentRotation = 0;
 	public float lateral = 0;
+	public bool turnLimitReached = false;
+	public bool turnLimitRight = true;
 		
 	private void processAxisInput() {
 
-        // Horizontal first, because it's easy
-		lateral = Input.GetAxis("Horizontal");
+        // Horizontal first because at first I thought it was easy
+		float tempLateral = Input.GetAxis("Horizontal");
+		currentRotation = myRigidBody.rotation.y;
 		if (currentAnimationStateInt == LOCOMOTION_STATE) {
 			// if we aren't pressing left/right, make him run straight ahead
-			if (Mathf.Abs(lateral) < 0.1) {
-				myRigidBody.rotation = Quaternion.identity;
+			if (Mathf.Abs(tempLateral) < .1f) {
+				// if we aren't pressing turn, manually turn the dude to face foward
+				myRigidBody.rotation = Quaternion.Lerp(myRigidBody.rotation, Quaternion.identity, .1f);
+				lateral = tempLateral;
 			// if he has turned too far, keep him at about 30 degrees
+			} else  if (turnLimitReached) {
+				// check to make sure we aren't already trying to turn back, ie with the direction keys
+				if (
+					(tempLateral > 0 && currentRotation > 0)
+					|| 
+					(tempLateral < 0 && currentRotation < 0)
+				) {
+					// change the animator param to make him run strait, but at an angle
+					lateral = Mathf.Lerp(lateral, 0, .1f);
+					turnLimitReached = false;
+				} else {
+					// we are already trying to turn him back
+					lateral = tempLateral;
+				}
+				if (Mathf.Abs(lateral) < 0.0001) {
+					// if we are back to straight, reset the flag
+					turnLimitReached = false;
+					lateral = 0;
+				}
 			} else {
+				// see if we have turned too far
 				// this is in radians, dammit
-				currentRotation = myRigidBody.transform.rotation.y;
-				if (Mathf.Abs(currentRotation) > .1f) {
-					lateral = 0;// *Time.deltaTime;
+				if (Mathf.Abs(currentRotation) > Mathf.PI/12) {
+					turnLimitRight = currentRotation > 0;
+					// change the animator param to make him run strait, but at an angle
+					lateral = Mathf.Lerp(lateral, 0, .1f);// *Time.deltaTime;
+					turnLimitReached = true;
+				} else {
+					// use the axis imput
+					lateral = tempLateral;
 				}
 			}
+		} else {
+			// if not in locomotive state, we still need to get input to strafe
+			lateral = tempLateral;
 		}
 		animator.SetFloat(LATERAL, lateral);
 
