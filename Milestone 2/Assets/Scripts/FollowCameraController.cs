@@ -37,7 +37,7 @@ public class FollowCameraController : MonoBehaviour {
 			transform.forward = Vector3.Lerp(transform.forward, deadTarget.forward, directionSmoothing * Time.deltaTime);
         } else {
 			liveTarget = GameObject.Find("playerCameraTarget").transform;
-			spot.x = liveTargetX;
+			spot.x = liveTarget.position.x;
 			spot.y = liveTarget.position.y;
 			spot.z = liveTarget.position.z;
 			transform.position = Vector3.Lerp(transform.position, spot + offset, positionSmoothing * Time.deltaTime);
