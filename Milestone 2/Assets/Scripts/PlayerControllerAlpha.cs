@@ -10,7 +10,6 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	// jumping experiment
 	public float jumpForce = 10000f;
 	public float jumpBoostForce = 5000f;
-	public float fallForce = -1000f;
 	public float slideForce = 100f;
 
 	public float decelerationRate = 5f;
@@ -169,7 +168,6 @@ public class PlayerControllerAlpha : MonoBehaviour {
 				} else {
 					setRootMotion(false);
 					animator.SetTrigger("airborne");
-					myRigidBody.AddForce(0, fallForce, 0);
 				}
 			} else if (currentAnimationStateInt == JUMP_STATE) {
 				setRootMotion(false);
@@ -180,7 +178,6 @@ public class PlayerControllerAlpha : MonoBehaviour {
 			} else if (currentAnimationStateInt == FALLING_STATE) {
 				setRootMotion(false);
 
-				myRigidBody.AddForce(0, fallForce, 0);
 				if (almostGrounded) {
 					animator.SetTrigger("land");
 				}
@@ -189,9 +186,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 					setRootMotion(true);
 				} else if (almostGrounded) {
 					setRootMotion(false);
-					myRigidBody.AddForce(0, fallForce, 0);
 				} else { // were not close to ground
-					myRigidBody.AddForce(0, fallForce, 0);
 					animator.SetTrigger("airborne");
 				}
 			} else if (currentAnimationStateInt == SLIDE_MIDDLE_STATE) {
@@ -201,10 +196,8 @@ public class PlayerControllerAlpha : MonoBehaviour {
                 animator.speed = 1;
 				setRootMotion(false);
 				if (!grounded) {
-					myRigidBody.AddForce(0, fallForce, 0);
 				}
 				if (!almostGrounded) {
-					myRigidBody.AddForce(0, fallForce, 0);
 					animator.SetTrigger("airborne");
 				}
 				else if (!Input.GetKey(KeyCode.X)) {
@@ -215,11 +208,10 @@ public class PlayerControllerAlpha : MonoBehaviour {
 				setRootMotion(false);
 				if (!almostGrounded) {
 					animator.SetTrigger("airborne");
-					myRigidBody.AddForce(0, fallForce, 0);
 				}
 			} else if (currentAnimationStateInt == STRAFE_LEFT_STATE 
                     || currentAnimationStateInt == STRAFE_RIGHT_STATE) {
-                animator.speed = 1;
+				animator.speed = .8f;
                 processAxisInput();
 				if (!grounded) {
 					animator.SetTrigger("airborne");
@@ -248,18 +240,17 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	public float currentRotation = 0;
 	public float lateral = 0;
 	public bool turnLimitReached = false;
-	public bool turnLimitRight = true;
 		
 	private void processAxisInput() {
 
         // Horizontal first because at first I thought it was easy
-		float tempLateral = Input.GetAxis("Horizontal");
+		float tempLateral = Input.GetAxis("Horizontal") * Mathf.Max(1f - forwardSpeed, .1f);
 		currentRotation = myRigidBody.rotation.y;
 		if (currentAnimationStateInt == LOCOMOTION_STATE) {
 			// if we aren't pressing left/right, make him run straight ahead
 			if (Mathf.Abs(tempLateral) < .1f) {
 				// if we aren't pressing turn, manually turn the dude to face foward
-				myRigidBody.rotation = Quaternion.Lerp(myRigidBody.rotation, Quaternion.identity, .1f);
+				myRigidBody.rotation = Quaternion.Lerp(myRigidBody.rotation, Quaternion.identity, .1f * Mathf.Max(1f - forwardSpeed, .2f));
 				lateral = tempLateral;
 			// if he has turned too far, keep him at about 30 degrees
 			} else  if (turnLimitReached) {
@@ -284,8 +275,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 			} else {
 				// see if we have turned too far
 				// this is in radians, dammit
-				if (Mathf.Abs(currentRotation) > Mathf.PI/12) {
-					turnLimitRight = currentRotation > 0;
+				if (Mathf.Abs(currentRotation) > (Mathf.PI/12)) {
 					// change the animator param to make him run strait, but at an angle
 					lateral = Mathf.Lerp(lateral, 0, .1f);// *Time.deltaTime;
 					turnLimitReached = true;
