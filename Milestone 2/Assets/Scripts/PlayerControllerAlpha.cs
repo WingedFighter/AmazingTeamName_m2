@@ -240,18 +240,17 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	public float currentRotation = 0;
 	public float lateral = 0;
 	public bool turnLimitReached = false;
-	public bool turnLimitRight = true;
 		
 	private void processAxisInput() {
 
         // Horizontal first because at first I thought it was easy
-		float tempLateral = Input.GetAxis("Horizontal");
+		float tempLateral = Input.GetAxis("Horizontal") * Mathf.Max(1f - forwardSpeed, .1f);
 		currentRotation = myRigidBody.rotation.y;
 		if (currentAnimationStateInt == LOCOMOTION_STATE) {
 			// if we aren't pressing left/right, make him run straight ahead
 			if (Mathf.Abs(tempLateral) < .1f) {
 				// if we aren't pressing turn, manually turn the dude to face foward
-				myRigidBody.rotation = Quaternion.Lerp(myRigidBody.rotation, Quaternion.identity, .1f);
+				myRigidBody.rotation = Quaternion.Lerp(myRigidBody.rotation, Quaternion.identity, .1f * Mathf.Max(1f - forwardSpeed, .2f));
 				lateral = tempLateral;
 			// if he has turned too far, keep him at about 30 degrees
 			} else  if (turnLimitReached) {
@@ -276,8 +275,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 			} else {
 				// see if we have turned too far
 				// this is in radians, dammit
-				if (Mathf.Abs(currentRotation) > Mathf.PI/12) {
-					turnLimitRight = currentRotation > 0;
+				if (Mathf.Abs(currentRotation) > (Mathf.PI/12)) {
 					// change the animator param to make him run strait, but at an angle
 					lateral = Mathf.Lerp(lateral, 0, .1f);// *Time.deltaTime;
 					turnLimitReached = true;
