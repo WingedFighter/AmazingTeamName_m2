@@ -14,7 +14,7 @@ public class FollowCameraController : MonoBehaviour {
     Transform deadTarget;
 
 	public Vector3 spot;
-    public float positionSmoothing = 10f;
+    public float positionSmoothing = 5f;
     public float directionSmoothing = 5f;
     public PlayerControllerAlpha pc;
 
