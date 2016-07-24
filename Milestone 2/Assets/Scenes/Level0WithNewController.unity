@@ -1763,9 +1763,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   useRootMotion: 0
   knockoutForce: 2000
-  jumpForce: 10000
-  jumpBoostForce: 5000
-  slideForce: 100
+  jumpForce: 40000
+  jumpBoostForce: 40000
+  slideForce: 10000
   decelerationRate: 5
   forwardSpeed: 0
   time: 0
@@ -1780,6 +1780,8 @@ MonoBehaviour:
   previousYRotation: 0
   grounded: 0
   almostGrounded: 0
+  didJump: 0
+  goingUp: 0
   accelerationExponent: 3
   currentAnimationStateInt: 0
   currentAnimationStateString: 

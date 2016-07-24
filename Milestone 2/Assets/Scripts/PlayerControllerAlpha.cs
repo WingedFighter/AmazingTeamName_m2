@@ -9,9 +9,9 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	public float knockoutForce = 2000;
 
 	// jumping experiment
-	public float jumpForce = 10000f;
-	public float jumpBoostForce = 5000f;
-	public float slideForce = 100f;
+	public float jumpForce = 40000f;
+	public float jumpBoostForce = 40000f;
+	public float slideForce = 10000f;
 
 	public float decelerationRate = 5f;
 	public float forwardSpeed = 0f;
@@ -43,6 +43,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	public float previousYRotation = 0;
 
 	// animator state and transition name hashes
+	// states
 	static int LOCOMOTION_STATE = Animator.StringToHash("base.locomotion");
 	static int JUMP_STATE = Animator.StringToHash("base.jump");
 	static int SLIDE_START_STATE = Animator.StringToHash("base.slideStart");
@@ -54,18 +55,19 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	static int STRAFE_RIGHT_STATE = Animator.StringToHash("base.strafeRight");
 	static int GETTING_UP_STATE = Animator.StringToHash("base.getting_up");
 
-	// ended up not needing these, but they might be needed later
-	static int IDLE_TO_LOCOMOTION_TRANS = Animator.StringToHash("base.idleToLocomotion");
-	static int LOCOMOTION_TO_IDLE_TRANS = Animator.StringToHash("base.locomotionToIdle");
-	static int LOCOMOTION_TO_JUMP_TRANS = Animator.StringToHash("base.locomotionToJump");
-	static int JUMP_TO_FALLING_TRANS = Animator.StringToHash("base.jumpToFall");
-	static int SLIDE_TO_LOCOMOTION_TRANS = Animator.StringToHash("base.slideToLocomotion");
-	static int LOCOMOTION_TO_SLIDE_TRANS = Animator.StringToHash("base.locomotionToSlide");
-	static int FALL_TO_LOCOMOTION_TRANS = Animator.StringToHash("base.fallToLocomotion");
-	static int IDLE_TO_STRAFE_LEFT_TRANS = Animator.StringToHash("base.idleToStrafeLeft");
-	static int IDLE_TO_STRAFE_RIGHT_TRANS = Animator.StringToHash("base.idleToStrafeRight");
-	static int STRAFE_LEFT_TO_IDLE_TRANS = Animator.StringToHash("base.strafeLeftToIdleTrans");
-	static int STRAFE_RIGHT_TO_IDLE_TRANS = Animator.StringToHash("base.strafeRightToIdleTrans");
+	// transitions
+	static int IDLE_TO_LOCOMOTION_TRANS = Animator.StringToHash("idleToLocomotion");
+	static int IDLE_TO_JUMP_TRANS = Animator.StringToHash("idleToJump");
+	static int LOCOMOTION_TO_IDLE_TRANS = Animator.StringToHash("locomotionToIdle");
+	static int LOCOMOTION_TO_JUMP_TRANS = Animator.StringToHash("locomotionToJump");
+	static int JUMP_TO_FALLING_TRANS = Animator.StringToHash("jumpToFall");
+	static int SLIDE_TO_LOCOMOTION_TRANS = Animator.StringToHash("slideToLocomotion");
+	static int LOCOMOTION_TO_SLIDE_TRANS = Animator.StringToHash("locomotionToSlide");
+	static int FALL_TO_LOCOMOTION_TRANS = Animator.StringToHash("fallToLocomotion");
+	static int IDLE_TO_STRAFE_LEFT_TRANS = Animator.StringToHash("idleToStrafeLeft");
+	static int IDLE_TO_STRAFE_RIGHT_TRANS = Animator.StringToHash("idleToStrafeRight");
+	static int STRAFE_LEFT_TO_IDLE_TRANS = Animator.StringToHash("strafeLeftToIdleTrans");
+	static int STRAFE_RIGHT_TO_IDLE_TRANS = Animator.StringToHash("strafeRightToIdleTrans");
 
 	// Layers
 	private static int OBSTACLES_LAYER = 8;
@@ -75,6 +77,8 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	// are we on the ground or near it at least
 	public bool grounded;
 	public bool almostGrounded;
+	public bool didJump = false;
+	public bool goingUp = false;
 
 	// the spherecast will ignore the player layer (don't want to hit colliders on feet)
 	private int sphereColliderLayerMask = ~(1 << PLAYER_LAYER);
@@ -127,6 +131,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 		// much depends on if we are gounded or near it
 		almostGrounded = getAlmostGrounded();
 		grounded = getGroundedAndSetSurface();
+		goingUp = myRigidBody.velocity.y > .5f;
 
 
 		// here just updating this in the gui for debugging
@@ -149,7 +154,8 @@ public class PlayerControllerAlpha : MonoBehaviour {
 
 			// figure out which animator state the player is in
 			else if (animator.IsInTransition(0)) {
-				currentAnimationStateInt = animator.GetAnimatorTransitionInfo(0).nameHash;
+				Debug.Log("transition");
+				currentAnimationStateInt = animator.GetAnimatorTransitionInfo(0).userNameHash;
 			} else {
 				currentAnimationStateInt = animator.GetCurrentAnimatorStateInfo(0).fullPathHash;
 			}
@@ -168,7 +174,13 @@ public class PlayerControllerAlpha : MonoBehaviour {
 					animator.SetTrigger("airborne");
 					setRootMotion(false);
 				}
-			} else if (currentAnimationStateInt == LOCOMOTION_STATE) {
+			} else if (
+				currentAnimationStateInt == LOCOMOTION_STATE
+				|| 
+				currentAnimationStateInt == LOCOMOTION_TO_IDLE_TRANS
+				||
+				currentAnimationStateInt == IDLE_TO_LOCOMOTION_TRANS
+			) {
 				if (grounded) {
 					setRootMotion(true);
 					proccessInput();
@@ -179,17 +191,46 @@ public class PlayerControllerAlpha : MonoBehaviour {
 					setRootMotion(false);
 					animator.SetTrigger("airborne");
 				}
+			} else if (currentAnimationStateInt == LOCOMOTION_TO_JUMP_TRANS
+				||
+				currentAnimationStateInt == IDLE_TO_JUMP_TRANS
+			) {
+				setRootMotion(false);
+
+				if (Input.GetKey(KeyCode.Space)) {
+					myRigidBody.AddForce(0, jumpBoostForce  * Time.deltaTime, 0);
+				}
 			} else if (currentAnimationStateInt == JUMP_STATE) {
 				setRootMotion(false);
 
 				if (Input.GetKey(KeyCode.Space)) {
-					myRigidBody.AddForce(0, jumpBoostForce, 0);
+					myRigidBody.AddForce(0, jumpBoostForce  * Time.deltaTime, 0);
+				}
+			} else if (currentAnimationStateInt == JUMP_TO_FALLING_TRANS) {
+				setRootMotion(false);
+
+				if (almostGrounded && !goingUp) {
+					animator.SetTrigger("land");
+					didJump = false;
+				} else if (  // if still going upwards, apply jump boost if space is pressed
+					Input.GetKey(KeyCode.Space) 
+					&& didJump 
+					&& goingUp
+				) {
+					myRigidBody.AddForce(0, jumpBoostForce * Time.deltaTime,  0);
 				}
 			} else if (currentAnimationStateInt == FALLING_STATE) {
 				setRootMotion(false);
 
-				if (almostGrounded) {
+				if (almostGrounded && !goingUp) {
 					animator.SetTrigger("land");
+					didJump = false;
+				} else if (  // if still going upwards, apply jump boost if space is pressed
+					Input.GetKey(KeyCode.Space) 
+					&& didJump 
+					&& goingUp
+				) {
+					myRigidBody.AddForce(0, jumpBoostForce * Time.deltaTime , 0);
 				}
 			} else if (currentAnimationStateInt == SLIDE_START_STATE) {
 				if (grounded) {
@@ -201,7 +242,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 				}
 			} else if (currentAnimationStateInt == SLIDE_MIDDLE_STATE) {
 				if (forwardSpeed < 1) {
-					myRigidBody.AddForce(0, 0, slideForce);
+					myRigidBody.AddForce(0, 0, slideForce * Time.deltaTime);
 				}
                 animator.speed = 1;
 				setRootMotion(false);
@@ -232,6 +273,10 @@ public class PlayerControllerAlpha : MonoBehaviour {
 
 	void LateUpdate() {
         handleFootstepsSound();
+		if (jumpLateUpdate) {
+			myRigidBody.AddForce(0, jumpForce, 0);
+			jumpLateUpdate = false;
+		}
 	}
 
 	private void proccessInput() {
@@ -323,10 +368,14 @@ public class PlayerControllerAlpha : MonoBehaviour {
 		animator.SetFloat(FORWARD, forwardSpeed);
 	}
 
+	private bool jumpLateUpdate = false;
+
 	private void doJump() {
 		setRootMotion(false);
 		animator.SetTrigger("Jump");
-		myRigidBody.AddForce(0, jumpForce, 0);
+//		myRigidBody.AddForce(0, jumpForce, 0);
+		jumpLateUpdate = true;
+		didJump = true;
 	}
 
 	private void doSlide() {
@@ -355,6 +404,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 		if (stateInt == GETTING_UP_STATE) return "GETTING UP";
 
 		if (stateInt == IDLE_TO_LOCOMOTION_TRANS) return "IDLE_TO_LOC";
+		if (stateInt == IDLE_TO_JUMP_TRANS) return "IDLE_TO_JUMP";
 		if (stateInt == LOCOMOTION_TO_IDLE_TRANS) return "LOC_TO_IDLE";
 		if (stateInt == LOCOMOTION_TO_JUMP_TRANS) return "LOC_TO_JUMP";
 		if (stateInt == JUMP_TO_FALLING_TRANS) return "JUMP_TO_FALL";
