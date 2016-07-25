@@ -351,7 +351,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 				// this is in radians, dammit
 				if (Mathf.Abs (currentRotation) > (Mathf.PI / 12)) {
 					// change the animator param to make him run strait, but at an angle
-					lateral = Mathf.Lerp (lateral, 0, .1f);// *Time.deltaTime;
+					lateral = Mathf.Lerp (lateral, 0, .1f);
 					turnLimitReached = true;
 				} else {
 					// use the axis imput
@@ -399,13 +399,6 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	private void doSlide ()
 	{
 		myLastVelocity = myRigidBody.velocity;
-		// slide is faster than run, so slow it down
-		// animator.speed *= 1f;
-//		if (animator.speed > 1f) {
-		//float reduction = (animator.speed - 1) * .5f;
-		//animator.speed -= reduction;
-//            animator.speed = 1f;
-//        }
 		animator.SetTrigger ("Slide");
 	}
 
