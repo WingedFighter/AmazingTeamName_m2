@@ -186,7 +186,8 @@ public class PlayerControllerAlpha : MonoBehaviour {
 				if (grounded) {
 					setRootMotion(true);
 					proccessInput();
-					animator.speed = Mathf.Max(1, forwardSpeed * 3);
+//					animator.speed = Mathf.Max(1, forwardSpeed * 3);
+					animator.speed = Mathf.Max(1, forwardSpeed * 5);
 				} else if (almostGrounded) {
 					setRootMotion(false);
 				} else {
@@ -200,14 +201,12 @@ public class PlayerControllerAlpha : MonoBehaviour {
 				setRootMotion(false);
 
 				if (Input.GetKey(KeyCode.Space)) {
-//					myRigidBody.AddForce(0, jumpBoostForce  * Time.deltaTime, 0);
 					jumpBoostLateUpdate = true;
 				}
 			} else if (currentAnimationStateInt == JUMP_STATE) {
 				setRootMotion(false);
 
 				if (Input.GetKey(KeyCode.Space)) {
-//					myRigidBody.AddForce(0, jumpBoostForce  * Time.deltaTime, 0);
 					jumpBoostLateUpdate = true;
 				}
 			} else if (currentAnimationStateInt == JUMP_TO_FALLING_TRANS) {
@@ -221,7 +220,6 @@ public class PlayerControllerAlpha : MonoBehaviour {
 					&& didJump 
 					&& goingUp
 				) {
-//					myRigidBody.AddForce(0, jumpBoostForce * Time.deltaTime,  0);
 					jumpBoostLateUpdate = true;
 				}
 			} else if (currentAnimationStateInt == FALLING_STATE) {
@@ -235,7 +233,6 @@ public class PlayerControllerAlpha : MonoBehaviour {
 					&& didJump 
 					&& goingUp
 				) {
-//					myRigidBody.AddForce(0, jumpBoostForce * Time.deltaTime , 0);
 					jumpBoostLateUpdate = true;
 				}
 			} else if (currentAnimationStateInt == SLIDE_START_STATE) {
@@ -248,7 +245,6 @@ public class PlayerControllerAlpha : MonoBehaviour {
 				}
 			} else if (currentAnimationStateInt == SLIDE_MIDDLE_STATE) {
 				if (forwardSpeed < 1) {
-//					myRigidBody.AddForce(0, 0, slideForce * Time.deltaTime);
 					slideBoostLateUpdate = true;
 				}
                 animator.speed = 1;
@@ -523,7 +519,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 		float myVel = myRigidBody.velocity.z;
 		// if you don't do the min here, you can get going really fast by sliding
 		// TODO:  do we want that?
-		forwardSpeed = Mathf.Min(1, myVel/12.6f);
+		forwardSpeed = Mathf.Min(1, (5f/3f) * (myVel/12.6f));
 		animator.SetFloat(FORWARD, forwardSpeed);
 	}
 
