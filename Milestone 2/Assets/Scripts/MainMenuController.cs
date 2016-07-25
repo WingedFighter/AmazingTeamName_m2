@@ -10,6 +10,8 @@ public class MainMenuController : MonoBehaviour {
     public Button LevelSelectButton;
     public Button CreditsButton;
 
+    public CreditsController creditsController;
+
     private EventSystem eventSystem;
 
     // Use this for initialization
@@ -34,6 +36,6 @@ public class MainMenuController : MonoBehaviour {
 
     public void Credits()
     {
-
+        creditsController.Play();
     }
 }
