@@ -26,7 +26,7 @@ public class MainMenuController : MonoBehaviour {
 
     public void PlayGame()
     {
-        SceneManager.LoadScene("Level0");
+        SceneManager.LoadScene("Level2");
     }
 
     public void LevelSelect()

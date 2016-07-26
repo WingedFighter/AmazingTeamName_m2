@@ -217,6 +217,7 @@ GameObject:
   - 114: {fileID: 720497050}
   - 54: {fileID: 112603138}
   - 136: {fileID: 112603135}
+  - 82: {fileID: 112603139}
   m_Layer: 9
   m_Name: Player
   m_TagString: Player
@@ -287,6 +288,80 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
+--- !u!82 &112603139
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 112603134}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 628c563f10f3daa4486aa90ea8193145, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 1
+  Mute: 0
+  Spatialize: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
 --- !u!1 &135145792
 GameObject:
   m_ObjectHideFlags: 0
@@ -996,8 +1071,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spot: {x: 0, y: 0, z: 0}
-  positionSmoothing: 10
-  directionSmoothing: 5
+  ragdollPositionSmoothing: 3
+  positionSmoothingX: 5
+  positionSmoothingY: 5
+  positionSmoothingZ: 5
+  directionSmoothingFast: 5
+  directionSmoothingSlow: 1
+  directionSmoothingMedium: 3
   pc: {fileID: 720497050}
   offset: {x: 0, y: 0, z: 0}
   liveTargetX: 0
@@ -1682,9 +1762,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useRootMotion: 0
+  knockoutForce: 2000
   jumpForce: 10000
   jumpBoostForce: 5000
-  fallForce: -1000
   slideForce: 100
   decelerationRate: 5
   forwardSpeed: 0
@@ -1694,6 +1774,7 @@ MonoBehaviour:
   ticks: 0
   myHipsRigidBody: {fileID: 0}
   bRagdoll: 0
+  bGettinUp: 0
   ragdollDuration: 0
   bDead: 0
   previousYRotation: 0
@@ -1704,6 +1785,7 @@ MonoBehaviour:
   currentAnimationStateString: 
   currentRotation: 0
   lateral: 0
+  turnLimitReached: 0
 --- !u!1 &740179163
 GameObject:
   m_ObjectHideFlags: 0

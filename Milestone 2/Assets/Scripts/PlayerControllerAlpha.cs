@@ -2,6 +2,7 @@
 using System.Collections;
 
 public class PlayerControllerAlpha : MonoBehaviour {
+    public Vector3 StartingLocation;
 
 	// making this a public var so we can see it in gui
 	public bool useRootMotion;
@@ -93,15 +94,18 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	public int currentAnimationStateInt;
 	public string currentAnimationStateString;
 
+    private bool footstepAudioPlaying = false;
+    private AudioSource footstepsAudioSource;
 
 	// Use this for initialization
 	void Start () {
-
+        StartingLocation = transform.position;
         animator = GetComponent<Animator>();
 		myRigidBody = GetComponent<Rigidbody>();
 		myCapsuleCollider = GetComponent<CapsuleCollider>();
 		myHipsRigidBody = GetComponentInChildren<Rigidbody>();
 		myHipsRigidBody = GameObject.FindGameObjectWithTag("hips").GetComponent<Rigidbody>();
+        footstepsAudioSource = GetComponent<AudioSource>();
 
 
 		time = 0;
@@ -111,6 +115,12 @@ public class PlayerControllerAlpha : MonoBehaviour {
 
 		disableRagdoll(false); // false means don't position the player at the ragdoll hips
 	}
+
+    public void Reset()
+    {
+        forwardSpeed = 0;
+        transform.position = StartingLocation;
+    }
 
 	void FixedUpdate() {
 
@@ -221,6 +231,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	}
 
 	void LateUpdate() {
+        handleFootstepsSound();
 	}
 
 	private void proccessInput() {
@@ -533,4 +544,21 @@ public class PlayerControllerAlpha : MonoBehaviour {
 		return false;
 	}
 
+    private void handleFootstepsSound()
+    {
+        if (forwardSpeed > 0 && currentAnimationStateInt == LOCOMOTION_STATE)
+        {
+            if (!footstepAudioPlaying)
+            {
+                footstepsAudioSource.Play();
+                footstepAudioPlaying = true;
+            }
+            footstepsAudioSource.pitch = 1 + forwardSpeed;
+        }
+        else
+        {
+            footstepsAudioSource.Stop();
+            footstepAudioPlaying = false;
+        }
+    }
 }
