@@ -43,7 +43,7 @@ public class LevelController : MonoBehaviour {
         }
 
         // Reset the player if the death plane is triggered
-        if (dPlane.Triggered && !LevelCompleted)
+        if ((dPlane.Triggered || Player.GetComponent<PlayerControllerAlpha>().bDead) && !LevelCompleted)
         {
             if (TargetBuilding.IsStable())
             {
@@ -53,7 +53,7 @@ public class LevelController : MonoBehaviour {
             }
         }
 
-        if (TargetBuilding.IsDestroyed())
+        if (TargetBuilding.IsDestroyed() && !LevelCompleted)
         {
             Invoke("LevelComplete", 4);
         }
