@@ -43,6 +43,11 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	// referencing animator params
 	static string FORWARD = "forward";
 	static string LATERAL = "lateral";
+	static string COLLIDER_HEIGHT = "colliderHeight";
+	public float myColliderHeight;
+	private float myOriginalColliderHeight;
+	private float myOriginalColliderCenterY = .89f;
+    private Vector3 myOriginalColliderCenter;
 
 	public float previousYRotation = 0;
 
@@ -70,8 +75,11 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	static int FALL_TO_LOCOMOTION_TRANS = Animator.StringToHash ("fallToLocomotion");
 	static int IDLE_TO_STRAFE_LEFT_TRANS = Animator.StringToHash ("idleToStrafeLeft");
 	static int IDLE_TO_STRAFE_RIGHT_TRANS = Animator.StringToHash ("idleToStrafeRight");
-	static int STRAFE_LEFT_TO_IDLE_TRANS = Animator.StringToHash ("strafeLeftToIdleTrans");
-	static int STRAFE_RIGHT_TO_IDLE_TRANS = Animator.StringToHash ("strafeRightToIdleTrans");
+	static int STRAFE_LEFT_TO_IDLE_TRANS = Animator.StringToHash ("strafeLeftToIdle");
+	static int STRAFE_RIGHT_TO_IDLE_TRANS = Animator.StringToHash ("strafeRightToIdle");
+	static int GETTING_UP_TO_IDLE_TRANS = Animator.StringToHash ("gettingUpToIdle");
+	static int SLIDE_START_TO_MIDDLE_TRANS = Animator.StringToHash ("slideStartToMiddle");
+	static int SLIDE_MIDDLE_TO_END_TRANS = Animator.StringToHash ("slideMiddleToEnd");
 
 	// Layers
 	private static int OBSTACLES_LAYER = 8;
@@ -116,6 +124,8 @@ public class PlayerControllerAlpha : MonoBehaviour {
 		myCapsuleCollider = GetComponent<CapsuleCollider> ();
 		myHipsRigidBody = GameObject.FindGameObjectWithTag ("hips").GetComponent<Rigidbody> ();
         footstepsAudioSource = GetComponent<AudioSource>();
+		myOriginalColliderHeight = myCapsuleCollider.height;
+        myOriginalColliderCenter = new Vector3(0, myOriginalColliderCenterY, 0);
 
 
 		time = 0;
@@ -137,10 +147,6 @@ public class PlayerControllerAlpha : MonoBehaviour {
 
 		myZVelocity = myRigidBody.velocity.z;
 
-		// much depends on if we are gounded or near it
-		almostGrounded = getAlmostGrounded ();
-		grounded = getGroundedAndSetSurface ();
-		goingUp = myRigidBody.velocity.y > .5f;
 
 
 		// here just updating this in the gui for debugging
@@ -154,21 +160,27 @@ public class PlayerControllerAlpha : MonoBehaviour {
 			if (getGroundedAndSetSurface () && ragdollDurationElapsed ()) {
 				disableRagdoll (true); // true means position the player at the ragdoll hips
 			}
+			myCapsuleCollider.height = myOriginalColliderHeight;
 		} else { // we are in an animation state
 
-			// enable ragdoll if tab is pressed
 			if (Input.GetKeyDown (KeyCode.Tab)) {
 				enableRagdoll ();
 			}
 
 			// figure out which animator state the player is in
 			else if (animator.IsInTransition (0)) {
-				Debug.Log ("transition");
 				currentAnimationStateInt = animator.GetAnimatorTransitionInfo (0).userNameHash;
 			} else {
 				currentAnimationStateInt = animator.GetCurrentAnimatorStateInfo (0).fullPathHash;
 			}
-			currentAnimationStateString = getAnimationStateString (currentAnimationStateInt);
+			currentAnimationStateString = getCurrentAnimationStateStringAndSetColliderHeight (currentAnimationStateInt);
+			myCapsuleCollider.height = myOriginalColliderHeight * myColliderHeight;
+
+
+			// much depends on if we are gounded or near it
+			almostGrounded = getAlmostGrounded ();
+			grounded = getGroundedAndSetSurface ();
+			goingUp = myRigidBody.velocity.y > .5f;
 
 			// set this to let the camera know how fast to rotate
 			bGettinUp = (currentAnimationStateInt == GETTING_UP_STATE);
@@ -189,7 +201,8 @@ public class PlayerControllerAlpha : MonoBehaviour {
 				||
 				currentAnimationStateInt == LOCOMOTION_TO_IDLE_TRANS
 				||
-				currentAnimationStateInt == IDLE_TO_LOCOMOTION_TRANS) {
+				currentAnimationStateInt == IDLE_TO_LOCOMOTION_TRANS
+			) {
 				if (grounded) {
 					setRootMotion (true);
 					proccessInput ();
@@ -274,7 +287,9 @@ public class PlayerControllerAlpha : MonoBehaviour {
 				if (!grounded) {
 					animator.SetTrigger ("airborne");
 				}
+			} else {  // we are in some other transition
 			}
+
 		}
 
 		animatorSpeed = animator.speed;
@@ -409,56 +424,111 @@ public class PlayerControllerAlpha : MonoBehaviour {
 
 	// This just for debugging
 	// It's so we can check in the scrip param in the gui that the STATEs are being detected correctly
-	private string getAnimationStateString (int stateInt)
+	private string getCurrentAnimationStateStringAndSetColliderHeight (int stateInt)
 	{
-
-		if (stateInt == LOCOMOTION_STATE)
+//		myColliderHeight = 1f; return "foo";
+		if (stateInt == LOCOMOTION_STATE) {
+			myColliderHeight = 1f;
+			myCapsuleCollider.center = myOriginalColliderCenter;
 			return "LOCOMOTION";
-		if (stateInt == JUMP_STATE)
+		} else if (stateInt == JUMP_STATE) {
+			myColliderHeight = animator.GetFloat(COLLIDER_HEIGHT);
+			myCapsuleCollider.center = myOriginalColliderCenter;
 			return	"JUMP";
-		if (stateInt == SLIDE_START_STATE)
+		} else if (stateInt == SLIDE_START_STATE) {
+			myColliderHeight = animator.GetFloat(COLLIDER_HEIGHT);
+			myCapsuleCollider.center = new Vector3(0, animator.GetFloat(COLLIDER_HEIGHT), 0);
 			return "SLIDE START";
-		if (stateInt == SLIDE_MIDDLE_STATE)
+		} else if (stateInt == SLIDE_MIDDLE_STATE) {
+			myColliderHeight = animator.GetFloat(COLLIDER_HEIGHT);
+			myCapsuleCollider.center = new Vector3(0, animator.GetFloat(COLLIDER_HEIGHT), 0);
 			return "SLIDE MIDDLE";
-		if (stateInt == SLIDE_END_STATE)
+		} else if (stateInt == SLIDE_END_STATE) {
+			myColliderHeight = animator.GetFloat(COLLIDER_HEIGHT);
+			myCapsuleCollider.center = new Vector3(0, animator.GetFloat(COLLIDER_HEIGHT), 0);
 			return "SLIDE END";
-		if (stateInt == IDLE_STATE)
+		} else if (stateInt == IDLE_STATE) {
+			myColliderHeight = 1f;
+			myCapsuleCollider.center = myOriginalColliderCenter;
 			return "IDLE";
-		if (stateInt == FALLING_STATE)
+		} else if (stateInt == FALLING_STATE) {
+			myColliderHeight = .6f;
+			myCapsuleCollider.center = myOriginalColliderCenter;
 			return "FALLING";
-		if (stateInt == STRAFE_LEFT_STATE)
+		} else if (stateInt == STRAFE_LEFT_STATE) {
+			myColliderHeight = 1f;
+			myCapsuleCollider.center = myOriginalColliderCenter;
 			return "STRAFE LEFT";
-		if (stateInt == STRAFE_RIGHT_STATE)
+		} else if (stateInt == STRAFE_RIGHT_STATE) {
+			myColliderHeight = 1f;
+			myCapsuleCollider.center = myOriginalColliderCenter;
 			return "STRAFE RIGHT";
-		if (stateInt == GETTING_UP_STATE)
+		} else if (stateInt == GETTING_UP_STATE) {
+			myColliderHeight = 1f;
+			myCapsuleCollider.center = myOriginalColliderCenter;
 			return "GETTING UP";
 
-		if (stateInt == IDLE_TO_LOCOMOTION_TRANS)
+		} else if (stateInt == IDLE_TO_LOCOMOTION_TRANS) {
+			myColliderHeight = 1f;
+			myCapsuleCollider.center = myOriginalColliderCenter;
 			return "IDLE_TO_LOC";
-		if (stateInt == IDLE_TO_JUMP_TRANS)
+		} else if (stateInt == IDLE_TO_JUMP_TRANS) {
+			myColliderHeight = 1f;
+			myCapsuleCollider.center = myOriginalColliderCenter;
 			return "IDLE_TO_JUMP";
-		if (stateInt == LOCOMOTION_TO_IDLE_TRANS)
+		} else if (stateInt == LOCOMOTION_TO_IDLE_TRANS) {
+			myColliderHeight = 1f;
+			myCapsuleCollider.center = myOriginalColliderCenter;
 			return "LOC_TO_IDLE";
-		if (stateInt == LOCOMOTION_TO_JUMP_TRANS)
+		} else if (stateInt == LOCOMOTION_TO_JUMP_TRANS) {
+			myColliderHeight = 1f;
+			myCapsuleCollider.center = myOriginalColliderCenter;
 			return "LOC_TO_JUMP";
-		if (stateInt == JUMP_TO_FALLING_TRANS)
+		} else if (stateInt == JUMP_TO_FALLING_TRANS) {
+			myColliderHeight = .7f;
+			myCapsuleCollider.center = myOriginalColliderCenter;
 			return "JUMP_TO_FALL";
-		if (stateInt == SLIDE_TO_LOCOMOTION_TRANS)
+		} else if (stateInt == SLIDE_TO_LOCOMOTION_TRANS) {
+			myColliderHeight = 1f;
+			myCapsuleCollider.center = myOriginalColliderCenter;
 			return "SLIDE_TO_LOC";
-		if (stateInt == LOCOMOTION_TO_SLIDE_TRANS)
+		} else if (stateInt == LOCOMOTION_TO_SLIDE_TRANS) {
+			myColliderHeight = 1f;
+			myCapsuleCollider.center = myOriginalColliderCenter;
 			return "LOC_TO_SLIDE";
-		if (stateInt == FALL_TO_LOCOMOTION_TRANS)
+		} else if (stateInt == FALL_TO_LOCOMOTION_TRANS) {
+			myColliderHeight = 1f;
+			myCapsuleCollider.center = myOriginalColliderCenter;
 			return "FALL_TO_LOC";
-		if (stateInt == IDLE_TO_STRAFE_LEFT_TRANS)
+		} else if (stateInt == IDLE_TO_STRAFE_LEFT_TRANS) {
+			myColliderHeight = 1f;
+			myCapsuleCollider.center = myOriginalColliderCenter;
 			return "IDLE_TO_STRAFE_LEFT";
-		if (stateInt == IDLE_TO_STRAFE_RIGHT_TRANS)
+		} else if (stateInt == IDLE_TO_STRAFE_RIGHT_TRANS) {
+			myColliderHeight = 1f;
+			myCapsuleCollider.center = myOriginalColliderCenter;
 			return "IDLE_TO_STRAFE_RIGHT";
-		if (stateInt == STRAFE_LEFT_TO_IDLE_TRANS)
+		} else if (stateInt == STRAFE_LEFT_TO_IDLE_TRANS) {
+			myColliderHeight = 1f;
+			myCapsuleCollider.center = myOriginalColliderCenter;
 			return "STRAFE_LEFT_TO_IDLE";
-		if (stateInt == STRAFE_RIGHT_TO_IDLE_TRANS)
+		} else if (stateInt == STRAFE_RIGHT_TO_IDLE_TRANS) {
+			myColliderHeight = 1f;
+			myCapsuleCollider.center = myOriginalColliderCenter;
 			return "STRAFE_RIGHT_TO_IDLE";
-
-		return "UNKNOWN";
+		} else if (stateInt == SLIDE_START_TO_MIDDLE_TRANS) {
+			myColliderHeight = .3f;
+			myCapsuleCollider.center = new Vector3(0,.3f, 0);
+			return "slideStartToMiddle";
+		} else if (stateInt == SLIDE_MIDDLE_TO_END_TRANS) {
+			myColliderHeight = .3f;
+			myCapsuleCollider.center = new Vector3(0,.3f, 0);
+			return "SLIDE MID TO END";
+		} else {
+			myColliderHeight = 1f;
+			myCapsuleCollider.center = myOriginalColliderCenter;
+			return "UNKNOWN";
+		}
 	}
 
 	private void doVelocityDebugging ()
@@ -576,13 +646,13 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	{
 		// Define a Ray from the center of the capsule collider straight down.
 		Vector3 origin = myCapsuleCollider.transform.position
-		                 + new Vector3 (0, 0.5f * myCapsuleCollider.height, 0);
+		                 + new Vector3 (0, myCapsuleCollider.height, 0);
 		Vector3 direction = Vector3.down;
 		Ray ray = new Ray (origin, direction);
 
 
 		float sphereRadius = myCapsuleCollider.radius;
-		float castDistance = 0.5f * myCapsuleCollider.height + extraCastDistance;
+		float castDistance = myCapsuleCollider.height + extraCastDistance;
 
 		// Cast a sphere the radius of the capsule collider
 		// from the center of the capusule collider straight down,

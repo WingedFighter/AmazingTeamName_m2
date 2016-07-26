@@ -212,6 +212,23 @@ ModelImporter:
           preInfinity: 2
           postInfinity: 2
           rotationOrder: 0
+      - name: colliderHeight
+        curve:
+          serializedVersion: 2
+          curve:
+          - time: 0
+            value: 0.8
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+          - time: 1
+            value: 0.8
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+          preInfinity: 3
+          postInfinity: 3
+          rotationOrder: 0
       events: []
       transformMask:
       - path: 

@@ -1763,22 +1763,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   useRootMotion: 0
   knockoutForce: 2000
-  matchSpeedDivisor: 20
+  matchSpeedDivisor: 30
   myZVelocity: 0
+  animatorSpeed: 0
   jumpForce: 40000
   jumpBoostForce: 40000
-  slideForce: 0
+  slideForce: 30000
   decelerationRate: 5
   forwardSpeed: 0
   time: 0
   velocitySum: 0
   animVelocitySum: 0
   ticks: 0
-  myHipsRigidBody: {fileID: 0}
+  myHipsRigidBody: {fileID: 1681011023}
   bRagdoll: 0
   bGettinUp: 0
   ragdollDuration: 0
   bDead: 0
+  myColliderHeight: 0
   previousYRotation: 0
   grounded: 0
   almostGrounded: 0
