@@ -3,7 +3,7 @@ using System.Collections;
 
 public class DropShipController : MonoBehaviour {
     // External refs
-    public PlayerController playerController;
+    public PlayerControllerAlpha playerController;
 
     // Modifiable AI Parameters
     public float LeadTime = 2f;
@@ -14,12 +14,20 @@ public class DropShipController : MonoBehaviour {
     public float DropFrequency = 1f;
 	public float flybySpeed = 2f;
 
+	//Dropship physics
+	private RaycastHit hit;
+	public Rigidbody playerRigidbody;
+
 	// Flyby Waypoints
 	private GameObject[] waypoints;
 	private int currentWaypoint = 0;
 
     // List of droppable objects
     public GameObject[] DropItems;
+
+	//starting point
+	public Vector3 DropShipSpawnPosition;
+	public Quaternion DropShipSpawnRotation;
 
     public enum MovementAxis
     {
@@ -67,7 +75,6 @@ public class DropShipController : MonoBehaviour {
     private void FlyBy()
     {
 		if (currentWaypoint <= waypoints.Length - 1) {
-			//print (currentWaypoint + ", " + transform.position);
 			Vector3 target = waypoints [currentWaypoint].transform.position;
 			transform.position = Vector3.Lerp (transform.position, target, flybySpeed * Time.deltaTime);
 			if (Vector3.Distance (transform.position, target) < 1.5f) {
@@ -79,35 +86,32 @@ public class DropShipController : MonoBehaviour {
     }
 
     private void Move()
-    {
-        CharacterController cc = playerController.GetComponent<CharacterController>();
+    {		
+		RaycastHit hit = new RaycastHit ();
 
-        Vector3 deltaPosition = cc.velocity * LeadTime;
+		Vector3 deltaPosition = playerRigidbody.velocity * LeadTime;
         Vector3 targetPosition = playerController.transform.position + deltaPosition;
-        // We want the target height to remain the same as our current height
-        targetPosition.y = transform.position.y;
-
+		// We want the target height to remain the same as our current height
         // Ensure that the DropShip stays a minimum distance in front of the player
         switch(Axis)
         {
-            case MovementAxis.x:
-                if (targetPosition.x - playerController.transform.position.x < minLeadDistance)
-                {
-                    targetPosition.x = transform.position.x;
-                }
-                break;
-            case MovementAxis.y:
-                if (targetPosition.y - playerController.transform.position.y < minLeadDistance)
-                {
-                    targetPosition.y = transform.position.y;
-                }
-                break;
-            case MovementAxis.z:
-                if (targetPosition.z - playerController.transform.position.z < minLeadDistance)
-                {
-                    targetPosition.z = transform.position.z;
-                }
-                break;
+        case MovementAxis.x:
+            if (targetPosition.x - playerController.transform.position.x < minLeadDistance){
+                targetPosition.x = transform.position.x;
+            }
+            break;
+		case MovementAxis.y:
+			if (Physics.Raycast (transform.position, Vector3.down * 100, out hit)) {
+				if (hit.collider.gameObject.layer == LayerMask.NameToLayer ("ground")) {
+					targetPosition.y = hit.collider.transform.position.y + 20;
+				}
+			}
+			break;
+        case MovementAxis.z:
+            if (targetPosition.z - playerController.transform.position.z < minLeadDistance)                {
+                targetPosition.z = transform.position.z;
+            }
+            break;
         }
 
         transform.position = Vector3.Lerp(transform.position, targetPosition, LateralSpeed * Time.deltaTime);
@@ -125,7 +129,7 @@ public class DropShipController : MonoBehaviour {
     {
         int index = Random.Range(0, DropItems.Length);
         Vector3 dropPosition = transform.position;
-        dropPosition.y -= 0.75f;
+        dropPosition.y -= 1.75f;
         Instantiate(DropItems[index], dropPosition, transform.rotation);
 
         // Transition back to move
