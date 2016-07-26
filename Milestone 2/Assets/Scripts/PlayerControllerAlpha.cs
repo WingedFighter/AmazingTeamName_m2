@@ -22,6 +22,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 
 	private Vector3 speed;
 	public float time;
+    public bool notARealVar = true;
 
 	// these three just for debugging
 	public float velocitySum;
