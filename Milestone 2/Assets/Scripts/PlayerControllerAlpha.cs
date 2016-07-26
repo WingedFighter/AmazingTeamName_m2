@@ -117,8 +117,19 @@ public class PlayerControllerAlpha : MonoBehaviour {
     private bool footstepAudioPlaying = false;
     private AudioSource footstepsAudioSource;
 
-	// Use this for initialization
-	void Start ()
+    // Player Controller StateMachine
+    public enum PlayerState
+    {
+        disabled,
+        running,
+        projectile,
+        dead
+    }
+
+    public PlayerState State = PlayerState.running;
+
+    // Use this for initialization
+    void Start ()
 	{
 //        StartingLocation = transform.position;
 		// I hardcoded this because it kept resetting when I reset the script.  Strange.
@@ -141,13 +152,45 @@ public class PlayerControllerAlpha : MonoBehaviour {
 		disableRagdoll (false); // false means don't position the player at the ragdoll hips
 	}
 
+    void FixedUpdate()
+    {
+        switch (State)
+        {
+            case PlayerState.disabled:
+                break;
+            case PlayerState.running:
+                FixedRunning();
+                break;
+            case PlayerState.projectile:
+                break;
+            case PlayerState.dead:
+                break;
+        }
+    }
+
+    void LateUpdate()
+    {
+        switch (State)
+        {
+            case PlayerState.disabled:
+                break;
+            case PlayerState.running:
+                LateRunning();
+                break;
+            case PlayerState.projectile:
+                break;
+            case PlayerState.dead:
+                break;
+        }
+    }
+
     public void Reset()
     {
         forwardSpeed = 0;
         transform.position = StartingLocation;
     }
 
-	void FixedUpdate ()
+	void FixedRunning ()
 	{
 
 		myZVelocity = myRigidBody.velocity.z;
@@ -300,7 +343,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 		animatorSpeed = animator.speed;
 	}
 
-	void LateUpdate ()
+	void LateRunning ()
 	{
         handleFootstepsSound();
 
