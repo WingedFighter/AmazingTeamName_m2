@@ -338,7 +338,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	{
 
 		// Horizontal first because at first I thought it was easy
-		float tempLateral = Input.GetAxis ("Horizontal") * Mathf.Max (1f - forwardSpeed, .1f);
+		float tempLateral = Input.GetAxis ("Horizontal") * Mathf.Max(Mathf.Pow(1f - forwardSpeed, .5f), .2f);
 		currentRotation = myRigidBody.rotation.y;
 		if (currentAnimationStateInt == LOCOMOTION_STATE) {
 			// if we aren't pressing left/right, make him run straight ahead
