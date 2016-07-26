@@ -188,6 +188,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
     {
         forwardSpeed = 0;
         transform.position = StartingLocation;
+        bDead = false;
     }
 
 	void FixedRunning ()

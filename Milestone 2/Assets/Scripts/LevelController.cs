@@ -55,6 +55,7 @@ public class LevelController : MonoBehaviour {
 
         if (TargetBuilding.IsDestroyed() && !LevelCompleted)
         {
+            LevelCompleted = true;
             Invoke("LevelComplete", 4);
         }
 
@@ -72,7 +73,6 @@ public class LevelController : MonoBehaviour {
 
     void LevelComplete()
     {
-        LevelCompleted = true;
         SuccessText.SetActive(true);
         MultiplierText.SetActive(true);
         Invoke("ApplyMultiplier", 4);
