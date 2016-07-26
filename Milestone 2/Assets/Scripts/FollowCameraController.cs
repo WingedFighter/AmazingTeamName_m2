@@ -28,6 +28,8 @@ public class FollowCameraController : MonoBehaviour {
 	public Vector3 offset;
 	public float liveTargetX;
 
+    public Building TargetBuilding;
+
 	// Use this for initialization
 	void Start () {
 		liveTarget = GameObject.Find("playerCameraTarget").transform;
@@ -41,7 +43,7 @@ public class FollowCameraController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void FixedUpdate () {
-		if (pc.hitBuilding) {
+		if (!TargetBuilding.IsStable() || TargetBuilding.IsDestroyed()) {
 			transform.position = Vector3.Lerp(transform.position, buildingCameraPosition.position, ragdollPositionSmoothing * Time.deltaTime);
 			transform.forward = Vector3.Lerp(transform.forward, buildingCameraLookAt.position - transform.position, directionSmoothingMedium * Time.deltaTime);
 		}

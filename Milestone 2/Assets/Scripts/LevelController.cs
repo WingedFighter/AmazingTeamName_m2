@@ -12,10 +12,13 @@ public class LevelController : MonoBehaviour {
     public GameObject ScoreText;
     public GameObject LivesText;
     public GameObject SpeedometerText;
+    public GameObject MultiplierText;
     public string NextLevel = "MainMenu";
 
-    public float Score = 0;
+    public double Score = 0;
     public int Lives = 3;
+    public int Multiplier = 0;
+    public bool LevelCompleted = false;
 
     public float ScoreSpeedModifier = 10f;
 
@@ -31,9 +34,16 @@ public class LevelController : MonoBehaviour {
         {
             Score += Player.GetComponent<Rigidbody>().velocity.magnitude / ScoreSpeedModifier;
         }
+        if (!TargetBuilding.IsStable())
+        {
+            foreach(Rigidbody rb in TargetBuilding.GetComponentsInChildren<Rigidbody>())
+            {
+                Score += Mathf.Round(rb.velocity.magnitude);
+            }
+        }
 
         // Reset the player if the death plane is triggered
-        if (dPlane.Triggered)
+        if (dPlane.Triggered && !LevelCompleted)
         {
             if (TargetBuilding.IsStable())
             {
@@ -54,7 +64,7 @@ public class LevelController : MonoBehaviour {
         SpeedometerText.GetComponent<Text>().text = Mathf.Round(Player.GetComponent<Rigidbody>().velocity.magnitude) + " MPH";
 
         // Check for Lose condition
-        if (Lives <= 0)
+        if (Lives <= 0 && !LevelCompleted)
         {
             LevelFailed();
         }
@@ -62,7 +72,26 @@ public class LevelController : MonoBehaviour {
 
     void LevelComplete()
     {
+        LevelCompleted = true;
         SuccessText.SetActive(true);
+        MultiplierText.SetActive(true);
+        Invoke("ApplyMultiplier", 4);
+        //Invoke("LoadNextLevel", 4);
+    }
+
+    void ApplyMultiplier()
+    {
+        for (; Lives > 0; Lives--)
+        {
+            //Lives--;
+            Multiplier++; 
+        }
+
+        Score = (Multiplier) * Score;
+
+        LivesText.GetComponent<Text>().text = "Lives: " + Lives;
+        MultiplierText.GetComponent<Text>().text = "" + Multiplier;
+        ScoreText.GetComponent<Text>().text = "Score: " + Score;
         Invoke("LoadNextLevel", 4);
     }
 

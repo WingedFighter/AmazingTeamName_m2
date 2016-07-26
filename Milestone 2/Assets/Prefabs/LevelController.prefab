@@ -48,6 +48,7 @@ MonoBehaviour:
   ScoreText: {fileID: 0}
   LivesText: {fileID: 0}
   SpeedometerText: {fileID: 0}
+  MultiplierText: {fileID: 0}
   NextLevel: MainMenu
   Score: 0
   Lives: 3
