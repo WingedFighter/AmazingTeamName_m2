@@ -5,9 +5,11 @@ public class CreditsCube : MonoBehaviour {
 
     public bool bLanded = false;
 
+    private AudioSource audioSource;
+
 	// Use this for initialization
 	void Start () {
-	
+        audioSource = GetComponent<AudioSource>();
 	}
 	
 	// Update is called once per frame
@@ -21,9 +23,14 @@ public class CreditsCube : MonoBehaviour {
         if ( collision.gameObject.GetComponent<CreditsCube>() != null && collision.gameObject.transform.position.y > transform.position.y)
         {
             Destroy(gameObject, 3f);
-        } else
+        }
+        else
         {
-            bLanded = true;
+            if (!bLanded)
+            {
+                bLanded = true;
+                audioSource.Play();
+            }
         }
     }
 }
