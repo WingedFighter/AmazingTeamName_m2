@@ -205,7 +205,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 			// move the rigidbody to the hips position so we can tell if grounded
 			myRigidBody.position = myHipsRigidBody.position;
 			// logic to transition out of ragdoll
-			if (getGroundedAndSetSurface () && ragdollDurationElapsed ()) {
+			if (getGroundedAndSetSurface () && ragdollDurationElapsed () && !bDead) {
 				disableRagdoll (true); // true means position the player at the ragdoll hips
 			}
 			myCapsuleCollider.height = myOriginalColliderHeight;
@@ -642,18 +642,14 @@ public class PlayerControllerAlpha : MonoBehaviour {
 
 	void OnCollisionEnter (Collision myCollision)
 	{
-		if (
-			myCollision.collider.gameObject.layer == OBSTACLES_LAYER
-			|| myCollision.collider.gameObject.layer == BUILDING_LAYER
-		) {
-			matchAnimatorSpeedToVelocity ();
+		if (myCollision.collider.gameObject.layer == OBSTACLES_LAYER) {
 			// calculate the total force of the impact
 			float totalForce = 0f;
 			Vector3 contactVeloity = myCollision.relativeVelocity;
 			Debug.Log ("relativeVel  " + contactVeloity.magnitude);
 			foreach (ContactPoint contact in myCollision.contacts) {
 				Debug.Log("contact.normal : " + contact.normal);
-				if (Vector3.SqrMagnitude(contact.normal - Vector3.up) > 0.001) {
+				if (Vector3.SqrMagnitude(contact.normal - Vector3.up) > 0.1) {
 			    	totalForce += Vector3.Dot (contact.normal, contactVeloity);
                 }
 			}
@@ -662,10 +658,12 @@ public class PlayerControllerAlpha : MonoBehaviour {
 			if (totalForce > knockoutForce) {
 				enableRagdoll ();
 			}
+			matchAnimatorSpeedToVelocity ();
 		}
 		if (myCollision.collider.gameObject.layer == BUILDING_LAYER) {
 			hitBuilding = true;
 			enableRagdoll();
+			bDead = true;
 		}
 	}
 
