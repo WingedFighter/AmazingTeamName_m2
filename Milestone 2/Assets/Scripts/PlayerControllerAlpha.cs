@@ -8,10 +8,14 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	public bool useRootMotion;
 	public float knockoutForce = 2000;
 
+	public float matchSpeedDivisor = 30f;
+	public float myZVelocity;
+	public float animatorSpeed;
+
 	// jumping experiment
-	public float jumpForce = 10000f;
-	public float jumpBoostForce = 5000f;
-	public float slideForce = 100f;
+	public float jumpForce = 40000f;
+	public float jumpBoostForce = 40000f;
+	public float slideForce = 30000f;
 
 	public float decelerationRate = 5f;
 	public float forwardSpeed = 0f;
@@ -30,51 +34,67 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	// we need this to know where to get up from after ragdolling
 	public Rigidbody myHipsRigidBody;
 
-    public bool bRagdoll = false;
+	public bool bRagdoll = false;
 	public bool bGettinUp = false;
 	// keep track of how long we've been a ragdoll.
 	public float ragdollDuration = 0f;
 	public bool bDead = false;
+	public bool hitBuilding = false;
 
 	// referencing animator params
 	static string FORWARD = "forward";
 	static string LATERAL = "lateral";
+	static string COLLIDER_HEIGHT = "colliderHeight";
+	public float myColliderHeight;
+	private float myOriginalColliderHeight;
+	private float myOriginalColliderCenterY = .89f;
+    private Vector3 myOriginalColliderCenter;
 
 	public float previousYRotation = 0;
 
 	// animator state and transition name hashes
-	static int LOCOMOTION_STATE = Animator.StringToHash("base.locomotion");
-	static int JUMP_STATE = Animator.StringToHash("base.jump");
-	static int SLIDE_START_STATE = Animator.StringToHash("base.slideStart");
-	static int SLIDE_MIDDLE_STATE = Animator.StringToHash("base.slideMiddle");
-	static int SLIDE_END_STATE = Animator.StringToHash("base.slideEnd");
-	static int IDLE_STATE = Animator.StringToHash("base.idle");
-	static int FALLING_STATE = Animator.StringToHash("base.falling");
-	static int STRAFE_LEFT_STATE = Animator.StringToHash("base.strafeLeft");
-	static int STRAFE_RIGHT_STATE = Animator.StringToHash("base.strafeRight");
-	static int GETTING_UP_STATE = Animator.StringToHash("base.getting_up");
+	// states
+	static int LOCOMOTION_STATE = Animator.StringToHash ("base.locomotion");
+	static int JUMP_STATE = Animator.StringToHash ("base.jump");
+	static int SLIDE_START_STATE = Animator.StringToHash ("base.slideStart");
+	static int SLIDE_MIDDLE_STATE = Animator.StringToHash ("base.slideMiddle");
+	static int SLIDE_END_STATE = Animator.StringToHash ("base.slideEnd");
+	static int IDLE_STATE = Animator.StringToHash ("base.idle");
+	static int FALLING_STATE = Animator.StringToHash ("base.falling");
+	static int STRAFE_LEFT_STATE = Animator.StringToHash ("base.strafeLeft");
+	static int STRAFE_RIGHT_STATE = Animator.StringToHash ("base.strafeRight");
+	static int GETTING_UP_STATE = Animator.StringToHash ("base.getting_up");
 
-	// ended up not needing these, but they might be needed later
-	static int IDLE_TO_LOCOMOTION_TRANS = Animator.StringToHash("base.idleToLocomotion");
-	static int LOCOMOTION_TO_IDLE_TRANS = Animator.StringToHash("base.locomotionToIdle");
-	static int LOCOMOTION_TO_JUMP_TRANS = Animator.StringToHash("base.locomotionToJump");
-	static int JUMP_TO_FALLING_TRANS = Animator.StringToHash("base.jumpToFall");
-	static int SLIDE_TO_LOCOMOTION_TRANS = Animator.StringToHash("base.slideToLocomotion");
-	static int LOCOMOTION_TO_SLIDE_TRANS = Animator.StringToHash("base.locomotionToSlide");
-	static int FALL_TO_LOCOMOTION_TRANS = Animator.StringToHash("base.fallToLocomotion");
-	static int IDLE_TO_STRAFE_LEFT_TRANS = Animator.StringToHash("base.idleToStrafeLeft");
-	static int IDLE_TO_STRAFE_RIGHT_TRANS = Animator.StringToHash("base.idleToStrafeRight");
-	static int STRAFE_LEFT_TO_IDLE_TRANS = Animator.StringToHash("base.strafeLeftToIdleTrans");
-	static int STRAFE_RIGHT_TO_IDLE_TRANS = Animator.StringToHash("base.strafeRightToIdleTrans");
+	// transitions
+	static int IDLE_TO_LOCOMOTION_TRANS = Animator.StringToHash ("idleToLocomotion");
+	static int IDLE_TO_JUMP_TRANS = Animator.StringToHash ("idleToJump");
+	static int LOCOMOTION_TO_IDLE_TRANS = Animator.StringToHash ("locomotionToIdle");
+	static int LOCOMOTION_TO_JUMP_TRANS = Animator.StringToHash ("locomotionToJump");
+	static int JUMP_TO_FALLING_TRANS = Animator.StringToHash ("jumpToFall");
+	static int SLIDE_TO_LOCOMOTION_TRANS = Animator.StringToHash ("slideToLocomotion");
+	static int LOCOMOTION_TO_SLIDE_TRANS = Animator.StringToHash ("locomotionToSlide");
+	static int FALL_TO_LOCOMOTION_TRANS = Animator.StringToHash ("fallToLocomotion");
+	static int IDLE_TO_STRAFE_LEFT_TRANS = Animator.StringToHash ("idleToStrafeLeft");
+	static int IDLE_TO_STRAFE_RIGHT_TRANS = Animator.StringToHash ("idleToStrafeRight");
+	static int STRAFE_LEFT_TO_IDLE_TRANS = Animator.StringToHash ("strafeLeftToIdle");
+	static int STRAFE_RIGHT_TO_IDLE_TRANS = Animator.StringToHash ("strafeRightToIdle");
+	static int GETTING_UP_TO_IDLE_TRANS = Animator.StringToHash ("gettingUpToIdle");
+	static int SLIDE_START_TO_MIDDLE_TRANS = Animator.StringToHash ("slideStartToMiddle");
+	static int SLIDE_MIDDLE_TO_END_TRANS = Animator.StringToHash ("slideMiddleToEnd");
 
 	// Layers
 	private static int OBSTACLES_LAYER = 8;
+	private static int BUILDING_LAYER = 11;
 	private static int GROUND_LAYER = 10;
 	private static int PLAYER_LAYER = 9;
 
 	// are we on the ground or near it at least
 	public bool grounded;
 	public bool almostGrounded;
+	public bool didJump = false;
+	public bool goingUp = false;
+	private bool slideBoostLateUpdate = false;
+	private bool jumpBoostLateUpdate = false;
 
 	// the spherecast will ignore the player layer (don't want to hit colliders on feet)
 	private int sphereColliderLayerMask = ~(1 << PLAYER_LAYER);
@@ -98,14 +118,18 @@ public class PlayerControllerAlpha : MonoBehaviour {
     private AudioSource footstepsAudioSource;
 
 	// Use this for initialization
-	void Start () {
-        StartingLocation = transform.position;
-        animator = GetComponent<Animator>();
-		myRigidBody = GetComponent<Rigidbody>();
-		myCapsuleCollider = GetComponent<CapsuleCollider>();
-		myHipsRigidBody = GetComponentInChildren<Rigidbody>();
-		myHipsRigidBody = GameObject.FindGameObjectWithTag("hips").GetComponent<Rigidbody>();
+	void Start ()
+	{
+//        StartingLocation = transform.position;
+		// I hardcoded this because it kept resetting when I reset the script.  Strange.
+		StartingLocation = new Vector3(271, 15, 0);
+		animator = GetComponent<Animator> ();
+		myRigidBody = GetComponent<Rigidbody> ();
+		myCapsuleCollider = GetComponent<CapsuleCollider> ();
+		myHipsRigidBody = GameObject.FindGameObjectWithTag ("hips").GetComponent<Rigidbody> ();
         footstepsAudioSource = GetComponent<AudioSource>();
+		myOriginalColliderHeight = myCapsuleCollider.height;
+        myOriginalColliderCenter = new Vector3(0, myOriginalColliderCenterY, 0);
 
 
 		time = 0;
@@ -113,7 +137,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 		velocitySum = 0;
 		animVelocitySum = 0;
 
-		disableRagdoll(false); // false means don't position the player at the ragdoll hips
+		disableRagdoll (false); // false means don't position the player at the ragdoll hips
 	}
 
     public void Reset()
@@ -122,11 +146,11 @@ public class PlayerControllerAlpha : MonoBehaviour {
         transform.position = StartingLocation;
     }
 
-	void FixedUpdate() {
+	void FixedUpdate ()
+	{
 
-		// much depends on if we are gounded or near it
-		almostGrounded = getAlmostGrounded();
-		grounded = getGroundedAndSetSurface();
+		myZVelocity = myRigidBody.velocity.z;
+
 
 
 		// here just updating this in the gui for debugging
@@ -137,148 +161,206 @@ public class PlayerControllerAlpha : MonoBehaviour {
 			// move the rigidbody to the hips position so we can tell if grounded
 			myRigidBody.position = myHipsRigidBody.position;
 			// logic to transition out of ragdoll
-			if (getGroundedAndSetSurface() && ragdollDurationElapsed()) {
-				disableRagdoll(true); // true means position the player at the ragdoll hips
+			if (getGroundedAndSetSurface () && ragdollDurationElapsed ()) {
+				disableRagdoll (true); // true means position the player at the ragdoll hips
 			}
+			myCapsuleCollider.height = myOriginalColliderHeight;
 		} else { // we are in an animation state
 
-			// enable ragdoll if tab is pressed
-			if (Input.GetKeyDown(KeyCode.Tab)) {
-				enableRagdoll();
+			if (Input.GetKeyDown (KeyCode.Tab)) {
+				enableRagdoll ();
 			}
 
 			// figure out which animator state the player is in
-			else if (animator.IsInTransition(0)) {
-				currentAnimationStateInt = animator.GetAnimatorTransitionInfo(0).nameHash;
+			else if (animator.IsInTransition (0)) {
+				currentAnimationStateInt = animator.GetAnimatorTransitionInfo (0).userNameHash;
 			} else {
-				currentAnimationStateInt = animator.GetCurrentAnimatorStateInfo(0).fullPathHash;
+				currentAnimationStateInt = animator.GetCurrentAnimatorStateInfo (0).fullPathHash;
 			}
-			currentAnimationStateString = getAnimationStateString(currentAnimationStateInt);
+			currentAnimationStateString = getCurrentAnimationStateStringAndSetColliderHeight (currentAnimationStateInt);
+			myCapsuleCollider.height = myOriginalColliderHeight * myColliderHeight;
+
+
+			// much depends on if we are gounded or near it
+			almostGrounded = getAlmostGrounded ();
+			grounded = getGroundedAndSetSurface ();
+			goingUp = myRigidBody.velocity.y > .5f;
 
 			// set this to let the camera know how fast to rotate
 			bGettinUp = (currentAnimationStateInt == GETTING_UP_STATE);
 
 			// now what to do for each state
 			if (currentAnimationStateInt == IDLE_STATE) {
-					myRigidBody.rotation = Quaternion.identity;
+				myRigidBody.rotation = Quaternion.identity;
+				animator.speed = 1f;
 				if (grounded) {
-					setRootMotion(true);
-					proccessInput();
+					setRootMotion (true);
+					proccessInput ();
 				} else {
-					animator.SetTrigger("airborne");
-					setRootMotion(false);
+					animator.SetTrigger ("airborne");
+					setRootMotion (false);
 				}
-			} else if (currentAnimationStateInt == LOCOMOTION_STATE) {
+			} else if (
+				currentAnimationStateInt == LOCOMOTION_STATE
+				||
+				currentAnimationStateInt == LOCOMOTION_TO_IDLE_TRANS
+				||
+				currentAnimationStateInt == IDLE_TO_LOCOMOTION_TRANS
+			) {
 				if (grounded) {
-					setRootMotion(true);
-					proccessInput();
-					animator.speed = Mathf.Max(1, forwardSpeed * 3);
+					setRootMotion (true);
+					proccessInput ();
+					animator.speed = Mathf.Max (1, forwardSpeed * 5);
 				} else if (almostGrounded) {
-					setRootMotion(false);
+					setRootMotion (false);
 				} else {
-					setRootMotion(false);
-					animator.SetTrigger("airborne");
+					setRootMotion (false);
+					animator.SetTrigger ("airborne");
+				}
+			} else if (currentAnimationStateInt == LOCOMOTION_TO_JUMP_TRANS
+			           ||
+			           currentAnimationStateInt == IDLE_TO_JUMP_TRANS) {
+				setRootMotion (false);
+
+				if (Input.GetKey (KeyCode.Space)) {
+					jumpBoostLateUpdate = true;
 				}
 			} else if (currentAnimationStateInt == JUMP_STATE) {
-				setRootMotion(false);
+				setRootMotion (false);
 
-				if (Input.GetKey(KeyCode.Space)) {
-					myRigidBody.AddForce(0, jumpBoostForce, 0);
+				if (Input.GetKey (KeyCode.Space)) {
+					jumpBoostLateUpdate = true;
+				}
+			} else if (currentAnimationStateInt == JUMP_TO_FALLING_TRANS) {
+				setRootMotion (false);
+
+				if (almostGrounded && !goingUp) {
+					animator.SetTrigger ("land");
+					didJump = false;
+				} else if (  // if still going upwards, apply jump boost if space is pressed
+					Input.GetKey (KeyCode.Space)
+					&& didJump
+					&& goingUp) {
+					jumpBoostLateUpdate = true;
 				}
 			} else if (currentAnimationStateInt == FALLING_STATE) {
-				setRootMotion(false);
+				setRootMotion (false);
 
-				if (almostGrounded) {
-					animator.SetTrigger("land");
+				if (almostGrounded && !goingUp) {
+					animator.SetTrigger ("land");
+					didJump = false;
+				} else if (  // if still going upwards, apply jump boost if space is pressed
+					Input.GetKey (KeyCode.Space)
+					&& didJump
+					&& goingUp) {
+					jumpBoostLateUpdate = true;
 				}
 			} else if (currentAnimationStateInt == SLIDE_START_STATE) {
-				if (grounded) {
-					setRootMotion(true);
-				} else if (almostGrounded) {
-					setRootMotion(false);
-				} else { // were not close to ground
-					animator.SetTrigger("airborne");
+				if (animator.speed > 1) {
+					float reduction = (animator.speed - 1);
+					animator.speed -= Mathf.Min((reduction * 2 * Time.deltaTime), 1f);
+				}
+				myRigidBody.velocity = myLastVelocity;
+				setRootMotion (false);
+				slideBoostLateUpdate = true;
+				if (!almostGrounded) {
+					animator.SetTrigger ("airborne");
 				}
 			} else if (currentAnimationStateInt == SLIDE_MIDDLE_STATE) {
 				if (forwardSpeed < 1) {
-					myRigidBody.AddForce(0, 0, slideForce);
+					slideBoostLateUpdate = true;
 				}
-                animator.speed = 1;
-				setRootMotion(false);
+				setRootMotion (false);
 				if (!grounded) {
 				}
 				if (!almostGrounded) {
-					animator.SetTrigger("airborne");
-				}
-				else if (!Input.GetKey(KeyCode.X)) {
-					animator.SetTrigger("endSlide");
-					matchAnimatorSpeedToVelocity();
+					animator.SetTrigger ("airborne");
+				} else if (!Input.GetKey (KeyCode.X)) {
+					animator.SetTrigger ("endSlide");
+					matchAnimatorSpeedToVelocity ();
 				}
 			} else if (currentAnimationStateInt == SLIDE_END_STATE) {
-				setRootMotion(false);
+				setRootMotion (false);
 				if (!almostGrounded) {
-					animator.SetTrigger("airborne");
+					animator.SetTrigger ("airborne");
 				}
-			} else if (currentAnimationStateInt == STRAFE_LEFT_STATE 
-                    || currentAnimationStateInt == STRAFE_RIGHT_STATE) {
+			} else if (currentAnimationStateInt == STRAFE_LEFT_STATE
+			           || currentAnimationStateInt == STRAFE_RIGHT_STATE) {
 				animator.speed = .8f;
-                processAxisInput();
+				processAxisInput ();
 				if (!grounded) {
-					animator.SetTrigger("airborne");
+					animator.SetTrigger ("airborne");
 				}
+			} else {  // we are in some other transition
 			}
+
+		}
+
+		animatorSpeed = animator.speed;
+	}
+
+	void LateUpdate ()
+	{
+        handleFootstepsSound();
+
+		if (jumpLateUpdate) {
+			myRigidBody.AddForce (0, jumpForce, 0);
+			jumpLateUpdate = false;
+		} else if (jumpBoostLateUpdate) {
+			myRigidBody.AddForce (0, jumpBoostForce * Time.deltaTime, 0);
+			jumpBoostLateUpdate = false;
+		} else if (slideBoostLateUpdate) {
+			myRigidBody.AddForce (0, 0, slideForce * Time.deltaTime);
+			slideBoostLateUpdate = false;
 		}
 	}
 
-	void LateUpdate() {
-        handleFootstepsSound();
-	}
-
-	private void proccessInput() {
+	private void proccessInput ()
+	{
 
 		// check if should jump or slide
-		if (Input.GetKeyDown(KeyCode.Space)) {
-			doJump();
-		} else if (Input.GetKeyDown(KeyCode.X)) {
+		if (Input.GetKeyDown (KeyCode.Space)) {
+			doJump ();
+		} else if (Input.GetKeyDown (KeyCode.X)) {
 			doSlide ();
 
-		// else we are checking if we should locomote
+			// else we are checking if we should locomote
 		} else {
-			processAxisInput();
+			processAxisInput ();
 		}
 	}
 
 	public float currentRotation = 0;
 	public float lateral = 0;
 	public bool turnLimitReached = false;
-		
-	private void processAxisInput() {
 
-        // Horizontal first because at first I thought it was easy
-		float tempLateral = Input.GetAxis("Horizontal") * Mathf.Max(1f - forwardSpeed, .1f);
+	private void processAxisInput ()
+	{
+
+		// Horizontal first because at first I thought it was easy
+		float tempLateral = Input.GetAxis ("Horizontal") * Mathf.Max (1f - forwardSpeed, .1f);
 		currentRotation = myRigidBody.rotation.y;
 		if (currentAnimationStateInt == LOCOMOTION_STATE) {
 			// if we aren't pressing left/right, make him run straight ahead
-			if (Mathf.Abs(tempLateral) < .1f) {
+			if (Mathf.Abs (tempLateral) < .1f) {
 				// if we aren't pressing turn, manually turn the dude to face foward
-				myRigidBody.rotation = Quaternion.Lerp(myRigidBody.rotation, Quaternion.identity, .1f * Mathf.Max(1f - forwardSpeed, .2f));
+				myRigidBody.rotation = Quaternion.Lerp (myRigidBody.rotation, Quaternion.identity, .1f * Mathf.Max (1f - forwardSpeed, .2f));
 				lateral = tempLateral;
-			// if he has turned too far, keep him at about 30 degrees
-			} else  if (turnLimitReached) {
+				// if he has turned too far, keep him at about 30 degrees
+			} else if (turnLimitReached) {
 				// check to make sure we aren't already trying to turn back, ie with the direction keys
 				if (
 					(tempLateral > 0 && currentRotation > 0)
-					|| 
-					(tempLateral < 0 && currentRotation < 0)
-				) {
+					||
+					(tempLateral < 0 && currentRotation < 0)) {
 					// change the animator param to make him run strait, but at an angle
-					lateral = Mathf.Lerp(lateral, 0, .1f);
+					lateral = Mathf.Lerp (lateral, 0, .1f);
 					turnLimitReached = false;
 				} else {
 					// we are already trying to turn him back
 					lateral = tempLateral;
 				}
-				if (Mathf.Abs(lateral) < 0.0001) {
+				if (Mathf.Abs (lateral) < 0.0001) {
 					// if we are back to straight, reset the flag
 					turnLimitReached = false;
 					lateral = 0;
@@ -286,9 +368,9 @@ public class PlayerControllerAlpha : MonoBehaviour {
 			} else {
 				// see if we have turned too far
 				// this is in radians, dammit
-				if (Mathf.Abs(currentRotation) > (Mathf.PI/12)) {
+				if (Mathf.Abs (currentRotation) > (Mathf.PI / 12)) {
 					// change the animator param to make him run strait, but at an angle
-					lateral = Mathf.Lerp(lateral, 0, .1f);// *Time.deltaTime;
+					lateral = Mathf.Lerp (lateral, 0, .1f);
 					turnLimitReached = true;
 				} else {
 					// use the axis imput
@@ -299,86 +381,171 @@ public class PlayerControllerAlpha : MonoBehaviour {
 			// if not in locomotive state, we still need to get input to strafe
 			lateral = tempLateral;
 		}
-		animator.SetFloat(LATERAL, lateral);
+		animator.SetFloat (LATERAL, lateral);
 
 
-        // Now Vertical, ie, speed
-        if (Input.GetAxis("Vertical") > 0)
-        {
-            // Exponentially decay acceleration with respect to speed
-			float speedInc = Mathf.Pow(1 - forwardSpeed, accelerationExponent);
-            forwardSpeed += speedInc * Time.deltaTime;
-        }
-        if (Input.GetAxis("Vertical") < 0)
-        {
-            // deceleration rate is also exponential with respect to speed
-            float speedDec = 1 - forwardSpeed;
+		// Now Vertical, ie, speed
+		if (Input.GetAxis ("Vertical") > 0) {
+			// Exponentially decay acceleration with respect to speed
+			float speedInc = Mathf.Pow (1 - forwardSpeed, accelerationExponent);
+			forwardSpeed += speedInc * Time.deltaTime;
+		}
+		if (Input.GetAxis ("Vertical") < 0) {
+			// deceleration rate is also exponential with respect to speed
+			float speedDec = 1 - forwardSpeed;
 			float tempForwardSpeed = forwardSpeed - (speedDec * Time.deltaTime);
 			// no walking backwards
-            forwardSpeed = Mathf.Max(
+			forwardSpeed = Mathf.Max (
 				tempForwardSpeed,
-               	0f
-            );
-        }
-		animator.SetFloat(FORWARD, forwardSpeed);
+				0f
+			);
+		}
+		animator.SetFloat (FORWARD, forwardSpeed);
 	}
 
-	private void doJump() {
-		setRootMotion(false);
-		animator.SetTrigger("Jump");
-		myRigidBody.AddForce(0, jumpForce, 0);
+	private bool jumpLateUpdate = false;
+
+	private void doJump ()
+	{
+		setRootMotion (false);
+		animator.SetTrigger ("Jump");
+		jumpLateUpdate = true;
+		didJump = true;
 	}
 
-	private void doSlide() {
-		// slide is faster than run, so slow it down
-		animator.speed *= .8f;
-		animator.SetTrigger("Slide");
+	private Vector3 myLastVelocity;
+
+	private void doSlide ()
+	{
+		myLastVelocity = myRigidBody.velocity;
+		animator.SetTrigger ("Slide");
 	}
 
-	private void doTheLocomotion() {
+	private void doTheLocomotion ()
+	{
 		// like the song.  Sadly, I didn't get to use this.
 	}
 
 	// This just for debugging
 	// It's so we can check in the scrip param in the gui that the STATEs are being detected correctly
-	private string getAnimationStateString(int stateInt) {
+	private string getCurrentAnimationStateStringAndSetColliderHeight (int stateInt)
+	{
+//		myColliderHeight = 1f; return "foo";
+		if (stateInt == LOCOMOTION_STATE) {
+			myColliderHeight = 1f;
+			myCapsuleCollider.center = myOriginalColliderCenter;
+			return "LOCOMOTION";
+		} else if (stateInt == JUMP_STATE) {
+			myColliderHeight = animator.GetFloat(COLLIDER_HEIGHT);
+			myCapsuleCollider.center = myOriginalColliderCenter;
+			return	"JUMP";
+		} else if (stateInt == SLIDE_START_STATE) {
+			myColliderHeight = animator.GetFloat(COLLIDER_HEIGHT);
+			myCapsuleCollider.center = new Vector3(0, animator.GetFloat(COLLIDER_HEIGHT), 0);
+			return "SLIDE START";
+		} else if (stateInt == SLIDE_MIDDLE_STATE) {
+			myColliderHeight = animator.GetFloat(COLLIDER_HEIGHT);
+			myCapsuleCollider.center = new Vector3(0, animator.GetFloat(COLLIDER_HEIGHT), 0);
+			return "SLIDE MIDDLE";
+		} else if (stateInt == SLIDE_END_STATE) {
+			myColliderHeight = animator.GetFloat(COLLIDER_HEIGHT);
+			myCapsuleCollider.center = new Vector3(0, animator.GetFloat(COLLIDER_HEIGHT), 0);
+			return "SLIDE END";
+		} else if (stateInt == IDLE_STATE) {
+			myColliderHeight = 1f;
+			myCapsuleCollider.center = myOriginalColliderCenter;
+			return "IDLE";
+		} else if (stateInt == FALLING_STATE) {
+			myColliderHeight = .6f;
+			myCapsuleCollider.center = myOriginalColliderCenter;
+			return "FALLING";
+		} else if (stateInt == STRAFE_LEFT_STATE) {
+			myColliderHeight = 1f;
+			myCapsuleCollider.center = myOriginalColliderCenter;
+			return "STRAFE LEFT";
+		} else if (stateInt == STRAFE_RIGHT_STATE) {
+			myColliderHeight = 1f;
+			myCapsuleCollider.center = myOriginalColliderCenter;
+			return "STRAFE RIGHT";
+		} else if (stateInt == GETTING_UP_STATE) {
+			myColliderHeight = 1f;
+			myCapsuleCollider.center = myOriginalColliderCenter;
+			return "GETTING UP";
 
-		if (stateInt == LOCOMOTION_STATE) return "LOCOMOTION";
-		if (stateInt == JUMP_STATE) return	"JUMP";
-		if (stateInt == SLIDE_START_STATE) return "SLIDE START";
-		if (stateInt == SLIDE_MIDDLE_STATE) return "SLIDE MIDDLE";
-		if (stateInt == SLIDE_END_STATE) return "SLIDE END";
-		if (stateInt == IDLE_STATE) return "IDLE";
-		if (stateInt == FALLING_STATE) return "FALLING";
-		if (stateInt == STRAFE_LEFT_STATE) return "STRAFE LEFT";
-		if (stateInt == STRAFE_RIGHT_STATE) return "STRAFE RIGHT";
-		if (stateInt == GETTING_UP_STATE) return "GETTING UP";
-
-		if (stateInt == IDLE_TO_LOCOMOTION_TRANS) return "IDLE_TO_LOC";
-		if (stateInt == LOCOMOTION_TO_IDLE_TRANS) return "LOC_TO_IDLE";
-		if (stateInt == LOCOMOTION_TO_JUMP_TRANS) return "LOC_TO_JUMP";
-		if (stateInt == JUMP_TO_FALLING_TRANS) return "JUMP_TO_FALL";
-		if (stateInt == SLIDE_TO_LOCOMOTION_TRANS) return "SLIDE_TO_LOC";
-		if (stateInt == LOCOMOTION_TO_SLIDE_TRANS) return "LOC_TO_SLIDE";
-		if (stateInt == FALL_TO_LOCOMOTION_TRANS) return "FALL_TO_LOC";
-		if (stateInt == IDLE_TO_STRAFE_LEFT_TRANS) return "IDLE_TO_STRAFE_LEFT";
-		if (stateInt == IDLE_TO_STRAFE_RIGHT_TRANS) return "IDLE_TO_STRAFE_RIGHT";
-        if (stateInt == STRAFE_LEFT_TO_IDLE_TRANS) return "STRAFE_LEFT_TO_IDLE";
-        if (stateInt == STRAFE_RIGHT_TO_IDLE_TRANS) return "STRAFE_RIGHT_TO_IDLE";
-
-		return "UNKNOWN";
+		} else if (stateInt == IDLE_TO_LOCOMOTION_TRANS) {
+			myColliderHeight = 1f;
+			myCapsuleCollider.center = myOriginalColliderCenter;
+			return "IDLE_TO_LOC";
+		} else if (stateInt == IDLE_TO_JUMP_TRANS) {
+			myColliderHeight = 1f;
+			myCapsuleCollider.center = myOriginalColliderCenter;
+			return "IDLE_TO_JUMP";
+		} else if (stateInt == LOCOMOTION_TO_IDLE_TRANS) {
+			myColliderHeight = 1f;
+			myCapsuleCollider.center = myOriginalColliderCenter;
+			return "LOC_TO_IDLE";
+		} else if (stateInt == LOCOMOTION_TO_JUMP_TRANS) {
+			myColliderHeight = 1f;
+			myCapsuleCollider.center = myOriginalColliderCenter;
+			return "LOC_TO_JUMP";
+		} else if (stateInt == JUMP_TO_FALLING_TRANS) {
+			myColliderHeight = .7f;
+			myCapsuleCollider.center = myOriginalColliderCenter;
+			return "JUMP_TO_FALL";
+		} else if (stateInt == SLIDE_TO_LOCOMOTION_TRANS) {
+			myColliderHeight = 1f;
+			myCapsuleCollider.center = myOriginalColliderCenter;
+			return "SLIDE_TO_LOC";
+		} else if (stateInt == LOCOMOTION_TO_SLIDE_TRANS) {
+			myColliderHeight = 1f;
+			myCapsuleCollider.center = myOriginalColliderCenter;
+			return "LOC_TO_SLIDE";
+		} else if (stateInt == FALL_TO_LOCOMOTION_TRANS) {
+			myColliderHeight = 1f;
+			myCapsuleCollider.center = myOriginalColliderCenter;
+			return "FALL_TO_LOC";
+		} else if (stateInt == IDLE_TO_STRAFE_LEFT_TRANS) {
+			myColliderHeight = 1f;
+			myCapsuleCollider.center = myOriginalColliderCenter;
+			return "IDLE_TO_STRAFE_LEFT";
+		} else if (stateInt == IDLE_TO_STRAFE_RIGHT_TRANS) {
+			myColliderHeight = 1f;
+			myCapsuleCollider.center = myOriginalColliderCenter;
+			return "IDLE_TO_STRAFE_RIGHT";
+		} else if (stateInt == STRAFE_LEFT_TO_IDLE_TRANS) {
+			myColliderHeight = 1f;
+			myCapsuleCollider.center = myOriginalColliderCenter;
+			return "STRAFE_LEFT_TO_IDLE";
+		} else if (stateInt == STRAFE_RIGHT_TO_IDLE_TRANS) {
+			myColliderHeight = 1f;
+			myCapsuleCollider.center = myOriginalColliderCenter;
+			return "STRAFE_RIGHT_TO_IDLE";
+		} else if (stateInt == SLIDE_START_TO_MIDDLE_TRANS) {
+			myColliderHeight = .3f;
+			myCapsuleCollider.center = new Vector3(0,.3f, 0);
+			return "slideStartToMiddle";
+		} else if (stateInt == SLIDE_MIDDLE_TO_END_TRANS) {
+			myColliderHeight = .3f;
+			myCapsuleCollider.center = new Vector3(0,.3f, 0);
+			return "SLIDE MID TO END";
+		} else {
+			myColliderHeight = 1f;
+			myCapsuleCollider.center = myOriginalColliderCenter;
+			return "UNKNOWN";
+		}
 	}
 
-	private void doVelocityDebugging() {
+	private void doVelocityDebugging ()
+	{
 		time += Time.deltaTime;
-		if (time > 1f && animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion")) {
-			ticks ++;
+		if (time > 1f && animator.GetCurrentAnimatorStateInfo (0).IsName ("locomotion")) {
+			ticks++;
 			if (ticks > 10) {
 				velocitySum += myRigidBody.velocity.magnitude;
 				animVelocitySum += animator.velocity.magnitude;
-				float avgVel = velocitySum/(ticks -10);
-				float avgAnimVel = animVelocitySum/(ticks - 10);
-				Debug.Log(
+				float avgVel = velocitySum / (ticks - 10);
+				float avgAnimVel = animVelocitySum / (ticks - 10);
+				Debug.Log (
 					"forwardSpeed: " + forwardSpeed + " // " +
 					"velocityAvg: " + avgVel + " // " +
 					"animVelAvg:" + avgAnimVel
@@ -388,154 +555,171 @@ public class PlayerControllerAlpha : MonoBehaviour {
 		}
 	}
 
-    private void enableRagdoll()
-    {
+	private void enableRagdoll ()
+	{
 		// get the velocity of the dude
 		Vector3 velocity = myRigidBody.velocity;
 		bRagdoll = true;
 		forwardSpeed = 0f;
-        animator.enabled = false;
-        animator.Rebind();
+		animator.enabled = false;
+		animator.Rebind ();
 
-        foreach (Rigidbody rb in GetComponentsInChildren<Rigidbody>())
-        {
+		foreach (Rigidbody rb in GetComponentsInChildren<Rigidbody>()) {
 			rb.isKinematic = false;
 			rb.detectCollisions = true;
 			rb.velocity = velocity;
-        }
+		}
 
 		myRigidBody.isKinematic = true;
 		myRigidBody.detectCollisions = false;
 
-    }
+	}
 
 	// passTrue useHipPosition if not calling in start
-	private void disableRagdoll(bool useHipPosition)
-    {
-        foreach (Rigidbody rb in GetComponentsInChildren<Rigidbody>())
-        {
-            rb.isKinematic = true;
+	private void disableRagdoll (bool useHipPosition)
+	{
+		foreach (Rigidbody rb in GetComponentsInChildren<Rigidbody>()) {
+			rb.isKinematic = true;
 			rb.detectCollisions = false;
-        }
+		}
 
 		myRigidBody.isKinematic = false;
 		myRigidBody.detectCollisions = true;
 
-        animator.Rebind();
-        animator.enabled = true;
+		animator.Rebind ();
+		animator.enabled = true;
 
-        animator.SetTrigger("GetUp");
+		animator.SetTrigger ("GetUp");
 		bRagdoll = false;
 
 		if (useHipPosition) {
 			gameObject.transform.position = myHipsRigidBody.position;
 		}
-    }
+	}
 
-	void OnCollisionEnter(Collision myCollision) {
-		if (myCollision.collider.gameObject.layer == OBSTACLES_LAYER) {
-			matchAnimatorSpeedToVelocity();
+	void OnCollisionEnter (Collision myCollision)
+	{
+		if (
+			myCollision.collider.gameObject.layer == OBSTACLES_LAYER
+			|| myCollision.collider.gameObject.layer == BUILDING_LAYER
+		) {
+			matchAnimatorSpeedToVelocity ();
 			// calculate the total force of the impact
 			float totalForce = 0f;
 			Vector3 contactVeloity = myCollision.relativeVelocity;
-			Debug.Log("relativeVel  " + contactVeloity.magnitude);
+			Debug.Log ("relativeVel  " + contactVeloity.magnitude);
 			foreach (ContactPoint contact in myCollision.contacts) {
-				totalForce += Vector3.Dot(contact.normal, contactVeloity);
-				Debug.Log("contactpoint");
+				totalForce += Vector3.Dot (contact.normal, contactVeloity);
+				Debug.Log ("contactpoint");
 			}
 			totalForce *= myCollision.rigidbody.mass;
-			Debug.Log("totalForce  " + totalForce);
+			Debug.Log ("totalForce  " + totalForce);
 			if (totalForce > knockoutForce) {
-				enableRagdoll();
+				enableRagdoll ();
 			}
 		}
-	}
-
-	void OnCollisionExit(Collision myCollision) {
-		if (myCollision.collider.gameObject.layer == OBSTACLES_LAYER) {
-			matchAnimatorSpeedToVelocity();
+		if (myCollision.collider.gameObject.layer == BUILDING_LAYER) {
+			hitBuilding = true;
 		}
 	}
 
-	private void matchAnimatorSpeedToVelocity() {
-		float myVel = myRigidBody.velocity.z;
+	void OnCollisionExit (Collision myCollision)
+	{
+		if (
+			myCollision.collider.gameObject.layer == OBSTACLES_LAYER
+			|| myCollision.collider.gameObject.layer == BUILDING_LAYER
+		) {
+			matchAnimatorSpeedToVelocity ();
+		}
+	}
+
+	private void matchAnimatorSpeedToVelocity ()
+	{
 		// if you don't do the min here, you can get going really fast by sliding
-		// TODO:  do we want that?
-		forwardSpeed = Mathf.Min(1, myVel/12.6f);
-		animator.SetFloat(FORWARD, forwardSpeed);
+		forwardSpeed = Mathf.Min (1, (myZVelocity / matchSpeedDivisor));
+		animator.SetFloat (FORWARD, forwardSpeed);
 	}
 
 
 	// sees if the player is grounded, if so sets his acceleration potential according to the surface
-	private bool getGroundedAndSetSurface() {
-		return detectGroundAndSetSurface(0f, true);
+	private bool getGroundedAndSetSurface ()
+	{
+		return detectGroundAndSetSurface (0f, true);
 	}
 
-	// like above, but detects more distant ground 
-	private bool getAlmostGrounded() {
-		return detectGroundAndSetSurface(1f, false);
+	// like above, but detects more distant ground
+	private bool getAlmostGrounded ()
+	{
+		return detectGroundAndSetSurface (1f, false);
 	}
 
 	// returns true if there is ground within 0.3 + extraCastDistance of the player's feet
 	// sets the player's acceleration potential according to the surface slope tag if setSurface is true
-	private bool detectGroundAndSetSurface(float extraCastDistance, bool doSetSurface) {
+	private bool detectGroundAndSetSurface (float extraCastDistance, bool doSetSurface)
+	{
 		// Define a Ray from the center of the capsule collider straight down.
-		Vector3 origin = myCapsuleCollider.transform.position 
-			+ new Vector3(0, 0.5f * myCapsuleCollider.height, 0);
+		Vector3 origin = myCapsuleCollider.transform.position
+		                 + new Vector3 (0, myCapsuleCollider.height, 0);
 		Vector3 direction = Vector3.down;
-		Ray ray = new Ray(origin, direction);
+		Ray ray = new Ray (origin, direction);
 
 
 		float sphereRadius = myCapsuleCollider.radius;
-		float castDistance = 0.5f * myCapsuleCollider.height + extraCastDistance;
+		float castDistance = myCapsuleCollider.height + extraCastDistance;
 
 		// Cast a sphere the radius of the capsule collider
 		// from the center of the capusule collider straight down,
 		// to the point at which the sphere's center is at the player's feet
 		// and detect if it hits something not on the PLAYER_LAYER 
 		RaycastHit hit;
-		if (Physics.SphereCast(ray, sphereRadius, out hit, castDistance, sphereColliderLayerMask)) {
+		if (Physics.SphereCast (ray, sphereRadius, out hit, castDistance, sphereColliderLayerMask)) {
 			if (doSetSurface) {
 				// setting the surface controlls the player's accelleration potential
-				setSurface(hit.collider.gameObject.tag);
+				setSurface (hit.collider.gameObject.tag);
 			}
 			// only consider the ground layer and obstacle layer
-			return (hit.collider.gameObject.layer == GROUND_LAYER
-				|| hit.collider.gameObject.layer == OBSTACLES_LAYER);
+			return (
+				hit.collider.gameObject.layer == GROUND_LAYER
+				|| hit.collider.gameObject.layer == OBSTACLES_LAYER
+				|| hit.collider.gameObject.layer == BUILDING_LAYER
+			);
 		} else {
 			return false;
 		}
 	}
 
 	// Sets the surface slope acceleration exponent depending according to the surfaceTag param
-	private void setSurface(string surfaceTag) {
-		if (surfaceTag.Equals(UPHILL_TAG)) {
+	private void setSurface (string surfaceTag)
+	{
+		if (surfaceTag.Equals (UPHILL_TAG)) {
 			accelerationExponent = SLOPE_UPHILL_EXPONENT;
-		} else if (surfaceTag.Equals(DOWNHILL_TAG)) {
+		} else if (surfaceTag.Equals (DOWNHILL_TAG)) {
 			accelerationExponent = SLOPE_DOWNHILL_EXPONENT;
 		} else { // it's tagged flat or not at all
 			accelerationExponent = SLOPE_FLAT_EXPONENT;
 		}
 	}
 
-	// Wrapper method for setting root motion 
-	private void setRootMotion(bool b) {
+	// Wrapper method for setting root motion
+	private void setRootMotion (bool b)
+	{
 		animator.applyRootMotion = b;
 	}
 
 	// Returns true if the ragdoll has stopped moving.
-	private bool ragdollStoppedMoving() {
+	private bool ragdollStoppedMoving ()
+	{
 		bool stillMoving = false;
-        foreach (Rigidbody rb in GetComponentsInChildren<Rigidbody>())
-        {
-			if (!rb.IsSleeping()) {
+		foreach (Rigidbody rb in GetComponentsInChildren<Rigidbody>()) {
+			if (!rb.IsSleeping ()) {
 				stillMoving = true;
 			}
-        }
+		}
 		return !stillMoving;
 	}
 
-	private bool ragdollDurationElapsed() {
+	private bool ragdollDurationElapsed ()
+	{
 		ragdollDuration += Time.deltaTime;
 		if (ragdollDuration > 3f) {
 			ragdollDuration = 0f;

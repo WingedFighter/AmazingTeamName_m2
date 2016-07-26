@@ -12,6 +12,8 @@ public class FollowCameraController : MonoBehaviour {
 	Transform liveTarget;
 	// where to point the camera when player is dead
     Transform deadTarget;
+    Transform buildingCameraPosition;
+    Transform buildingCameraLookAt;
 
 	public Vector3 spot;
 	public float ragdollPositionSmoothing = 3f;
@@ -31,13 +33,19 @@ public class FollowCameraController : MonoBehaviour {
 		liveTarget = GameObject.Find("playerCameraTarget").transform;
 		liveTargetX = liveTarget.position.x;
 		deadTarget = GameObject.Find("headCameraTarget").transform;
+		buildingCameraPosition = GameObject.Find("buildingCameraPosition").transform;
+		buildingCameraLookAt = GameObject.Find("buildingCameraLookAt").transform;
 		offset = new Vector3(0,0,-2);
 		spot = new Vector3();
 	}
 	
 	// Update is called once per frame
 	void FixedUpdate () {
-        if (pc.bRagdoll) {
+		if (pc.hitBuilding) {
+			transform.position = Vector3.Lerp(transform.position, buildingCameraPosition.position, ragdollPositionSmoothing * Time.deltaTime);
+			transform.forward = Vector3.Lerp(transform.forward, buildingCameraLookAt.position - transform.position, directionSmoothingMedium * Time.deltaTime);
+		}
+        else if (pc.bRagdoll) {
 			transform.position = Vector3.Lerp(transform.position, deadTarget.position, ragdollPositionSmoothing * Time.deltaTime);
 			transform.forward = Vector3.Lerp(transform.forward, deadTarget.forward, directionSmoothingMedium * Time.deltaTime);
         } else {

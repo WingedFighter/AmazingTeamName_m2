@@ -1073,8 +1073,8 @@ MonoBehaviour:
   spot: {x: 0, y: 0, z: 0}
   ragdollPositionSmoothing: 3
   positionSmoothingX: 5
-  positionSmoothingY: 5
-  positionSmoothingZ: 5
+  positionSmoothingY: 8
+  positionSmoothingZ: 10
   directionSmoothingFast: 5
   directionSmoothingSlow: 1
   directionSmoothingMedium: 3
@@ -1763,23 +1763,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   useRootMotion: 0
   knockoutForce: 2000
-  jumpForce: 10000
-  jumpBoostForce: 5000
-  slideForce: 100
+  matchSpeedDivisor: 30
+  myZVelocity: 0
+  animatorSpeed: 0
+  jumpForce: 40000
+  jumpBoostForce: 40000
+  slideForce: 30000
   decelerationRate: 5
   forwardSpeed: 0
   time: 0
   velocitySum: 0
   animVelocitySum: 0
   ticks: 0
-  myHipsRigidBody: {fileID: 0}
+  myHipsRigidBody: {fileID: 1681011023}
   bRagdoll: 0
   bGettinUp: 0
   ragdollDuration: 0
   bDead: 0
+  myColliderHeight: 0
   previousYRotation: 0
   grounded: 0
   almostGrounded: 0
+  didJump: 0
+  goingUp: 0
   accelerationExponent: 3
   currentAnimationStateInt: 0
   currentAnimationStateString: 
