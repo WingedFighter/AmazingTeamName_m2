@@ -430,14 +430,13 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	// It's so we can check in the scrip param in the gui that the STATEs are being detected correctly
 	private string getCurrentAnimationStateStringAndSetColliderHeight (int stateInt)
 	{
-//		myColliderHeight = 1f; return "foo";
 		if (stateInt == LOCOMOTION_STATE) {
 			myColliderHeight = 1f;
 			myCapsuleCollider.center = myOriginalColliderCenter;
 			return "LOCOMOTION";
 		} else if (stateInt == JUMP_STATE) {
 			myColliderHeight = animator.GetFloat(COLLIDER_HEIGHT);
-			myCapsuleCollider.center = myOriginalColliderCenter;
+			myCapsuleCollider.center = myOriginalColliderCenter + new Vector3(0, .3f, 0);
 			return	"JUMP";
 		} else if (stateInt == SLIDE_START_STATE) {
 			myColliderHeight = animator.GetFloat(COLLIDER_HEIGHT);
@@ -456,7 +455,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 			myCapsuleCollider.center = myOriginalColliderCenter;
 			return "IDLE";
 		} else if (stateInt == FALLING_STATE) {
-			myColliderHeight = .6f;
+			myColliderHeight = .8f;
 			myCapsuleCollider.center = myOriginalColliderCenter;
 			return "FALLING";
 		} else if (stateInt == STRAFE_LEFT_STATE) {
@@ -477,23 +476,23 @@ public class PlayerControllerAlpha : MonoBehaviour {
 			myCapsuleCollider.center = myOriginalColliderCenter;
 			return "IDLE_TO_LOC";
 		} else if (stateInt == IDLE_TO_JUMP_TRANS) {
-			myColliderHeight = 1f;
-			myCapsuleCollider.center = myOriginalColliderCenter;
+			myColliderHeight = .95f;
+			myCapsuleCollider.center = myCapsuleCollider.center + new Vector3(0, 1.3f * Time.deltaTime, 0);
 			return "IDLE_TO_JUMP";
 		} else if (stateInt == LOCOMOTION_TO_IDLE_TRANS) {
 			myColliderHeight = 1f;
 			myCapsuleCollider.center = myOriginalColliderCenter;
 			return "LOC_TO_IDLE";
 		} else if (stateInt == LOCOMOTION_TO_JUMP_TRANS) {
-			myColliderHeight = 1f;
-			myCapsuleCollider.center = myOriginalColliderCenter;
+			myColliderHeight = .9f;
+			myCapsuleCollider.center = myCapsuleCollider.center + new Vector3(0, 1f * Time.deltaTime, 0);
 			return "LOC_TO_JUMP";
 		} else if (stateInt == JUMP_TO_FALLING_TRANS) {
 			myColliderHeight = .7f;
 			myCapsuleCollider.center = myOriginalColliderCenter;
 			return "JUMP_TO_FALL";
 		} else if (stateInt == SLIDE_TO_LOCOMOTION_TRANS) {
-			myColliderHeight = 1f;
+			myColliderHeight = .9f;
 			myCapsuleCollider.center = myOriginalColliderCenter;
 			return "SLIDE_TO_LOC";
 		} else if (stateInt == LOCOMOTION_TO_SLIDE_TRANS) {
