@@ -652,8 +652,10 @@ public class PlayerControllerAlpha : MonoBehaviour {
 			Vector3 contactVeloity = myCollision.relativeVelocity;
 			Debug.Log ("relativeVel  " + contactVeloity.magnitude);
 			foreach (ContactPoint contact in myCollision.contacts) {
-				totalForce += Vector3.Dot (contact.normal, contactVeloity);
-				Debug.Log ("contactpoint");
+				Debug.Log("contact.normal : " + contact.normal);
+				if (Vector3.SqrMagnitude(contact.normal - Vector3.up) > 0.001) {
+			    	totalForce += Vector3.Dot (contact.normal, contactVeloity);
+                }
 			}
 			totalForce *= myCollision.rigidbody.mass;
 			Debug.Log ("totalForce  " + totalForce);
@@ -663,6 +665,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 		}
 		if (myCollision.collider.gameObject.layer == BUILDING_LAYER) {
 			hitBuilding = true;
+			enableRagdoll();
 		}
 	}
 
@@ -723,8 +726,8 @@ public class PlayerControllerAlpha : MonoBehaviour {
 			// only consider the ground layer and obstacle layer
 			return (
 				hit.collider.gameObject.layer == GROUND_LAYER
-				|| hit.collider.gameObject.layer == OBSTACLES_LAYER
 				|| hit.collider.gameObject.layer == BUILDING_LAYER
+				|| hit.collider.gameObject.layer == OBSTACLES_LAYER
 			);
 		} else {
 			return false;
