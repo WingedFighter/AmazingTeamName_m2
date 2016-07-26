@@ -39,6 +39,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	// keep track of how long we've been a ragdoll.
 	public float ragdollDuration = 0f;
 	public bool bDead = false;
+	public bool hitBuilding = false;
 
 	// referencing animator params
 	static string FORWARD = "forward";
@@ -83,6 +84,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 
 	// Layers
 	private static int OBSTACLES_LAYER = 8;
+	private static int BUILDING_LAYER = 11;
 	private static int GROUND_LAYER = 10;
 	private static int PLAYER_LAYER = 9;
 
@@ -118,7 +120,9 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
 	{
-        StartingLocation = transform.position;
+//        StartingLocation = transform.position;
+		// I hardcoded this because it kept resetting when I reset the script.  Strange.
+		StartingLocation = new Vector3(271, 15, 0);
 		animator = GetComponent<Animator> ();
 		myRigidBody = GetComponent<Rigidbody> ();
 		myCapsuleCollider = GetComponent<CapsuleCollider> ();
@@ -595,7 +599,10 @@ public class PlayerControllerAlpha : MonoBehaviour {
 
 	void OnCollisionEnter (Collision myCollision)
 	{
-		if (myCollision.collider.gameObject.layer == OBSTACLES_LAYER) {
+		if (
+			myCollision.collider.gameObject.layer == OBSTACLES_LAYER
+			|| myCollision.collider.gameObject.layer == BUILDING_LAYER
+		) {
 			matchAnimatorSpeedToVelocity ();
 			// calculate the total force of the impact
 			float totalForce = 0f;
@@ -611,11 +618,17 @@ public class PlayerControllerAlpha : MonoBehaviour {
 				enableRagdoll ();
 			}
 		}
+		if (myCollision.collider.gameObject.layer == BUILDING_LAYER) {
+			hitBuilding = true;
+		}
 	}
 
 	void OnCollisionExit (Collision myCollision)
 	{
-		if (myCollision.collider.gameObject.layer == OBSTACLES_LAYER) {
+		if (
+			myCollision.collider.gameObject.layer == OBSTACLES_LAYER
+			|| myCollision.collider.gameObject.layer == BUILDING_LAYER
+		) {
 			matchAnimatorSpeedToVelocity ();
 		}
 	}
@@ -665,8 +678,11 @@ public class PlayerControllerAlpha : MonoBehaviour {
 				setSurface (hit.collider.gameObject.tag);
 			}
 			// only consider the ground layer and obstacle layer
-			return (hit.collider.gameObject.layer == GROUND_LAYER
-			|| hit.collider.gameObject.layer == OBSTACLES_LAYER);
+			return (
+				hit.collider.gameObject.layer == GROUND_LAYER
+				|| hit.collider.gameObject.layer == OBSTACLES_LAYER
+				|| hit.collider.gameObject.layer == BUILDING_LAYER
+			);
 		} else {
 			return false;
 		}
