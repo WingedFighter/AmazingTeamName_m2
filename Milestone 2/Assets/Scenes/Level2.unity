@@ -1795,6 +1795,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 405535287}
   - 114: {fileID: 405535288}
+  - 65: {fileID: 405535289}
   m_Layer: 11
   m_Name: Building
   m_TagString: Untagged
@@ -1861,6 +1862,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ComponentPositionThreshold: 5
   PercentDestroyedThreshold: 0.8
+--- !u!65 &405535289
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 405535286}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 24.5, y: 70, z: 24.68}
+  m_Center: {x: -6.1, y: 30, z: 0.82}
 --- !u!1 &443341073
 GameObject:
   m_ObjectHideFlags: 0

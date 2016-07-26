@@ -27,7 +27,10 @@ public class LevelController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         // calculate the score
-        Score += Player.GetComponent<Rigidbody>().velocity.magnitude/ScoreSpeedModifier;
+        if (Player.GetComponent<Rigidbody>().velocity.magnitude > 4)
+        {
+            Score += Player.GetComponent<Rigidbody>().velocity.magnitude / ScoreSpeedModifier;
+        }
 
         // Reset the player if the death plane is triggered
         if (dPlane.Triggered)
