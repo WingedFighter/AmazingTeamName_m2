@@ -7,11 +7,11 @@ TagManager:
   - ObstacleMovable
   - ObstacleImmovable
   - DeathPlane
-  - Waypoint
-  - LevelStatusOn
-  - BuildingHeightBoundary
-  - Building
-  - LevelStatusOff
+  - uphill
+  - downhill
+  - flat
+  - hips
+  - New Tag
   layers:
   - Default
   - TransparentFX
@@ -21,9 +21,9 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
-  - 
+  - obstacles
+  - player
+  - ground
   - 
   - 
   - 
