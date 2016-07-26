@@ -222,13 +222,13 @@ public class PlayerControllerAlpha : MonoBehaviour {
 			           currentAnimationStateInt == IDLE_TO_JUMP_TRANS) {
 				setRootMotion (false);
 
-				if (Input.GetKey (KeyCode.Space)) {
+				if (Input.GetKey (KeyCode.Space) || Input.GetKey(KeyCode.JoystickButton0)) {
 					jumpBoostLateUpdate = true;
 				}
 			} else if (currentAnimationStateInt == JUMP_STATE) {
 				setRootMotion (false);
 
-				if (Input.GetKey (KeyCode.Space)) {
+				if (Input.GetKey (KeyCode.Space) || Input.GetKey(KeyCode.JoystickButton0)) {
 					jumpBoostLateUpdate = true;
 				}
 			} else if (currentAnimationStateInt == JUMP_TO_FALLING_TRANS) {
@@ -238,8 +238,8 @@ public class PlayerControllerAlpha : MonoBehaviour {
 					animator.SetTrigger ("land");
 					didJump = false;
 				} else if (  // if still going upwards, apply jump boost if space is pressed
-					Input.GetKey (KeyCode.Space)
-					&& didJump
+					(Input.GetKey (KeyCode.Space) || Input.GetKey(KeyCode.JoystickButton0))
+                    && didJump
 					&& goingUp) {
 					jumpBoostLateUpdate = true;
 				}
@@ -250,8 +250,8 @@ public class PlayerControllerAlpha : MonoBehaviour {
 					animator.SetTrigger ("land");
 					didJump = false;
 				} else if (  // if still going upwards, apply jump boost if space is pressed
-					Input.GetKey (KeyCode.Space)
-					&& didJump
+					(Input.GetKey (KeyCode.Space) || Input.GetKey(KeyCode.JoystickButton0))
+                    && didJump
 					&& goingUp) {
 					jumpBoostLateUpdate = true;
 				}
@@ -275,7 +275,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 				}
 				if (!almostGrounded) {
 					animator.SetTrigger ("airborne");
-				} else if (!Input.GetKey (KeyCode.X)) {
+				} else if (!(Input.GetKey (KeyCode.X) || Input.GetKey(KeyCode.JoystickButton2))) {
 					animator.SetTrigger ("endSlide");
 					matchAnimatorSpeedToVelocity ();
 				}
@@ -319,9 +319,9 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	{
 
 		// check if should jump or slide
-		if (Input.GetKeyDown (KeyCode.Space)) {
+		if (Input.GetKeyDown (KeyCode.Space) || Input.GetKeyDown(KeyCode.JoystickButton0)) {
 			doJump ();
-		} else if (Input.GetKeyDown (KeyCode.X)) {
+		} else if (Input.GetKeyDown (KeyCode.X) || Input.GetKeyDown(KeyCode.JoystickButton2)) {
 			doSlide ();
 
 			// else we are checking if we should locomote
