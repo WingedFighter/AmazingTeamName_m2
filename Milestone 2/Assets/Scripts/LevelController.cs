@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections;
 
 public class LevelController : MonoBehaviour {
@@ -6,6 +7,7 @@ public class LevelController : MonoBehaviour {
     public DeathPlane dPlane;
     public GameObject Player;
     public GameObject SuccessText;
+    public string NextLevel = "MainMenu";
 
 	// Use this for initialization
 	void Start () {
@@ -40,5 +42,11 @@ public class LevelController : MonoBehaviour {
     void LevelComplete()
     {
         SuccessText.SetActive(true);
+        Invoke("LoadNextLevel", 4);
+    }
+
+    void LoadNextLevel()
+    {
+        SceneManager.LoadScene(NextLevel);
     }
 }

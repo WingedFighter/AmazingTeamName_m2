@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class BuildingComponent : MonoBehaviour {
-    public float MovementVelocityThreshold = 0.25f;
+    public float MovementVelocityThreshold = 0.5f;
     public Vector3 OriginalLocation;
 
     private Rigidbody rb;
