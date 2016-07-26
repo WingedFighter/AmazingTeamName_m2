@@ -22,7 +22,6 @@ public class PlayerControllerAlpha : MonoBehaviour {
 
 	private Vector3 speed;
 	public float time;
-    public bool notARealVar = true;
 
 	// these three just for debugging
 	public float velocitySum;
@@ -107,10 +106,10 @@ public class PlayerControllerAlpha : MonoBehaviour {
 
 	// Speed increase expoonents corresponding to Ground slope Tags
 	// Note that becuase we're applying these to a value less than one, smaller numbers result in greater acceleration
-	private static float SLOPE_FLAT_EXPONENT = 3f;
-	private static float SLOPE_DOWNHILL_EXPONENT = 1f;
-	private static float SLOPE_UPHILL_EXPONENT = 10f;
-	public float accelerationExponent = SLOPE_FLAT_EXPONENT;
+	public float SLOPE_FLAT_EXPONENT = 2;
+	public float SLOPE_DOWNHILL_EXPONENT = 1f;
+	public float SLOPE_UPHILL_EXPONENT = 5;
+	public float accelerationExponent;
 
 	public int currentAnimationStateInt;
 	public string currentAnimationStateString;
@@ -131,6 +130,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
         footstepsAudioSource = GetComponent<AudioSource>();
 		myOriginalColliderHeight = myCapsuleCollider.height;
         myOriginalColliderCenter = new Vector3(0, myOriginalColliderCenterY, 0);
+	    accelerationExponent = SLOPE_FLAT_EXPONENT;
 
 
 		time = 0;
