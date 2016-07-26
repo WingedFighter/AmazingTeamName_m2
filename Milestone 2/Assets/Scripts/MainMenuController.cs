@@ -10,7 +10,13 @@ public class MainMenuController : MonoBehaviour {
     public Button LevelSelectButton;
     public Button CreditsButton;
 
+    // Level SelectButton
+    public Button Level1Button;
+
     public CreditsController creditsController;
+
+    public GameObject MainMenuUI;
+    public GameObject LevelSelectUI;
 
     private EventSystem eventSystem;
 
@@ -31,11 +37,25 @@ public class MainMenuController : MonoBehaviour {
 
     public void LevelSelect()
     {
-        print("Going to level select");
+        MainMenuUI.SetActive(false);
+        LevelSelectUI.SetActive(true);
+        eventSystem.SetSelectedGameObject(Level1Button.gameObject);
+    }
+
+    public void ExitLevelSelect()
+    {
+        LevelSelectUI.SetActive(false);
+        MainMenuUI.SetActive(true);
+        eventSystem.SetSelectedGameObject(PlayButton.gameObject);
     }
 
     public void Credits()
     {
         creditsController.Play();
+    }
+
+    public void LoadLevel(string levelName)
+    {
+        SceneManager.LoadScene(levelName);
     }
 }
