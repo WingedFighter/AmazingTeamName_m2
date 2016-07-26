@@ -106,10 +106,10 @@ public class PlayerControllerAlpha : MonoBehaviour {
 
 	// Speed increase expoonents corresponding to Ground slope Tags
 	// Note that becuase we're applying these to a value less than one, smaller numbers result in greater acceleration
-	private static float SLOPE_FLAT_EXPONENT = 3f;
-	private static float SLOPE_DOWNHILL_EXPONENT = 1f;
-	private static float SLOPE_UPHILL_EXPONENT = 10f;
-	public float accelerationExponent = SLOPE_FLAT_EXPONENT;
+	public float SLOPE_FLAT_EXPONENT = 2;
+	public float SLOPE_DOWNHILL_EXPONENT = 1f;
+	public float SLOPE_UPHILL_EXPONENT = 5;
+	public float accelerationExponent;
 
 	public int currentAnimationStateInt;
 	public string currentAnimationStateString;
@@ -130,6 +130,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
         footstepsAudioSource = GetComponent<AudioSource>();
 		myOriginalColliderHeight = myCapsuleCollider.height;
         myOriginalColliderCenter = new Vector3(0, myOriginalColliderCenterY, 0);
+	    accelerationExponent = SLOPE_FLAT_EXPONENT;
 
 
 		time = 0;
@@ -430,14 +431,13 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	// It's so we can check in the scrip param in the gui that the STATEs are being detected correctly
 	private string getCurrentAnimationStateStringAndSetColliderHeight (int stateInt)
 	{
-//		myColliderHeight = 1f; return "foo";
 		if (stateInt == LOCOMOTION_STATE) {
 			myColliderHeight = 1f;
 			myCapsuleCollider.center = myOriginalColliderCenter;
 			return "LOCOMOTION";
 		} else if (stateInt == JUMP_STATE) {
 			myColliderHeight = animator.GetFloat(COLLIDER_HEIGHT);
-			myCapsuleCollider.center = myOriginalColliderCenter;
+			myCapsuleCollider.center = myOriginalColliderCenter + new Vector3(0, .3f, 0);
 			return	"JUMP";
 		} else if (stateInt == SLIDE_START_STATE) {
 			myColliderHeight = animator.GetFloat(COLLIDER_HEIGHT);
@@ -456,7 +456,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 			myCapsuleCollider.center = myOriginalColliderCenter;
 			return "IDLE";
 		} else if (stateInt == FALLING_STATE) {
-			myColliderHeight = .6f;
+			myColliderHeight = .8f;
 			myCapsuleCollider.center = myOriginalColliderCenter;
 			return "FALLING";
 		} else if (stateInt == STRAFE_LEFT_STATE) {
@@ -477,23 +477,23 @@ public class PlayerControllerAlpha : MonoBehaviour {
 			myCapsuleCollider.center = myOriginalColliderCenter;
 			return "IDLE_TO_LOC";
 		} else if (stateInt == IDLE_TO_JUMP_TRANS) {
-			myColliderHeight = 1f;
-			myCapsuleCollider.center = myOriginalColliderCenter;
+			myColliderHeight = .95f;
+			myCapsuleCollider.center = myCapsuleCollider.center + new Vector3(0, 1.3f * Time.deltaTime, 0);
 			return "IDLE_TO_JUMP";
 		} else if (stateInt == LOCOMOTION_TO_IDLE_TRANS) {
 			myColliderHeight = 1f;
 			myCapsuleCollider.center = myOriginalColliderCenter;
 			return "LOC_TO_IDLE";
 		} else if (stateInt == LOCOMOTION_TO_JUMP_TRANS) {
-			myColliderHeight = 1f;
-			myCapsuleCollider.center = myOriginalColliderCenter;
+			myColliderHeight = .9f;
+			myCapsuleCollider.center = myCapsuleCollider.center + new Vector3(0, 1f * Time.deltaTime, 0);
 			return "LOC_TO_JUMP";
 		} else if (stateInt == JUMP_TO_FALLING_TRANS) {
 			myColliderHeight = .7f;
 			myCapsuleCollider.center = myOriginalColliderCenter;
 			return "JUMP_TO_FALL";
 		} else if (stateInt == SLIDE_TO_LOCOMOTION_TRANS) {
-			myColliderHeight = 1f;
+			myColliderHeight = .9f;
 			myCapsuleCollider.center = myOriginalColliderCenter;
 			return "SLIDE_TO_LOC";
 		} else if (stateInt == LOCOMOTION_TO_SLIDE_TRANS) {
