@@ -69,7 +69,7 @@ public class LevelController : MonoBehaviour {
         LivesText.GetComponent<Text>().text = "Lives: " + Lives;
         ScoreText.GetComponent<Text>().text = "Score: " + (int)Score;
 		float currentSpeed = Player.GetComponent<Rigidbody>().velocity.z;
-		previousSpeed = (Mathf.Lerp(previousSpeed, currentSpeed, .2f));
+		previousSpeed = (Mathf.Lerp(previousSpeed, currentSpeed, Time.deltaTime));
 		SpeedometerText.GetComponent<Text>().text = Mathf.Round(previousSpeed) + " MPH";
         // Check for Lose condition
         if (Lives <= 0 && !LevelCompleted)
