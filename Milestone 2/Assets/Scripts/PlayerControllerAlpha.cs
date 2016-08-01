@@ -106,10 +106,10 @@ public class PlayerControllerAlpha : MonoBehaviour {
 
 	// Speed increase expoonents corresponding to Ground slope Tags
 	// Note that becuase we're applying these to a value less than one, smaller numbers result in greater acceleration
-	public float SLOPE_FLAT_EXPONENT = 3.5;
-	public float SLOPE_DOWNHILL_EXPONENT = 1f;
-	public float SLOPE_UPHILL_EXPONENT = 10f;
-	public float accelerationExponent;
+	private float SLOPE_FLAT_EXPONENT = 3.5f;
+	private float SLOPE_DOWNHILL_EXPONENT = 1f;
+	private float SLOPE_UPHILL_EXPONENT = 10f;
+	private float accelerationExponent;
 
 	public int currentAnimationStateInt;
 	public string currentAnimationStateString;
@@ -383,11 +383,14 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	{
 
 		// Horizontal first because at first I thought it was easy
-		float tempLateral = Input.GetAxis ("Horizontal") * Mathf.Max(Mathf.Pow(1f - forwardSpeed, .5f), .2f);
+		float tempLateral = Input.GetAxis ("Horizontal");
+		if (Mathf.Abs(tempLateral) >= .15f) {
+            tempLateral *= Mathf.Max(Mathf.Pow(1f - forwardSpeed, .8f), .15f);
+        }
 		currentRotation = myRigidBody.rotation.y;
 		if (currentAnimationStateInt == LOCOMOTION_STATE) {
 			// if we aren't pressing left/right, make him run straight ahead
-			if (Mathf.Abs (tempLateral) < .1f) {
+			if (Mathf.Abs (tempLateral) < .15f) {
 				// if we aren't pressing turn, manually turn the dude to face foward
 				myRigidBody.rotation = Quaternion.Lerp (myRigidBody.rotation, Quaternion.identity, .1f * Mathf.Max (1f - forwardSpeed, .2f));
 				lateral = tempLateral;
