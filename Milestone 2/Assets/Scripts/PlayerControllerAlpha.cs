@@ -13,11 +13,11 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	public float animatorSpeed;
 
 	// jumping experiment
-	public float jumpForce = 40000f;
-	public float jumpBoostForce = 40000f;
-	public float slideForce = 30000f;
+	private float jumpForce = 40000f;
+	private float jumpBoostForce = 40000f;
+	private float slideForce = 30000f;
 
-	public float decelerationRate = 5f;
+	private float decelerationRate = 5f;
 	public float forwardSpeed = 0f;
 
 	private Vector3 speed;
@@ -32,7 +32,8 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	private CapsuleCollider myCapsuleCollider;
 	private Rigidbody myRigidBody;
 	// we need this to know where to get up from after ragdolling
-	public Rigidbody myHipsRigidBody;
+	private Rigidbody myHipsRigidBody;
+	private Material myMaterial;
 
 	public bool bRagdoll = false;
 	public bool bGettinUp = false;
@@ -106,10 +107,10 @@ public class PlayerControllerAlpha : MonoBehaviour {
 
 	// Speed increase expoonents corresponding to Ground slope Tags
 	// Note that becuase we're applying these to a value less than one, smaller numbers result in greater acceleration
-	public float SLOPE_FLAT_EXPONENT = 3.5;
-	public float SLOPE_DOWNHILL_EXPONENT = 1f;
-	public float SLOPE_UPHILL_EXPONENT = 10f;
-	public float accelerationExponent;
+	private float SLOPE_FLAT_EXPONENT = 3.5f;
+	private float SLOPE_DOWNHILL_EXPONENT = 1f;
+	private float SLOPE_UPHILL_EXPONENT = 10f;
+	private float accelerationExponent;
 
 	public int currentAnimationStateInt;
 	public string currentAnimationStateString;
@@ -122,7 +123,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
     {
         disabled,
         running,
-        projectile,
+        projectile, 
         dead
     }
 
@@ -138,6 +139,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 		myRigidBody = GetComponent<Rigidbody> ();
 		myCapsuleCollider = GetComponent<CapsuleCollider> ();
 		myHipsRigidBody = GameObject.FindGameObjectWithTag ("hips").GetComponent<Rigidbody> ();
+		myMaterial = GameObject.FindGameObjectWithTag("skin").GetComponent<SkinnedMeshRenderer>().material;
         footstepsAudioSource = GetComponent<AudioSource>();
 		myOriginalColliderHeight = myCapsuleCollider.height;
         myOriginalColliderCenter = new Vector3(0, myOriginalColliderCenterY, 0);
@@ -150,6 +152,18 @@ public class PlayerControllerAlpha : MonoBehaviour {
 		animVelocitySum = 0;
 
 		disableRagdoll (false); // false means don't position the player at the ragdoll hips
+	}
+
+	void Update () {
+
+		Color myColor = new Color(
+			myMaterial.color.r,
+//			myMaterial.color.g,
+			Mathf.Lerp(myMaterial.color.g, Mathf.Max(0f, Mathf.Pow(myZVelocity/2, 2)/100), .1f),
+			myMaterial.color.b
+		);
+		myMaterial.color = myColor;
+
 	}
 
     void FixedUpdate()
@@ -195,7 +209,6 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	{
 
 		myZVelocity = myRigidBody.velocity.z;
-
 		// here just updating this in the gui for debugging
 		// if successful, this will stay in sync with grounded bool
 		useRootMotion = animator.applyRootMotion;
@@ -383,11 +396,14 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	{
 
 		// Horizontal first because at first I thought it was easy
-		float tempLateral = Input.GetAxis ("Horizontal") * Mathf.Max(Mathf.Pow(1f - forwardSpeed, .5f), .2f);
+		float tempLateral = Input.GetAxis ("Horizontal");
+		if (Mathf.Abs(tempLateral) >= .15f) {
+            tempLateral *= Mathf.Max(Mathf.Pow(1f - forwardSpeed, .8f), .15f);
+        }
 		currentRotation = myRigidBody.rotation.y;
 		if (currentAnimationStateInt == LOCOMOTION_STATE) {
 			// if we aren't pressing left/right, make him run straight ahead
-			if (Mathf.Abs (tempLateral) < .1f) {
+			if (Mathf.Abs (tempLateral) < .15f) {
 				// if we aren't pressing turn, manually turn the dude to face foward
 				myRigidBody.rotation = Quaternion.Lerp (myRigidBody.rotation, Quaternion.identity, .1f * Mathf.Max (1f - forwardSpeed, .2f));
 				lateral = tempLateral;
