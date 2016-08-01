@@ -658,8 +658,11 @@ public class PlayerControllerAlpha : MonoBehaviour {
 			Debug.Log ("totalForce  " + totalForce);
 			if (totalForce > knockoutForce) {
 				enableRagdoll ();
+			} else if (totalForce > 1f) {
+				Debug.Log("reducing speed for total force : " + totalForce);
+				matchAnimatorSpeedToVelocity ();
+				doSlow = true;
 			}
-			matchAnimatorSpeedToVelocity ();
 		}
 		if (myCollision.collider.gameObject.layer == BUILDING_LAYER) {
 			hitBuilding = true;
@@ -668,13 +671,16 @@ public class PlayerControllerAlpha : MonoBehaviour {
 		}
 	}
 
+	bool doSlow = false;
+
 	void OnCollisionExit (Collision myCollision)
 	{
 		if (
-			myCollision.collider.gameObject.layer == OBSTACLES_LAYER
-			|| myCollision.collider.gameObject.layer == BUILDING_LAYER
+			myCollision.collider.gameObject.layer == OBSTACLES_LAYER 
+			&& doSlow
 		) {
 			matchAnimatorSpeedToVelocity ();
+			doSlow = false;
 		}
 	}
 
