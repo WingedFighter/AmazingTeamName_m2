@@ -13,11 +13,11 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	public float animatorSpeed;
 
 	// jumping experiment
-	public float jumpForce = 40000f;
-	public float jumpBoostForce = 40000f;
-	public float slideForce = 30000f;
+	private float jumpForce = 40000f;
+	private float jumpBoostForce = 40000f;
+	private float slideForce = 30000f;
 
-	public float decelerationRate = 5f;
+	private float decelerationRate = 5f;
 	public float forwardSpeed = 0f;
 
 	private Vector3 speed;
@@ -32,7 +32,8 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	private CapsuleCollider myCapsuleCollider;
 	private Rigidbody myRigidBody;
 	// we need this to know where to get up from after ragdolling
-	public Rigidbody myHipsRigidBody;
+	private Rigidbody myHipsRigidBody;
+	private Material myMaterial;
 
 	public bool bRagdoll = false;
 	public bool bGettinUp = false;
@@ -122,7 +123,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
     {
         disabled,
         running,
-        projectile,
+        projectile, 
         dead
     }
 
@@ -138,6 +139,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 		myRigidBody = GetComponent<Rigidbody> ();
 		myCapsuleCollider = GetComponent<CapsuleCollider> ();
 		myHipsRigidBody = GameObject.FindGameObjectWithTag ("hips").GetComponent<Rigidbody> ();
+		myMaterial = GameObject.FindGameObjectWithTag("skin").GetComponent<SkinnedMeshRenderer>().material;
         footstepsAudioSource = GetComponent<AudioSource>();
 		myOriginalColliderHeight = myCapsuleCollider.height;
         myOriginalColliderCenter = new Vector3(0, myOriginalColliderCenterY, 0);
@@ -150,6 +152,18 @@ public class PlayerControllerAlpha : MonoBehaviour {
 		animVelocitySum = 0;
 
 		disableRagdoll (false); // false means don't position the player at the ragdoll hips
+	}
+
+	void Update () {
+
+		Color myColor = new Color(
+			myMaterial.color.r,
+//			myMaterial.color.g,
+			Mathf.Lerp(myMaterial.color.g, Mathf.Max(0f, Mathf.Pow(myZVelocity/2, 2)/100), .1f),
+			myMaterial.color.b
+		);
+		myMaterial.color = myColor;
+
 	}
 
     void FixedUpdate()
@@ -195,7 +209,6 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	{
 
 		myZVelocity = myRigidBody.velocity.z;
-
 		// here just updating this in the gui for debugging
 		// if successful, this will stay in sync with grounded bool
 		useRootMotion = animator.applyRootMotion;

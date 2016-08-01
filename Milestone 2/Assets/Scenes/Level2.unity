@@ -4979,22 +4979,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7aab4517020274ddea5aadc8986f07bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartingLocation: {x: 0, y: 0, z: 0}
   useRootMotion: 0
   knockoutForce: 1000
-  matchSpeedDivisor: 30
+  matchSpeedDivisor: 22
   myZVelocity: 0
   animatorSpeed: 0
-  jumpForce: 40000
-  jumpBoostForce: 40000
-  slideForce: 30000
-  decelerationRate: 5
   forwardSpeed: 0
   time: 0
   velocitySum: 0
   animVelocitySum: 0
   ticks: 0
-  myHipsRigidBody: {fileID: 1681011023}
   bRagdoll: 0
   bGettinUp: 0
   ragdollDuration: 0
@@ -5006,10 +5000,6 @@ MonoBehaviour:
   almostGrounded: 0
   didJump: 0
   goingUp: 0
-  SLOPE_FLAT_EXPONENT: 5
-  SLOPE_DOWNHILL_EXPONENT: 2
-  SLOPE_UPHILL_EXPONENT: 10
-  accelerationExponent: 3
   currentAnimationStateInt: 0
   currentAnimationStateString: 
   State: 1
@@ -7183,7 +7173,7 @@ GameObject:
   - 137: {fileID: 1041982982}
   m_Layer: 9
   m_Name: Alpha_Surface
-  m_TagString: Untagged
+  m_TagString: skin
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
