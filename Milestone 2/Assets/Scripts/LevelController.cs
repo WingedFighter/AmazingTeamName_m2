@@ -32,7 +32,7 @@ public class LevelController : MonoBehaviour {
         // calculate the score
         if (Player.GetComponent<Rigidbody>().velocity.magnitude > 4)
         {
-            Score += Player.GetComponent<Rigidbody>().velocity.magnitude / ScoreSpeedModifier;
+            Score += Player.GetComponent<Rigidbody>().velocity.z / ScoreSpeedModifier;
         }
         if (!TargetBuilding.IsStable())
         {
@@ -62,7 +62,7 @@ public class LevelController : MonoBehaviour {
         // Update Score and lives text
         LivesText.GetComponent<Text>().text = "Lives: " + Lives;
         ScoreText.GetComponent<Text>().text = "Score: " + (int)Score;
-        SpeedometerText.GetComponent<Text>().text = Mathf.Round(Player.GetComponent<Rigidbody>().velocity.magnitude) + " MPH";
+        SpeedometerText.GetComponent<Text>().text = Mathf.Round(Player.GetComponent<Rigidbody>().velocity.z) + " MPH";
 
         // Check for Lose condition
         if (Lives <= 0 && !LevelCompleted)
