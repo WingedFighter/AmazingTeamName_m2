@@ -18,16 +18,20 @@ public class MainMenuController : MonoBehaviour {
     public GameObject MainMenuUI;
     public GameObject LevelSelectUI;
 
+    public Text MainTitle;
+    public Color TargetColor;
+
     private EventSystem eventSystem;
 
     // Use this for initialization
     void Start () {
         eventSystem = EventSystem.current;
+        CrossFadeTextColor();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-
+        
 	}
 
     public void PlayGame()
@@ -62,5 +66,12 @@ public class MainMenuController : MonoBehaviour {
     public void QuitGame()
     {
         Application.Quit();
+    }
+
+    public void CrossFadeTextColor()
+    {
+        TargetColor = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f));
+        MainTitle.CrossFadeColor(TargetColor, 1f, false, false);
+        Invoke("CrossFadeTextColor", 1);
     }
 }
