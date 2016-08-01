@@ -171,7 +171,7 @@ ModelImporter:
       name: jump
       takeName: mixamo.com
       firstFrame: 0
-      lastFrame: 60
+      lastFrame: 34
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -211,6 +211,23 @@ ModelImporter:
             tangentMode: 0
           preInfinity: 2
           postInfinity: 2
+          rotationOrder: 0
+      - name: colliderHeight
+        curve:
+          serializedVersion: 2
+          curve:
+          - time: 0
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+          - time: 1
+            value: 0.9
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+          preInfinity: 3
+          postInfinity: 3
           rotationOrder: 0
       events: []
       transformMask:

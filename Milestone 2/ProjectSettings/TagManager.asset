@@ -7,6 +7,12 @@ TagManager:
   - ObstacleMovable
   - ObstacleImmovable
   - DeathPlane
+  - uphill
+  - downhill
+  - flat
+  - hips
+  - skin
+  - New Tag
   layers:
   - Default
   - TransparentFX
@@ -16,10 +22,10 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
-  - 
-  - 
+  - obstacles
+  - player
+  - ground
+  - building
   - 
   - 
   - 
