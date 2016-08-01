@@ -687,7 +687,17 @@ public class PlayerControllerAlpha : MonoBehaviour {
 		}
 	}
 
-	bool doSlow = false;
+	public bool doSlow = false;
+
+	void OnCollisionStay (Collision myCollision)
+	{
+		if (
+			myCollision.collider.gameObject.layer == OBSTACLES_LAYER 
+			&& doSlow
+		) {
+			matchAnimatorSpeedToVelocity ();
+		}
+	}
 
 	void OnCollisionExit (Collision myCollision)
 	{
@@ -704,6 +714,11 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	{
 		// if you don't do the min here, you can get going really fast by sliding
 		forwardSpeed = Mathf.Min (1, (myZVelocity / matchSpeedDivisor));
+		if (currentAnimationStateInt == IDLE_STATE 
+            && Input.GetAxis("Vertical") > .1f
+        ) {
+			forwardSpeed = .11f;
+		}
 		animator.SetFloat (FORWARD, forwardSpeed);
 	}
 
