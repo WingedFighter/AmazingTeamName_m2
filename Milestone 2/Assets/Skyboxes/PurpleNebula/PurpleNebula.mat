@@ -26,7 +26,7 @@ Material:
         first:
           name: _FrontTex
         second:
-          m_Texture: {fileID: 2800000, guid: 8060643f30c69ea4eb995bc51d272a06, type: 3}
+          m_Texture: {fileID: 2800000, guid: ec8141d00f56d464590c5524737be26b, type: 3}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
       data:
@@ -64,7 +64,15 @@ Material:
           m_Texture: {fileID: 2800000, guid: 28c86d5886982bd4d8c2d86aa5ef6d64, type: 3}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
-    m_Floats: {}
+    m_Floats:
+      data:
+        first:
+          name: _Exposure
+        second: 1
+      data:
+        first:
+          name: _Rotation
+        second: 0
     m_Colors:
       data:
         first:
