@@ -9,22 +9,26 @@ public class LevelController : MonoBehaviour {
     public GameObject Player;
     public GameObject SuccessText;
     public GameObject FailureText;
+    public GameObject GameUI;
     public GameObject ScoreText;
+    public GameObject FinalScoreText;
     public GameObject LivesText;
     public GameObject SpeedometerText;
     public GameObject MultiplierText;
     public string NextLevel = "MainMenu";
 
-    public double Score = 0;
+    public float Score = 0;
     public int Lives = 3;
     public int Multiplier = 0;
     public bool LevelCompleted = false;
 
     public float ScoreSpeedModifier = 10f;
 
+    private AudioSource MultiplierAudio;
+
 	// Use this for initialization
 	void Start () {
-	
+        MultiplierAudio = GetComponent<AudioSource>();
 	}
 	
 	// Update is called once per frame
@@ -74,14 +78,13 @@ public class LevelController : MonoBehaviour {
     void LevelComplete()
     {
         SuccessText.SetActive(true);
-        MultiplierText.SetActive(true);
         Invoke("ApplyMultiplier", 4);
         //Invoke("LoadNextLevel", 4);
     }
 
     void ApplyMultiplier()
     {
-        for (; Lives > 0; Lives--)
+        /*for (; Lives > 0; Lives--)
         {
             //Lives--;
             Multiplier++; 
@@ -92,7 +95,32 @@ public class LevelController : MonoBehaviour {
         LivesText.GetComponent<Text>().text = "Lives: " + Lives;
         MultiplierText.GetComponent<Text>().text = "" + Multiplier;
         ScoreText.GetComponent<Text>().text = "Score: " + Score;
-        Invoke("LoadNextLevel", 4);
+        Invoke("LoadNextLevel", 4);*/
+        if (Lives > 0)
+        {
+            MultiplierText.SetActive(true);
+            Lives--;
+            Multiplier++;
+
+            // 
+            MultiplierAudio.Play();
+
+            LivesText.GetComponent<Text>().text = "Lives: " + Lives;
+            MultiplierText.GetComponent<Text>().text = "" + Multiplier;
+            Invoke("ApplyMultiplier", 1);
+        }
+        else
+        {
+            Score = (Multiplier) * Score;
+            FinalScoreText.GetComponent<Text>().text = "FINAL SCORE:\n" + Mathf.Round(Score); ;
+
+            GameUI.SetActive(false);
+            SuccessText.SetActive(false);
+            FinalScoreText.SetActive(true);
+            MultiplierAudio.Play();
+
+            Invoke("LoadNextLevel", 4);
+        }
     }
 
     void LevelFailed()
