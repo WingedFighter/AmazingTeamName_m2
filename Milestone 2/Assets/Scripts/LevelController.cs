@@ -22,6 +22,8 @@ public class LevelController : MonoBehaviour {
     public int Multiplier = 0;
     public bool LevelCompleted = false;
 
+
+	private float previousSpeed = 0f;
     public float ScoreSpeedModifier = 10f;
 
     private AudioSource MultiplierAudio;
@@ -66,8 +68,9 @@ public class LevelController : MonoBehaviour {
         // Update Score and lives text
         LivesText.GetComponent<Text>().text = "Lives: " + Lives;
         ScoreText.GetComponent<Text>().text = "Score: " + (int)Score;
-        SpeedometerText.GetComponent<Text>().text = Mathf.Round(Player.GetComponent<Rigidbody>().velocity.z) + " MPH";
-
+		float currentSpeed = Player.GetComponent<Rigidbody>().velocity.z;
+		previousSpeed = (Mathf.Lerp(previousSpeed, currentSpeed, Time.deltaTime));
+		SpeedometerText.GetComponent<Text>().text = Mathf.Round(previousSpeed) + " MPH";
         // Check for Lose condition
         if (Lives <= 0 && !LevelCompleted)
         {
