@@ -22,19 +22,19 @@ public class MS3GameController : MonoBehaviour {
         {
             DropShip.gameObject.SetActive(false);
             DropShip = (GameObject)Instantiate(DropShipTypes[0], DropShipSpawnPosition, DropShipSpawnRotation);
-            DropShip.GetComponent<DropShipController>().playerController = pc;
+//            DropShip.GetComponent<DropShipController>().playerController = pc;
         }
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             DropShip.gameObject.SetActive(false);
             DropShip = (GameObject)Instantiate(DropShipTypes[1], DropShipSpawnPosition, DropShipSpawnRotation);
-            DropShip.GetComponent<DropShipController>().playerController = pc;
+//            DropShip.GetComponent<DropShipController>().playerController = pc;
         }
         if (Input.GetKeyDown(KeyCode.Alpha3))
         {
             DropShip.gameObject.SetActive(false);
             DropShip = (GameObject)Instantiate(DropShipTypes[2], DropShipSpawnPosition, DropShipSpawnRotation);
-            DropShip.GetComponent<DropShipController>().playerController = pc;
+//            DropShip.GetComponent<DropShipController>().playerController = pc;
         }
     }
 }

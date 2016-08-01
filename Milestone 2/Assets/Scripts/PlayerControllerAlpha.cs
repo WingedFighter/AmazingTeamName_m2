@@ -2,13 +2,13 @@
 using System.Collections;
 
 public class PlayerControllerAlpha : MonoBehaviour {
-    public Vector3 StartingLocation;
+    private Vector3 StartingLocation;
 
 	// making this a public var so we can see it in gui
 	public bool useRootMotion;
 	public float knockoutForce = 2000;
 
-	public float matchSpeedDivisor = 30f;
+	public float matchSpeedDivisor = 22;
 	public float myZVelocity;
 	public float animatorSpeed;
 
@@ -106,9 +106,9 @@ public class PlayerControllerAlpha : MonoBehaviour {
 
 	// Speed increase expoonents corresponding to Ground slope Tags
 	// Note that becuase we're applying these to a value less than one, smaller numbers result in greater acceleration
-	public float SLOPE_FLAT_EXPONENT = 2;
+	public float SLOPE_FLAT_EXPONENT = 3.5;
 	public float SLOPE_DOWNHILL_EXPONENT = 1f;
-	public float SLOPE_UPHILL_EXPONENT = 5;
+	public float SLOPE_UPHILL_EXPONENT = 10f;
 	public float accelerationExponent;
 
 	public int currentAnimationStateInt;
@@ -196,8 +196,6 @@ public class PlayerControllerAlpha : MonoBehaviour {
 
 		myZVelocity = myRigidBody.velocity.z;
 
-
-
 		// here just updating this in the gui for debugging
 		// if successful, this will stay in sync with grounded bool
 		useRootMotion = animator.applyRootMotion;
@@ -224,7 +222,6 @@ public class PlayerControllerAlpha : MonoBehaviour {
 			}
 			currentAnimationStateString = getCurrentAnimationStateStringAndSetColliderHeight (currentAnimationStateInt);
 			myCapsuleCollider.height = myOriginalColliderHeight * myColliderHeight;
-
 
 			// much depends on if we are gounded or near it
 			almostGrounded = getAlmostGrounded ();
@@ -355,7 +352,11 @@ public class PlayerControllerAlpha : MonoBehaviour {
 			myRigidBody.AddForce (0, jumpBoostForce * Time.deltaTime, 0);
 			jumpBoostLateUpdate = false;
 		} else if (slideBoostLateUpdate) {
-			myRigidBody.AddForce (0, 0, slideForce * Time.deltaTime);
+            float mySlideForce = slideForce;
+            if (accelerationExponent == SLOPE_UPHILL_EXPONENT) {
+                mySlideForce *= 3;
+            }
+			myRigidBody.AddForce (0, 0, mySlideForce * Time.deltaTime);
 			slideBoostLateUpdate = false;
 		}
 	}
@@ -368,7 +369,6 @@ public class PlayerControllerAlpha : MonoBehaviour {
 			doJump ();
 		} else if (Input.GetKeyDown (KeyCode.X) || Input.GetKeyDown(KeyCode.JoystickButton2)) {
 			doSlide ();
-
 			// else we are checking if we should locomote
 		} else {
 			processAxisInput ();
