@@ -159,12 +159,20 @@ public class PlayerControllerAlpha : MonoBehaviour {
 
 	void Update () {
 
-		Color myColor = new Color(
-			//myMaterial.color.r,
-			Mathf.Lerp(myMaterial.color.r, Mathf.Max(0f, Mathf.Pow(myZVelocity/2, 2)/400), Time.deltaTime),
-			Mathf.Lerp(myMaterial.color.g, Mathf.Max(0f, Mathf.Pow(myZVelocity/2, 2)/100), Time.deltaTime),
-			myMaterial.color.b
-		);
+		Color myColor;
+		if (laserAudioSource.isPlaying) {
+			myColor = new Color(
+				Mathf.Lerp(myMaterial.color.r, 1f, 10 * Time.deltaTime),
+				Mathf.Lerp(myMaterial.color.g, .1f, 10 *Time.deltaTime),
+				Mathf.Lerp(myMaterial.color.b, 0f, 10 *Time.deltaTime)
+			);
+		} else {
+			myColor = new Color(
+				Mathf.Lerp(myMaterial.color.r, Mathf.Max(0f, 0.05f + Mathf.Pow(myZVelocity/2, 2)/400), Time.deltaTime),
+				Mathf.Lerp(myMaterial.color.g, Mathf.Max(0f, 0.1f + Mathf.Pow(myZVelocity/2, 2)/100), Time.deltaTime),
+				Mathf.Lerp(myMaterial.color.b, Mathf.Max(0f, 0.15f - Mathf.Pow(myZVelocity/2, 2)/400), Time.deltaTime)
+			);
+		}
 		myMaterial.SetColor("_Color", myColor);
 		myMaterial.SetColor("_EmissionColor", myColor);
 
@@ -222,7 +230,10 @@ public class PlayerControllerAlpha : MonoBehaviour {
 			// move the rigidbody to the hips position so we can tell if grounded
 			myRigidBody.position = myHipsRigidBody.position;
 			// logic to transition out of ragdoll
-			if (getGroundedAndSetSurface () && ragdollDurationElapsed () && !bDead) {
+			if (
+                ragdollLongDurationElapsed() 
+                || getGroundedAndSetSurface () && ragdollDurationElapsed () && !bDead
+            ){
 				disableRagdoll (true); // true means position the player at the ragdoll hips
 			}
 			myCapsuleCollider.height = myOriginalColliderHeight;
@@ -811,6 +822,17 @@ public class PlayerControllerAlpha : MonoBehaviour {
 		ragdollDuration += Time.deltaTime;
 		if (ragdollDuration > 3f) {
 			ragdollDuration = 0f;
+			return true;
+		}
+		return false;
+	}
+
+    private float ragdollLongDuration = 0f;
+	private bool ragdollLongDurationElapsed ()
+	{
+		ragdollLongDuration += Time.deltaTime;
+		if (ragdollLongDuration > 5f) {
+			ragdollLongDuration = 0f;
 			return true;
 		}
 		return false;
