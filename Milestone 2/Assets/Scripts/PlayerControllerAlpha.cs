@@ -118,6 +118,8 @@ public class PlayerControllerAlpha : MonoBehaviour {
     private bool footstepAudioPlaying = false;
     private AudioSource footstepsAudioSource;
 
+    private AudioSource laserAudioSource;
+
     // Player Controller StateMachine
     public enum PlayerState
     {
@@ -140,7 +142,8 @@ public class PlayerControllerAlpha : MonoBehaviour {
 		myCapsuleCollider = GetComponent<CapsuleCollider> ();
 		myHipsRigidBody = GameObject.FindGameObjectWithTag ("hips").GetComponent<Rigidbody> ();
 		myMaterial = GameObject.FindGameObjectWithTag("skin").GetComponent<SkinnedMeshRenderer>().material;
-        footstepsAudioSource = GetComponent<AudioSource>();
+        footstepsAudioSource = GetComponents<AudioSource>()[0];
+        laserAudioSource = GetComponents<AudioSource>()[1];
 		myOriginalColliderHeight = myCapsuleCollider.height;
         myOriginalColliderCenter = new Vector3(0, myOriginalColliderCenterY, 0);
 	    accelerationExponent = SLOPE_FLAT_EXPONENT;
@@ -200,6 +203,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 
     public void Reset()
     {
+        laserAudioSource.Play();
         forwardSpeed = 0;
         transform.position = StartingLocation;
         bDead = false;
@@ -673,6 +677,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 			totalForce *= myCollision.rigidbody.mass;
 			Debug.Log ("totalForce  " + totalForce);
 			if (totalForce > knockoutForce) {
+                laserAudioSource.Play();
 				enableRagdoll ();
 			} else if (totalForce > 1f) {
 				Debug.Log("reducing speed for total force : " + totalForce);
