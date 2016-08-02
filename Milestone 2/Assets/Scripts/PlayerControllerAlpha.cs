@@ -157,12 +157,13 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	void Update () {
 
 		Color myColor = new Color(
-			myMaterial.color.r,
-//			myMaterial.color.g,
+			//myMaterial.color.r,
+			Mathf.Lerp(myMaterial.color.r, Mathf.Max(0f, Mathf.Pow(myZVelocity/2, 2)/400), Time.deltaTime),
 			Mathf.Lerp(myMaterial.color.g, Mathf.Max(0f, Mathf.Pow(myZVelocity/2, 2)/100), Time.deltaTime),
 			myMaterial.color.b
 		);
-		myMaterial.color = myColor;
+		myMaterial.SetColor("_Color", myColor);
+		myMaterial.SetColor("_EmissionColor", myColor);
 
 	}
 
