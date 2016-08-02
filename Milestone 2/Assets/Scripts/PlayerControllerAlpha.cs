@@ -234,6 +234,8 @@ public class PlayerControllerAlpha : MonoBehaviour {
                 ragdollLongDurationElapsed() 
                 || getGroundedAndSetSurface () && ragdollDurationElapsed () && !bDead
             ){
+                ragdollDuration = 0f;
+                ragdollLongDuration = 0f;
 				disableRagdoll (true); // true means position the player at the ragdoll hips
 			}
 			myCapsuleCollider.height = myOriginalColliderHeight;
