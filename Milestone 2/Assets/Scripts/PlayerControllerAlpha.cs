@@ -159,13 +159,20 @@ public class PlayerControllerAlpha : MonoBehaviour {
 
 	void Update () {
 
-		Color myColor = new Color(
-			//myMaterial.color.r,
-			Mathf.Lerp(myMaterial.color.r, Mathf.Max(0f, 0.05f + Mathf.Pow(myZVelocity/2, 2)/400), Time.deltaTime),
-			Mathf.Lerp(myMaterial.color.g, Mathf.Max(0f, 0.1f + Mathf.Pow(myZVelocity/2, 2)/100), Time.deltaTime),
-			Mathf.Lerp(myMaterial.color.b, Mathf.Max(0f, 0.15f - Mathf.Pow(myZVelocity/2, 2)/400), Time.deltaTime),
-			myMaterial.color.b
-		);
+		Color myColor;
+		if (laserAudioSource.isPlaying) {
+			myColor = new Color(
+				Mathf.Lerp(myMaterial.color.r, 1f, 10 * Time.deltaTime),
+				Mathf.Lerp(myMaterial.color.g, .1f, 10 *Time.deltaTime),
+				Mathf.Lerp(myMaterial.color.b, 0f, 10 *Time.deltaTime)
+			);
+		} else {
+			myColor = new Color(
+				Mathf.Lerp(myMaterial.color.r, Mathf.Max(0f, 0.05f + Mathf.Pow(myZVelocity/2, 2)/400), Time.deltaTime),
+				Mathf.Lerp(myMaterial.color.g, Mathf.Max(0f, 0.1f + Mathf.Pow(myZVelocity/2, 2)/100), Time.deltaTime),
+				Mathf.Lerp(myMaterial.color.b, Mathf.Max(0f, 0.15f - Mathf.Pow(myZVelocity/2, 2)/400), Time.deltaTime)
+			);
+		}
 		myMaterial.SetColor("_Color", myColor);
 		myMaterial.SetColor("_EmissionColor", myColor);
 
