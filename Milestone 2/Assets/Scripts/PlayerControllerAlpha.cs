@@ -161,8 +161,9 @@ public class PlayerControllerAlpha : MonoBehaviour {
 
 		Color myColor = new Color(
 			//myMaterial.color.r,
-			Mathf.Lerp(myMaterial.color.r, Mathf.Max(0f, Mathf.Pow(myZVelocity/2, 2)/400), Time.deltaTime),
-			Mathf.Lerp(myMaterial.color.g, Mathf.Max(0f, Mathf.Pow(myZVelocity/2, 2)/100), Time.deltaTime),
+			Mathf.Lerp(myMaterial.color.r, Mathf.Max(0f, 0.05f + Mathf.Pow(myZVelocity/2, 2)/400), Time.deltaTime),
+			Mathf.Lerp(myMaterial.color.g, Mathf.Max(0f, 0.1f + Mathf.Pow(myZVelocity/2, 2)/100), Time.deltaTime),
+			Mathf.Lerp(myMaterial.color.b, Mathf.Max(0f, 0.15f - Mathf.Pow(myZVelocity/2, 2)/400), Time.deltaTime),
 			myMaterial.color.b
 		);
 		myMaterial.SetColor("_Color", myColor);
