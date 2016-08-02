@@ -372,7 +372,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 
 	void LateRunning ()
 	{
-        handleFootstepsSound();
+        //handleFootstepsSound();
 
 		if (jumpLateUpdate) {
 			myRigidBody.AddForce (0, jumpForce, 0);
@@ -838,7 +838,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 		return false;
 	}
 
-    private void handleFootstepsSound()
+    /*private void handleFootstepsSound()
     {
         if (forwardSpeed > 0 && currentAnimationStateInt == LOCOMOTION_STATE)
         {
@@ -854,5 +854,14 @@ public class PlayerControllerAlpha : MonoBehaviour {
             footstepsAudioSource.Stop();
             footstepAudioPlaying = false;
         }
+    }*/
+
+    public void PlayFootstepSound()
+    {
+        if (grounded)
+        {
+            footstepsAudioSource.Play();
+        }
+        print("Playing footstep sound");
     }
 }
