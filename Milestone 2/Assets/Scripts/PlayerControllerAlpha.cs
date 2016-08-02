@@ -230,7 +230,10 @@ public class PlayerControllerAlpha : MonoBehaviour {
 			// move the rigidbody to the hips position so we can tell if grounded
 			myRigidBody.position = myHipsRigidBody.position;
 			// logic to transition out of ragdoll
-			if (getGroundedAndSetSurface () && ragdollDurationElapsed () && !bDead) {
+			if (
+                ragdollLongDurationElapsed() 
+                || getGroundedAndSetSurface () && ragdollDurationElapsed () && !bDead
+            ){
 				disableRagdoll (true); // true means position the player at the ragdoll hips
 			}
 			myCapsuleCollider.height = myOriginalColliderHeight;
@@ -819,6 +822,17 @@ public class PlayerControllerAlpha : MonoBehaviour {
 		ragdollDuration += Time.deltaTime;
 		if (ragdollDuration > 3f) {
 			ragdollDuration = 0f;
+			return true;
+		}
+		return false;
+	}
+
+    private float ragdollLongDuration = 0f;
+	private bool ragdollLongDurationElapsed ()
+	{
+		ragdollLongDuration += Time.deltaTime;
+		if (ragdollLongDuration > 5f) {
+			ragdollLongDuration = 0f;
 			return true;
 		}
 		return false;
