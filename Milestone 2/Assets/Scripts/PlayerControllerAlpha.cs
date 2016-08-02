@@ -134,9 +134,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
     // Use this for initialization
     void Start ()
 	{
-        StartingLocation = transform.position;
-		// I hardcoded this because it kept resetting when I reset the script.  Strange.
-		//StartingLocation = new Vector3(271, 15, 0);
+		StartingLocation = transform.position;
 		animator = GetComponent<Animator> ();
 		myRigidBody = GetComponent<Rigidbody> ();
 		myCapsuleCollider = GetComponent<CapsuleCollider> ();
