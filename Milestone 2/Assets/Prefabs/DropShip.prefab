@@ -63,7 +63,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &401746
 Transform:
   m_ObjectHideFlags: 1
@@ -204,10 +204,13 @@ MonoBehaviour:
   LateralSpeed: 2
   DropFrequency: 1
   flybySpeed: 2
+  playerRigidbody: {fileID: 0}
   DropItems:
   - {fileID: 154234, guid: 3e72699b84c21da479d0c25223795324, type: 2}
   - {fileID: 107530, guid: 091d42947e2aec04693e9d460dc3fc76, type: 2}
   - {fileID: 136240, guid: 8293558c47cff9048b0c81b78041d1f6, type: 2}
+  DropShipSpawnPosition: {x: 0, y: 0, z: 0}
+  DropShipSpawnRotation: {x: 0, y: 0, z: 0, w: 0}
   Axis: 1
   CurrentState: 0
 --- !u!1001 &100100000
