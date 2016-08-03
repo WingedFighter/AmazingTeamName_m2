@@ -77,6 +77,7 @@ public class LevelController : MonoBehaviour {
             if (TargetBuilding.IsStable())
             {
                 Player.GetComponent<PlayerControllerAlpha>().Reset();
+
                 Lives--;
                 dPlane.Triggered = false;
             } 
