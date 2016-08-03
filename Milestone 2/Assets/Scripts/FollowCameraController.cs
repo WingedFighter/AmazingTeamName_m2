@@ -43,7 +43,7 @@ public class FollowCameraController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void FixedUpdate () {
-		if (!TargetBuilding.IsStable() || TargetBuilding.IsDestroyed()) {
+		if (!TargetBuilding.IsStable() || TargetBuilding.IsDestroyed() || TargetBuilding.bPlayerInZone) {
 			transform.position = Vector3.Lerp(transform.position, buildingCameraPosition.position, ragdollPositionSmoothing * Time.deltaTime);
 			transform.forward = Vector3.Lerp(transform.forward, buildingCameraLookAt.position - transform.position, directionSmoothingMedium * Time.deltaTime);
 		}

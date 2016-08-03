@@ -67,6 +67,7 @@ public class Building : MonoBehaviour {
 
     void OnTriggerEnter(Collider other)
     {
+        print("Tag: " + other.gameObject.tag);
         if (other.gameObject.CompareTag("Player"))
         {
             SetKinematic(false);
