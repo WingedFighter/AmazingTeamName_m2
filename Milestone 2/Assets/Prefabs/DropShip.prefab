@@ -63,7 +63,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &401746
 Transform:
   m_ObjectHideFlags: 1
@@ -84,10 +84,10 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 150758}
-  m_LocalRotation: {x: 0, y: -0.76781243, z: 0, w: 0.6406747}
-  m_LocalPosition: {x: 507.53, y: 99.35, z: -54.2}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 271, y: 10, z: 25}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: -100.3157, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 401746}
   - {fileID: 428674}
@@ -198,21 +198,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerController: {fileID: 0}
   LeadTime: 2
-  minLeadDistance: 5
+  minLeadDistance: 20
   MaxObjectSize: 10
   MinObjectSize: 10
   LateralSpeed: 2
-  DropFrequency: 1
+  DropFrequency: 5
   flybySpeed: 2
   playerRigidbody: {fileID: 0}
   DropItems:
-  - {fileID: 154234, guid: 3e72699b84c21da479d0c25223795324, type: 2}
-  - {fileID: 107530, guid: 091d42947e2aec04693e9d460dc3fc76, type: 2}
-  - {fileID: 136240, guid: 8293558c47cff9048b0c81b78041d1f6, type: 2}
-  DropShipSpawnPosition: {x: 0, y: 0, z: 0}
+  - {fileID: 105232, guid: 56a4a757bf83a4772b85e225fb2822ed, type: 2}
+  - {fileID: 110334, guid: bacb7862c52b34e01978584ee2e4105a, type: 2}
+  - {fileID: 186834, guid: de67230b2063f44fea25e317366e290c, type: 2}
+  DropShipSpawnPosition: {x: 271, y: 10, z: 25}
   DropShipSpawnRotation: {x: 0, y: 0, z: 0, w: 0}
   Axis: 1
-  CurrentState: 0
+  CurrentState: 1
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
