@@ -22,7 +22,6 @@ public class LevelController : MonoBehaviour {
     public int Multiplier = 0;
     public bool LevelCompleted = false;
 
-
 	private float previousSpeed = 0f;
     public float ScoreSpeedModifier = 10f;
 
@@ -48,6 +47,11 @@ public class LevelController : MonoBehaviour {
             }
         }
 
+        if (dPlane.Triggered)
+        {
+            Player.GetComponent<PlayerControllerAlpha>().bDead = true;   
+        }
+
         // Reset the player if the death plane is triggered
         if ((dPlane.Triggered || Player.GetComponent<PlayerControllerAlpha>().bDead) && !LevelCompleted)
         {
@@ -56,7 +60,8 @@ public class LevelController : MonoBehaviour {
                 Player.GetComponent<PlayerControllerAlpha>().Reset();
                 Lives--;
                 dPlane.Triggered = false;
-            }
+            } 
+
         }
 
         if (TargetBuilding.IsDestroyed() && !LevelCompleted)

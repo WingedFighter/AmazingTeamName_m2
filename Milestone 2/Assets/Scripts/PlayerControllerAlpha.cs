@@ -134,9 +134,9 @@ public class PlayerControllerAlpha : MonoBehaviour {
     // Use this for initialization
     void Start ()
 	{
-//        StartingLocation = transform.position;
+        StartingLocation = transform.position;
 		// I hardcoded this because it kept resetting when I reset the script.  Strange.
-		StartingLocation = new Vector3(271, 15, 0);
+		//StartingLocation = new Vector3(271, 15, 0);
 		animator = GetComponent<Animator> ();
 		myRigidBody = GetComponent<Rigidbody> ();
 		myCapsuleCollider = GetComponent<CapsuleCollider> ();
@@ -862,6 +862,5 @@ public class PlayerControllerAlpha : MonoBehaviour {
         {
             footstepsAudioSource.Play();
         }
-        print("Playing footstep sound");
     }
 }
