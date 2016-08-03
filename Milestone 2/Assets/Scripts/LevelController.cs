@@ -180,7 +180,7 @@ public class LevelController : MonoBehaviour {
         EventSystem.current.SetSelectedGameObject(null);
         bPause = false;
         PauseUI.SetActive(false);
-        Cam.GetComponent<AudioSource>().Play();
+        Cam.GetComponent<AudioSource>().UnPause();
         Time.timeScale = 1;
     }
 
