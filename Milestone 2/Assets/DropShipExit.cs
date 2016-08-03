@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class DropShipExit : MonoBehaviour {
-	public GameObject dropShip;
+	public DropShipController dropShipController;
 
 	// Use this for initialization
 	void Start () {
@@ -16,7 +16,9 @@ public class DropShipExit : MonoBehaviour {
 
 	void OnTriggerEnter(Collider coll){
 		if (coll.gameObject.tag == "Player") {
-			Destroy (dropShip);
+			print ("ok");
+			dropShipController.Explode ();
+			dropShipController.gameObject.SetActive (false);
 		}
 	}
 }

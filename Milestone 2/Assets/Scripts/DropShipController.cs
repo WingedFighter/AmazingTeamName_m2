@@ -29,6 +29,9 @@ public class DropShipController : MonoBehaviour {
 	public Vector3 DropShipSpawnPosition;
 	public Quaternion DropShipSpawnRotation;
 
+	//explosion
+	public GameObject DropShipExplosion;
+
     public enum MovementAxis
     {
         x,
@@ -137,4 +140,10 @@ public class DropShipController : MonoBehaviour {
         // Transition back to move
         CurrentState = state.MOVE;
     }
+	public void Explode()
+	{
+		DropShipExplosion.transform.position = transform.position;
+		DropShipExplosion.SetActive (true);
+
+	}
 }
