@@ -36,12 +36,23 @@ public class Building : MonoBehaviour {
     {
         float numberDestroyed = 0f;
         BuildingComponent[] components = GetComponentsInChildren<BuildingComponent>();
+		/* use this "if" if you're destroying buildings as they fall
+
+		if (components.Length == 0) {
+			return true;
+		}
+		*/
         foreach (BuildingComponent bc in components)
         {
             if ((bc.transform.position - bc.OriginalLocation).magnitude > ComponentPositionThreshold)
             {
                 numberDestroyed++;
             }
+			/* Use this instead of above is you're destroying buildings when they hit the ground
+			if (bc.isActiveAndEnabled) {
+				return false;
+			}
+			*/
         }
         
         if (numberDestroyed/components.Length >= PercentDestroyedThreshold)
