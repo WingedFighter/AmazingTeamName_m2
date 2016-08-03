@@ -433,12 +433,14 @@ public class PlayerControllerAlpha : MonoBehaviour {
 		currentRotation = myRigidBody.rotation.y;
 		if (currentAnimationStateInt == LOCOMOTION_STATE) {
 			// if we aren't pressing left/right, make him run straight ahead
+			/*
 			if (Mathf.Abs (tempLateral) < .15f) {
 				// if we aren't pressing turn, manually turn the dude to face foward
 				myRigidBody.rotation = Quaternion.Lerp (myRigidBody.rotation, Quaternion.identity, .1f * Mathf.Max (1f - forwardSpeed, .2f));
 				lateral = tempLateral;
 				// if he has turned too far, keep him at about 30 degrees
-			} else if (turnLimitReached) {
+				*/
+		 if (turnLimitReached) {
 				// check to make sure we aren't already trying to turn back, ie with the direction keys
 				if (
 					(tempLateral > 0 && currentRotation > 0)
