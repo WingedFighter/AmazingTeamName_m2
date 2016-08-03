@@ -192,9 +192,10 @@ ModelImporter:
       curves: []
       events:
       - time: 0
-        functionName: NewEvent
+        functionName: PlayFootstepSound
         data: 
-        objectReferenceParameter: {instanceID: 0}
+        objectReferenceParameter: {fileID: 11500000, guid: 7aab4517020274ddea5aadc8986f07bf,
+          type: 3}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
