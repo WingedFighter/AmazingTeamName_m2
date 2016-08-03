@@ -212,6 +212,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
     {
         laserAudioSource.Play();
         forwardSpeed = 0;
+        animator.SetTrigger("GetUp");
         transform.position = StartingLocation;
         bDead = false;
     }

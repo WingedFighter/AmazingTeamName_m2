@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using System.Collections;
 
 public class LevelController : MonoBehaviour {
@@ -15,12 +16,17 @@ public class LevelController : MonoBehaviour {
     public GameObject LivesText;
     public GameObject SpeedometerText;
     public GameObject MultiplierText;
+    public GameObject Cam;
+    public GameObject PauseUI;
+    public GameObject ResumeButton;
     public string NextLevel = "MainMenu";
 
     public float Score = 0;
     public int Lives = 3;
     public int Multiplier = 0;
     public bool LevelCompleted = false;
+
+    public bool bPause = false;
 
 	private float previousSpeed = 0f;
     public float ScoreSpeedModifier = 10f;
@@ -34,6 +40,19 @@ public class LevelController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Joystick1Button7))
+        {
+            bPause = !bPause;
+            if (bPause)
+            {
+                Pause();
+            }
+            else
+            {
+                Unpause();
+            }
+        }
+
         // calculate the score
         if (Player.GetComponent<Rigidbody>().velocity.magnitude > 4)
         {
@@ -133,7 +152,7 @@ public class LevelController : MonoBehaviour {
 
     void LevelFailed()
     {
-        Player.GetComponent<PlayerControllerAlpha>().bDead = true;
+        Player.GetComponent<PlayerControllerAlpha>().State = PlayerControllerAlpha.PlayerState.disabled;
         FailureText.SetActive(true);
         Invoke("ReloadLevel", 4);
     }
@@ -145,5 +164,33 @@ public class LevelController : MonoBehaviour {
     void ReloadLevel()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void Pause()
+    {
+        bPause = true;
+        Cam.GetComponent<AudioSource>().Pause();
+        Time.timeScale = 0;
+        PauseUI.SetActive(true);
+        EventSystem.current.SetSelectedGameObject(ResumeButton);
+    }
+
+    public void Unpause()
+    {
+        EventSystem.current.SetSelectedGameObject(null);
+        bPause = false;
+        PauseUI.SetActive(false);
+        Cam.GetComponent<AudioSource>().Play();
+        Time.timeScale = 1;
+    }
+
+    public void MainMenu()
+    {
+        SceneManager.LoadScene("MainMenu");
+    }
+
+    public void Quit()
+    {
+        Application.Quit();
     }
 }
