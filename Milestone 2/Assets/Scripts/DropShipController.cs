@@ -102,8 +102,10 @@ public class DropShipController : MonoBehaviour {
             break;
 		case MovementAxis.y:
 			if (Physics.Raycast (transform.position, Vector3.down * 100, out hit)) {
-				if (hit.collider.gameObject.layer == LayerMask.NameToLayer ("ground")) {
+				if (hit.collider.gameObject.layer == LayerMask.NameToLayer ("ground") && hit.collider.gameObject.tag != "bottom") {
 					targetPosition.y = hit.collider.transform.position.y + 10;
+				} else {
+					targetPosition.y = transform.position.y;
 				}
 			}
 			break;
@@ -129,7 +131,7 @@ public class DropShipController : MonoBehaviour {
     {
         int index = Random.Range(0, DropItems.Length);
         Vector3 dropPosition = transform.position;
-        dropPosition.y -= 1.75f;
+        dropPosition.y -= 3;
         Instantiate(DropItems[index], dropPosition, transform.rotation);
 
         // Transition back to move
