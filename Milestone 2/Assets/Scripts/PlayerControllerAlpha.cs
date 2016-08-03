@@ -255,7 +255,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 			// much depends on if we are gounded or near it
 			almostGrounded = getAlmostGrounded ();
 			grounded = getGroundedAndSetSurface ();
-			goingUp = myRigidBody.velocity.y > .5f;
+			goingUp = myRigidBody.velocity.y > 1f;
 
 			// set this to let the camera know how fast to rotate
 			bGettinUp = (currentAnimationStateInt == GETTING_UP_STATE);
