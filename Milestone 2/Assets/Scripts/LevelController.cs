@@ -133,6 +133,7 @@ public class LevelController : MonoBehaviour {
 
     void LevelFailed()
     {
+        Player.GetComponent<PlayerControllerAlpha>().bDead = true;
         FailureText.SetActive(true);
         Invoke("ReloadLevel", 4);
     }

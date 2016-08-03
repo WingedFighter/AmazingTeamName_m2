@@ -3811,7 +3811,7 @@ Prefab:
       objectReference: {fileID: 1447202308}
     - target: {fileID: 11467644, guid: 7758d97d3c87100458b74fc8232a2337, type: 2}
       propertyPath: NextLevel
-      value: Level2
+      value: Level1-2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 7758d97d3c87100458b74fc8232a2337, type: 2}
@@ -5693,6 +5693,10 @@ Transform:
   - {fileID: 162757105}
   m_Father: {fileID: 1219338494}
   m_RootOrder: 3
+--- !u!1 &1001406784 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 183696, guid: 02366ecb707b304418e50aaa4df4ef3a, type: 2}
+  m_PrefabInternal: {fileID: 1858073104}
 --- !u!1 &1041982980
 GameObject:
   m_ObjectHideFlags: 0
@@ -7246,6 +7250,7 @@ MonoBehaviour:
   - {fileID: 940323657}
   - {fileID: 1988896470}
   - {fileID: 216199150}
+  - {fileID: 1001406784}
 --- !u!4 &1435958167
 Transform:
   m_ObjectHideFlags: 0
@@ -8666,7 +8671,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 183696, guid: 02366ecb707b304418e50aaa4df4ef3a, type: 2}
       propertyPath: m_Name
-      value: TutorialText (4)
+      value: Post Death Text (4
       objectReference: {fileID: 0}
     - target: {fileID: 414436, guid: 02366ecb707b304418e50aaa4df4ef3a, type: 2}
       propertyPath: m_LocalEulerAnglesHint.y
@@ -8679,6 +8684,10 @@ Prefab:
     - target: {fileID: 414436, guid: 02366ecb707b304418e50aaa4df4ef3a, type: 2}
       propertyPath: m_LocalScale.y
       value: 3.0042284
+      objectReference: {fileID: 0}
+    - target: {fileID: 183696, guid: 02366ecb707b304418e50aaa4df4ef3a, type: 2}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 5444866, guid: 02366ecb707b304418e50aaa4df4ef3a, type: 2}
