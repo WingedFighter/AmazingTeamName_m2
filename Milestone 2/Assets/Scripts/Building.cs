@@ -16,6 +16,11 @@ public class Building : MonoBehaviour {
 
             // Set all components to be kinematic
             rb.isKinematic = isKinematic;
+
+            // Add Sound effect component
+            AudioSource a = rb.gameObject.AddComponent<AudioSource>();
+            a.playOnAwake = false;
+            a.clip = Resources.Load("Laser") as AudioClip;
         }
     }
 	

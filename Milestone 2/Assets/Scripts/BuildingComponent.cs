@@ -25,6 +25,15 @@ public class BuildingComponent : MonoBehaviour {
 		*/
 	}
 
+    public void OnCollisionEnter(Collision other)
+    {
+        AudioSource a = GetComponent<AudioSource>();
+        if (!a.isPlaying)
+        {
+            a.Play();
+        }
+    }
+
 	/*  use this if you want building to vanish when it falls over
 
 	void OnTriggerEnter(Collider other) {
