@@ -103,7 +103,7 @@ public class DropShipController : MonoBehaviour {
 		case MovementAxis.y:
 			if (Physics.Raycast (transform.position, Vector3.down * 100, out hit)) {
 				if (hit.collider.gameObject.layer == LayerMask.NameToLayer ("ground")) {
-					targetPosition.y = hit.collider.transform.position.y + 20;
+					targetPosition.y = hit.collider.transform.position.y + 10;
 				}
 			}
 			break;
