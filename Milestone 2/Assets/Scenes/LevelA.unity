@@ -2195,6 +2195,10 @@ Prefab:
       propertyPath: ResumeButton
       value: 
       objectReference: {fileID: 1997261868}
+    - target: {fileID: 11467644, guid: 7758d97d3c87100458b74fc8232a2337, type: 2}
+      propertyPath: NextLevel
+      value: DropShipLevel
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 7758d97d3c87100458b74fc8232a2337, type: 2}
   m_IsPrefabParent: 0

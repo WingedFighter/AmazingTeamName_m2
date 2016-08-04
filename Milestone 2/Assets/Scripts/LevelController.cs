@@ -79,7 +79,10 @@ public class LevelController : MonoBehaviour {
             if (TargetBuilding.IsStable())
             {
                 Player.GetComponent<PlayerControllerAlpha>().Reset();
-				dropShipController.Reset ();
+                if (dropShipController != null)
+                {
+                    dropShipController.Reset();
+                }
                 Lives--;
                 dPlane.Triggered = false;
             } 
