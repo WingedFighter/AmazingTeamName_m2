@@ -4467,6 +4467,10 @@ Prefab:
       propertyPath: ResumeButton
       value: 
       objectReference: {fileID: 1539585257}
+    - target: {fileID: 11467644, guid: 7758d97d3c87100458b74fc8232a2337, type: 2}
+      propertyPath: dropShipController
+      value: 
+      objectReference: {fileID: 1224404603}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 7758d97d3c87100458b74fc8232a2337, type: 2}
   m_IsPrefabParent: 0
@@ -4895,7 +4899,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11419514, guid: 6f9f85d44e8cf0a4aa18637e4babd57c, type: 2}
       propertyPath: DropFrequency
-      value: 15
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 150758, guid: 6f9f85d44e8cf0a4aa18637e4babd57c, type: 2}
       propertyPath: m_Name
@@ -5258,6 +5262,8 @@ MonoBehaviour:
   almostGrounded: 0
   didJump: 0
   goingUp: 0
+  idleToSlideBoostLateUpdate: 0
+  prepareToIdleToSlideBoostLateUpdate: 0
   currentAnimationStateInt: 0
   currentAnimationStateString: 
   State: 1

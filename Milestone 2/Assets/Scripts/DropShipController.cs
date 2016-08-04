@@ -78,8 +78,9 @@ public class DropShipController : MonoBehaviour {
         }
 	}
 
-	void Reset(){
+	public void Reset(){
 		transform.position = startingLocation;
+		this.gameObject.SetActive (true);
 	}
     
     private void FlyBy()
