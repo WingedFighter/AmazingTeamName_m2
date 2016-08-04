@@ -21,6 +21,7 @@ public class MainMenuController : MonoBehaviour {
     public Text MainTitle;
     public Color TargetColor;
 
+    private bool InLevelSelect = false;
     private EventSystem eventSystem;
 
     // Use this for initialization
@@ -31,8 +32,14 @@ public class MainMenuController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        
-	}
+        if (Input.GetKeyDown(KeyCode.Joystick1Button1))
+        {
+            if (InLevelSelect)
+            {
+                ExitLevelSelect();
+            }
+        }
+    }
 
     public void PlayGame()
     {
@@ -41,6 +48,7 @@ public class MainMenuController : MonoBehaviour {
 
     public void LevelSelect()
     {
+        InLevelSelect = true;
         MainMenuUI.SetActive(false);
         LevelSelectUI.SetActive(true);
         eventSystem.SetSelectedGameObject(Level1Button.gameObject);
@@ -48,6 +56,7 @@ public class MainMenuController : MonoBehaviour {
 
     public void ExitLevelSelect()
     {
+        InLevelSelect = false;
         LevelSelectUI.SetActive(false);
         MainMenuUI.SetActive(true);
         eventSystem.SetSelectedGameObject(PlayButton.gameObject);

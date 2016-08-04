@@ -31,3 +31,7 @@ EditorBuildSettings:
     path: Assets/Scenes/IdanScene.unity
   - enabled: 0
     path: Assets/Scenes/milestone3.unity
+  - enabled: 1
+    path: Assets/Scenes/NewLevel.unity
+  - enabled: 1
+    path: Assets/Scenes/DropShipLevel.unity
