@@ -31,6 +31,8 @@ public class DropShipController : MonoBehaviour {
 
 	//explosion
 	public GameObject DropShipExplosion;
+	//reset stuff
+	private Vector3 startingLocation;
 
     public enum MovementAxis
     {
@@ -57,6 +59,7 @@ public class DropShipController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		waypoints = GameObject.FindGameObjectsWithTag ("Waypoint");
+		startingLocation = transform.position;
 	}
 	
 	// Update is called once per frame
@@ -73,6 +76,11 @@ public class DropShipController : MonoBehaviour {
                 Drop();
                 break;
         }
+	}
+
+	public void Reset(){
+		transform.position = startingLocation;
+		this.gameObject.SetActive (true);
 	}
     
     private void FlyBy()
@@ -96,30 +104,29 @@ public class DropShipController : MonoBehaviour {
         Vector3 targetPosition = playerController.transform.position + deltaPosition;
 		// We want the target height to remain the same as our current height
         // Ensure that the DropShip stays a minimum distance in front of the player
-        switch(Axis)
-        {
-        case MovementAxis.x:
-            if (targetPosition.x - playerController.transform.position.x < minLeadDistance){
-                targetPosition.x = transform.position.x;
-            }
-            break;
-		case MovementAxis.y:
-			if (Physics.Raycast (transform.position, Vector3.down * 100, out hit)) {
-				if (hit.collider.gameObject.layer == LayerMask.NameToLayer ("ground") && hit.collider.gameObject.tag != "bottom") {
-					targetPosition.y = hit.collider.transform.position.y + 10;
-				} else {
-					targetPosition.y = transform.position.y;
-				}
+		if (Physics.Raycast (transform.position, Vector3.down * 100, out hit)) {
+			if (hit.collider.gameObject.layer == LayerMask.NameToLayer ("ground") && hit.collider.gameObject.tag != "bottom") {
+				targetPosition.y = hit.collider.transform.position.y + 10;
+			} else {
+				targetPosition.y = transform.position.y;
 			}
-			break;
-        case MovementAxis.z:
-            if (targetPosition.z - playerController.transform.position.z < minLeadDistance)                {
-                targetPosition.z = transform.position.z;
-            }
-            break;
-        }
+		}
+		if (targetPosition.z - playerController.transform.position.z < minLeadDistance)                {
+			targetPosition.z = transform.position.z;
+		}
+		if (Physics.Raycast (transform.position, transform.right * 1, out hit)) {
+			if (hit.collider.gameObject.tag == "wall" && hit.distance < 1.5f) {
+				targetPosition.x = hit.collider.transform.position.x - 4.0f;
+			}
+		}
+		if (Physics.Raycast (transform.position, -transform.right, out hit)) {
+			if (hit.collider.gameObject.tag == "wall" && hit.distance < 1.5f) {
+				print (hit.collider.gameObject);
+				targetPosition.x = hit.collider.transform.position.x + 4.0f;
+			}
+		}
 
-        transform.position = Vector3.Lerp(transform.position, targetPosition, LateralSpeed * Time.deltaTime);
+		transform.position = Vector3.Lerp(transform.position, targetPosition, LateralSpeed * Time.deltaTime);
 
         // Update the state transition parameters
         dropTimer += Time.deltaTime;

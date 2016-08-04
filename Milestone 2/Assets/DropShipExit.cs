@@ -16,7 +16,6 @@ public class DropShipExit : MonoBehaviour {
 
 	void OnTriggerEnter(Collider coll){
 		if (coll.gameObject.tag == "Player") {
-			print ("ok");
 			dropShipController.Explode ();
 			dropShipController.gameObject.SetActive (false);
 		}

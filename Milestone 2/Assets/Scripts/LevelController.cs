@@ -32,6 +32,8 @@ public class LevelController : MonoBehaviour {
     public float ScoreSpeedModifier = 10f;
 
     private AudioSource MultiplierAudio;
+	//ship stuff
+	public DropShipController dropShipController;
 
 	// Use this for initialization
 	void Start () {
@@ -77,6 +79,7 @@ public class LevelController : MonoBehaviour {
             if (TargetBuilding.IsStable())
             {
                 Player.GetComponent<PlayerControllerAlpha>().Reset();
+				dropShipController.Reset ();
                 Lives--;
                 dPlane.Triggered = false;
             } 

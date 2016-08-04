@@ -13,6 +13,10 @@ TagManager:
   - hips
   - skin
   - New Tag
+  - wall
+  - bottom
+  - dropship
+  - Waypoint
   layers:
   - Default
   - TransparentFX

@@ -16,8 +16,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	private float jumpForce = 40000f;
 	private float jumpBoostForce = 40000f;
 	private float slideForce = 30000f;
-    static float idleToSlideForce = 200000f;
-	private float currentIdleToSlideForce = idleToSlideForce;
+
 	private float decelerationRate = 5f;
 	public float forwardSpeed = 0f;
 
@@ -83,7 +82,6 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	static int GETTING_UP_TO_IDLE_TRANS = Animator.StringToHash ("gettingUpToIdle");
 	static int SLIDE_START_TO_MIDDLE_TRANS = Animator.StringToHash ("slideStartToMiddle");
 	static int SLIDE_MIDDLE_TO_END_TRANS = Animator.StringToHash ("slideMiddleToEnd");
-	static int IDLE_TO_SLIDE_TRANS = Animator.StringToHash ("idleToSlide");
 
 	// Layers
 	private static int OBSTACLES_LAYER = 8;
@@ -98,8 +96,6 @@ public class PlayerControllerAlpha : MonoBehaviour {
 	public bool goingUp = false;
 	private bool slideBoostLateUpdate = false;
 	private bool jumpBoostLateUpdate = false;
-	public bool idleToSlideBoostLateUpdate = false;
-	public bool prepareToIdleToSlideBoostLateUpdate = false;
 
 	// the spherecast will ignore the player layer (don't want to hit colliders on feet)
 	private int sphereColliderLayerMask = ~(1 << PLAYER_LAYER);
@@ -260,7 +256,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
 			// much depends on if we are gounded or near it
 			almostGrounded = getAlmostGrounded ();
 			grounded = getGroundedAndSetSurface ();
-			goingUp = myRigidBody.velocity.y > .5f;
+			goingUp = myRigidBody.velocity.y > 1f;
 
 			// set this to let the camera know how fast to rotate
 			bGettinUp = (currentAnimationStateInt == GETTING_UP_STATE);
@@ -332,19 +328,17 @@ public class PlayerControllerAlpha : MonoBehaviour {
 					jumpBoostLateUpdate = true;
 				}
 			} else if (currentAnimationStateInt == SLIDE_START_STATE) {
-                    if (animator.speed > 1) {
-                        float reduction = (animator.speed - 1);
-                        animator.speed -= Mathf.Min((reduction * 2 * Time.deltaTime), 1f);
-                    }
-                    myRigidBody.velocity = myLastVelocity;
-                    setRootMotion (false);
-                    slideBoostLateUpdate = true;
-                    if (!almostGrounded) {
-                        animator.SetTrigger ("airborne");
-                    }
+				if (animator.speed > 1) {
+					float reduction = (animator.speed - 1);
+					animator.speed -= Mathf.Min((reduction * 2 * Time.deltaTime), 1f);
+				}
+				myRigidBody.velocity = myLastVelocity;
+				setRootMotion (false);
+				slideBoostLateUpdate = true;
+				if (!almostGrounded) {
+					animator.SetTrigger ("airborne");
+				}
 			} else if (currentAnimationStateInt == SLIDE_MIDDLE_STATE) {
-			    idleToSlideBoostLateUpdate = false;
-				currentIdleToSlideForce = idleToSlideForce;
 				if (forwardSpeed < 1) {
 					slideBoostLateUpdate = true;
 				}
@@ -387,9 +381,6 @@ public class PlayerControllerAlpha : MonoBehaviour {
 		} else if (jumpBoostLateUpdate) {
 			myRigidBody.AddForce (0, jumpBoostForce * Time.deltaTime, 0);
 			jumpBoostLateUpdate = false;
-		} else if (idleToSlideBoostLateUpdate) {
-			myRigidBody.AddForce (0, 0, (Mathf.Max(slideForce, currentIdleToSlideForce)) * Time.deltaTime);
-			currentIdleToSlideForce *= (1 - Time.deltaTime);
 		} else if (slideBoostLateUpdate) {
             float mySlideForce = slideForce;
             if (accelerationExponent == SLOPE_UPHILL_EXPONENT) {
@@ -397,7 +388,7 @@ public class PlayerControllerAlpha : MonoBehaviour {
             }
 			myRigidBody.AddForce (0, 0, mySlideForce * Time.deltaTime);
 			slideBoostLateUpdate = false;
-        }
+		}
 	}
 
 	private void proccessInput ()
@@ -408,10 +399,6 @@ public class PlayerControllerAlpha : MonoBehaviour {
 			doJump ();
 		} else if (Input.GetKeyDown (KeyCode.X) || Input.GetKeyDown(KeyCode.JoystickButton2)) {
 			doSlide ();
-            // see if we need to boost this dude because he's sliding from a standstill
-            if (currentAnimationStateInt == IDLE_STATE) {
-                idleToSlideBoostLateUpdate = true;
-            }
 			// else we are checking if we should locomote
 		} else {
 			processAxisInput ();
@@ -433,12 +420,14 @@ public class PlayerControllerAlpha : MonoBehaviour {
 		currentRotation = myRigidBody.rotation.y;
 		if (currentAnimationStateInt == LOCOMOTION_STATE) {
 			// if we aren't pressing left/right, make him run straight ahead
+			/*
 			if (Mathf.Abs (tempLateral) < .15f) {
 				// if we aren't pressing turn, manually turn the dude to face foward
 				myRigidBody.rotation = Quaternion.Lerp (myRigidBody.rotation, Quaternion.identity, .1f * Mathf.Max (1f - forwardSpeed, .2f));
 				lateral = tempLateral;
 				// if he has turned too far, keep him at about 30 degrees
-			} else if (turnLimitReached) {
+				*/
+		 if (turnLimitReached) {
 				// check to make sure we aren't already trying to turn back, ie with the direction keys
 				if (
 					(tempLateral > 0 && currentRotation > 0)
@@ -618,10 +607,6 @@ public class PlayerControllerAlpha : MonoBehaviour {
 			myColliderHeight = .3f;
 			myCapsuleCollider.center = new Vector3(0,.3f, 0);
 			return "SLIDE MID TO END";
-		} else if (stateInt == IDLE_TO_SLIDE_TRANS) {
-			myColliderHeight = 1f;
-			myCapsuleCollider.center = myOriginalColliderCenter;
-			return "IDLE_TO_SLIDE";
 		} else {
 			myColliderHeight = 1f;
 			myCapsuleCollider.center = myOriginalColliderCenter;
